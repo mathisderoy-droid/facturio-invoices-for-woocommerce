@@ -15,9 +15,9 @@
         "tecnickcom/tcpdf": "^6.7"
     },
     "autoload": {
-        "psr-4": {
-            "Mathis\\FacturX\\WooCommerce\\": "includes/"
-        }
+        "classmap": [
+            "includes/"
+        ]
     },
     "config": {
         "vendor-dir": "vendor",
