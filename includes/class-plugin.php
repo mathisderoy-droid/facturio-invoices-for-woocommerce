@@ -49,14 +49,35 @@ final class Plugin {
      * Add new feature instantiations here as we work through the prompt's 8 steps.
      */
     public function init(): void {
-        // Étape 1 — skeleton only, nothing to wire yet.
-        //
+        // Bail out if WooCommerce isn't active. We test for WooCommerce (the
+        // main class, loaded early at plugins_loaded priority 0) — NOT for
+        // WC_Settings_Page, which is loaded lazily only when WC Admin is
+        // accessed. Testing the wrong class here makes our filters never
+        // register on the admin page.
+        if (!class_exists('WooCommerce')) {
+            return;
+        }
+
+        // Étape 2 — Settings tab under WooCommerce → Settings → Factur-X.
+        add_filter('woocommerce_get_settings_pages', [$this, 'register_settings_page']);
+
         // Coming next:
-        //   new Settings();
         //   new InvoicePostType();
+        //   new InvoiceNumbering();
         //   new CheckoutFields();
         //   new InvoiceGenerator();
         //   ...
+    }
+
+    /**
+     * Register the Factur-X tab inside WooCommerce → Settings.
+     *
+     * @param \WC_Settings_Page[] $pages WC settings pages collection.
+     * @return \WC_Settings_Page[]
+     */
+    public function register_settings_page(array $pages): array {
+        $pages[] = new Settings();
+        return $pages;
     }
 
     /**
