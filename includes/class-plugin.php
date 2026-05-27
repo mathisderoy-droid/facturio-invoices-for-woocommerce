@@ -66,10 +66,16 @@ final class Plugin {
         // on-demand by the invoice generator; no wiring needed here.
         new InvoicePostType();
 
+        // Étape 4A — B2B fields on the classic checkout + order meta persist.
+        // SiretValidator and ViesValidator are stateless static utility
+        // classes used internally — no instantiation needed yet (Etape 4B
+        // will add their API-backed siblings).
+        new CheckoutFields();
+        new OrderMeta();
+
         // Coming next:
-        //   new CheckoutFields();
-        //   new InvoiceGenerator();
-        //   ...
+        //   Etape 4B — AJAX endpoints for live INSEE / VIES validation.
+        //   Etape 5  — InvoiceGenerator + PdfRenderer + XmlBuilder.
     }
 
     /**

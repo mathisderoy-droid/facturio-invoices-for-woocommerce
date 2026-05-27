@@ -1,0 +1,56 @@
+/**
+ * Styling for the B2B section on the classic WooCommerce checkout.
+ *
+ * Intentionally minimal — the section should feel native to whatever
+ * theme is in use (Storefront, Astra, etc.) and not impose its own
+ * visual identity.
+ *
+ * @package Mathis\FacturX\WooCommerce
+ */
+
+.mathisfx-checkout-b2b {
+	margin-top: 1.5em;
+}
+
+.mathisfx-b2b-toggle {
+	margin-bottom: 1em;
+}
+
+.mathisfx-b2b-toggle label.checkbox {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5em;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.mathisfx-b2b-toggle label.checkbox input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	margin: 0;
+}
+
+.mathisfx-b2b-fields {
+	margin-top: 1em;
+	padding: 1.25em 1.5em;
+	background: #f7f7f9;
+	border-left: 3px solid #2271b1;
+	border-radius: 0 3px 3px 0;
+}
+
+.mathisfx-b2b-fields h3 {
+	margin-top: 0;
+	margin-bottom: 0.25em;
+	font-size: 1em;
+}
+
+.mathisfx-b2b-help {
+	margin-top: 0;
+	margin-bottom: 1em;
+	font-size: 0.85em;
+	color: #555;
+}
+
+.mathisfx-b2b-fields[aria-hidden="true"] {
+	display: none;
+}

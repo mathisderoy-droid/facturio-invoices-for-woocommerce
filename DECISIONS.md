@@ -172,9 +172,37 @@ dans `BACKLOG.md` pour V0.5+.
 
 ---
 
+## 27 mai 2026 — Idée Pro à creuser : proxy INSEE hébergé
+
+**Contexte.** En V0.1 chaque marchand installant le plugin doit créer
+sa propre clé INSEE Sirene (limite 30 req/min/app, T&Cs INSEE imposent
+une app par entité, on ne peut pas partager notre clé entre 1000 users).
+C'est une friction d'onboarding réelle : 10-30 min de démarche, parfois
+1-2 jours d'attente de validation INSEE.
+
+**Idée monétisation V0.5 Pro.** Héberger nous-mêmes un proxy léger
+(VPS à 5-10 €/mois) avec NOTRE clé INSEE maître, validée par INSEE
+pour usage centralisé d'éditeur de plugin. Le marchand paye le plan
+Pro (149 €/an), reçoit une clé interne de notre proxy, colle ça dans
+le plugin, et la validation SIRET marche immédiatement sans démarche
+INSEE.
+
+**Argument business.** Beaucoup de marchands/agences paieraient les
+149 € rien que pour zapper la paperasse INSEE. C'est exactement le
+type de friction qu'on convertit en upsell. À évaluer côté coût
+(VPS + bande passante + monitoring + support) vs revenu marginal.
+
+**Risque.** INSEE pourrait considérer qu'on revend leur API. À clarifier
+avec eux avant de lancer (programme "éditeur agréé" ou similaire).
+
+**Statut.** 💡 Idée à approfondir avant le lancement V0.5 Pro.
+
+---
+
 ## Légende des statuts
 
 - ✅ **Fait** — décision implémentée
 - 🔄 **En cours / À faire** — action en cours, échéance proche
 - ⏸ **Reporté** — décision prise, exécution programmée plus tard
 - ❌ **Abandonné** — décision annulée (raison documentée)
+- 💡 **Idée** — piste à creuser, pas encore décidée
