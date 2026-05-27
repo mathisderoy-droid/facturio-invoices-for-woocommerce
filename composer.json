@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=8.0",
-        "atgp/factur-x": "^2.4",
+        "horstoeko/zugferd": "^1.0",
         "tecnickcom/tcpdf": "^6.7"
     },
     "autoload": {

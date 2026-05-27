@@ -47,11 +47,22 @@ routage vers les Plateformes Agréées. Si on démarre sur `atgp/factur-x`,
 on devra réécrire la couche XML à l'étape V0.5. Si on démarre sur
 `horstoeko/zugferd`, pas de migration.
 
-**Décision.** À trancher avant l'étape 5. Comparatif court à produire,
-puis arbitrage avec Mathis.
+**Décision (27 mai 2026).** Switch sur `horstoeko/zugferd v1.0.122`.
+Raison principale : `atgp/factur-x` ne fournit aucune API de construction
+du XML CII (seulement embed + validation), il aurait fallu écrire ~500
+lignes de DOMDocument à la main. `horstoeko/zugferd` fournit un builder
+fluent qui couvre les profils MINIMUM → EXTENDED, ce qui couvre aussi
+nos besoins V0.5 (EXTENDED-CTC-FR pour routage PA) sans migration.
 
-**Statut.** 🔄 Décision en attente.
-**Échéance.** Avant écriture de `class-xml-builder.php` (étape 5).
+**Effet de bord.** Le dependency tree passe de 6 packages (atgp + TCPDF
++ FPDI + FPDF + pdfparser + polyfill) à 26 packages (ajout de
+symfony/validator, jms/serializer, doctrine/{deprecations,instantiator,
+lexer}, phpstan/phpdoc-parser, et 8 polyfills Symfony). Ces packages
+sont très utilisés par d'autres plugins WP — augmente significativement
+le risque de collision (cf. point #1) et confirme l'urgence de Strauss
+avant soumission WP.org.
+
+**Statut.** ✅ Fait le 27 mai 2026 (commit à venir).
 
 ---
 
