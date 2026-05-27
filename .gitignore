@@ -1,0 +1,23 @@
+# Composer dependencies — installed locally, embedded into the WP.org build zip.
+vendor/
+composer.phar
+
+# OS / IDE clutter
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs
+*.log
+debug.log
+
+# Build artifacts
+node_modules/
+*.zip
+build/
+dist/
+
+# WordPress local environment leftovers
+wp-content/
+wp-config.php

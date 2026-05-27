@@ -1,0 +1,32 @@
+{
+    "name": "mathisderoy/factur-x-for-woocommerce",
+    "description": "Génère des factures Factur-X conformes à la réforme française 2026 depuis WooCommerce (PDF/A-3 + XML CII embarqué, profil EN 16931).",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Mathis Deroy",
+            "email": "mathis.deroy@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "atgp/factur-x": "^2.4",
+        "tecnickcom/tcpdf": "^6.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mathis\\FacturX\\WooCommerce\\": "includes/"
+        }
+    },
+    "config": {
+        "vendor-dir": "vendor",
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "8.0.0"
+        },
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
+}
