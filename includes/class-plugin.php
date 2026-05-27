@@ -61,9 +61,12 @@ final class Plugin {
         // Étape 2 — Settings tab under WooCommerce → Settings → Factur-X.
         add_filter('woocommerce_get_settings_pages', [$this, 'register_settings_page']);
 
+        // Étape 3 — Internal CPT to store generated invoices. The numbering
+        // helper (InvoiceNumbering) is a stateless utility class invoked
+        // on-demand by the invoice generator; no wiring needed here.
+        new InvoicePostType();
+
         // Coming next:
-        //   new InvoicePostType();
-        //   new InvoiceNumbering();
         //   new CheckoutFields();
         //   new InvoiceGenerator();
         //   ...
