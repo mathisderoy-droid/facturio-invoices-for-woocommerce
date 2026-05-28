@@ -172,6 +172,48 @@ dans `BACKLOG.md` pour V0.5+.
 
 ---
 
+## 28 mai 2026 — Périmètre personnalisation V0.1 vs V0.5
+
+Décision produit prise avec Mathis suite au premier rendu PDF visuel.
+Le prompt initial gardait "personnalisation visuelle de l'invoice
+template" pour V0.5+. À la réflexion on a élargi le V0.1 gratuit
+pour ne pas avoir l'air pauvres face à WP Overnight (~800k installs,
+upload logo natif).
+
+**V0.1 (gratuit, sur WordPress.org)** :
+- Tous les champs Settings existants (raison sociale, SIRET, TVA,
+  adresse, mentions légales, préfixe numérotation, etc.)
+- **Upload de logo** via la Media Library WP
+- **Choix d'une couleur principale** (qui remplace le bleu `#2271b1`
+  hardcodé actuellement dans le template)
+- Un seul template visuel (le `default.php` actuel)
+
+**V0.5 (Pro, 149-599 €/an via Freemius)** :
+- 2-3 templates additionnels (Minimal, Moderne, Sobre)
+- Couleurs secondaires et tertiaires
+- Choix de la police
+- Référence interne / champs additionnels sur facture
+- Conditions de paiement détaillées (échéance, escompte, pénalités)
+
+**V1.0** :
+- Édition de template via Gutenberg blocks
+- Multilingue (templates par langue)
+- Multi-currency
+
+**Raison de la stratégie** : on vend la conformité Factur-X (réforme
+française 2026), pas la beauté. Mais on ne peut pas se permettre
+d'avoir un PDF sans logo en V0.1, ça va se voir dès les premiers
+screenshots WP.org. Logo + couleur = floor minimum. Le reste
+justifie le passage Pro.
+
+**Échéance d'implémentation** : juste après l'étape 5C (PDF/A-3
+hybride). Le wiring logo + color dans le template n'a pas de
+dépendance sur la conformité PDF/A, donc ajout en parallèle.
+
+**Statut.** 🔄 En attente de l'étape 5C, puis implémenté.
+
+---
+
 ## 27 mai 2026 — Idée Pro à creuser : proxy INSEE hébergé
 
 **Contexte.** En V0.1 chaque marchand installant le plugin doit créer

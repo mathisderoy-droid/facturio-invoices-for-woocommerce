@@ -69,10 +69,39 @@ final class XmlBuilder {
         self::apply_seller($document, $order);
         self::apply_buyer($document, $order);
         self::apply_payment($document, $order);
+        self::apply_payment_terms($document, $order);
         self::apply_lines($document, $order);
         self::apply_tax_breakdown_and_summation($document, $order);
 
         return $document;
+    }
+
+    /* ----------------------------------------------------------------- */
+    /* VAT category selection                                             */
+    /* ----------------------------------------------------------------- */
+
+    /**
+     * Choose the UNTDID 5305 VAT category code for a given rate.
+     *
+     * BR-S-05 in EN 16931 mandates that category "S" (Standard rated) can
+     * only be used when the rate is strictly greater than zero. Using "S"
+     * with 0 % was the first FNFE-MPE validator failure we hit.
+     *
+     * V0.1 mapping:
+     *   - rate > 0      -> 'S' (Standard rated)
+     *   - rate == 0     -> 'E' (Exempt from tax)
+     *
+     * V0.5 will refine the 0 % branch:
+     *   - Buyer in EU but outside FR + B2B with valid VAT -> 'AE' (Reverse charge)
+     *   - Buyer outside EU                                -> 'G' (Export)
+     *   - True French exemption (e.g. franchise en base)  -> 'E' (current default)
+     *   - Intra-community supply of goods                 -> 'K'
+     */
+    private static function vat_category_for_rate(float $rate): string {
+        if ($rate > 0) {
+            return ZugferdVatCategoryCodes::STAN_RATE;
+        }
+        return ZugferdVatCategoryCodes::EXEM_FROM_TAX;
     }
 
     /* ----------------------------------------------------------------- */
@@ -228,6 +257,24 @@ final class XmlBuilder {
         $document->addDocumentPaymentMean($code, $title);
     }
 
+    /**
+     * Add a payment term (BR-CO-25 requires either a due date or terms text).
+     *
+     * For V0.1 we always emit a description; the merchant can override the
+     * default phrasing later via a Settings field. No specific due date is
+     * set — "Paiement à réception" implies immediate payment, which is the
+     * dominant pattern for e-commerce.
+     */
+    private static function apply_payment_terms(ZugferdDocumentBuilder $document, \WC_Order $order): void {
+        $description = (string) apply_filters(
+            'mathisfx_payment_terms',
+            __('Paiement à réception de la facture.', 'factur-x-for-woocommerce'),
+            $order
+        );
+
+        $document->addDocumentPaymentTerm($description, null, null, null);
+    }
+
     /* ----------------------------------------------------------------- */
     /* Line items                                                         */
     /* ----------------------------------------------------------------- */
@@ -273,7 +320,7 @@ final class XmlBuilder {
                 ->setDocumentPositionNetPrice($unit_price)
                 ->setDocumentPositionQuantity($quantity, ZugferdUnitCodes::REC20_ONE)
                 ->addDocumentPositionTax(
-                    ZugferdVatCategoryCodes::STAN_RATE,
+                    self::vat_category_for_rate(self::rate_for_line($line_subtotal, $line_tax)),
                     'VAT',
                     self::rate_for_line($line_subtotal, $line_tax)
                 )
@@ -296,7 +343,7 @@ final class XmlBuilder {
                 ->setDocumentPositionNetPrice(round($line_subtotal, 4))
                 ->setDocumentPositionQuantity(1.0, ZugferdUnitCodes::REC20_ONE)
                 ->addDocumentPositionTax(
-                    ZugferdVatCategoryCodes::STAN_RATE,
+                    self::vat_category_for_rate(self::rate_for_line($line_subtotal, $line_tax)),
                     'VAT',
                     self::rate_for_line($line_subtotal, $line_tax)
                 )
@@ -363,7 +410,7 @@ final class XmlBuilder {
             $tax_total  += $b['tax'];
 
             $document->addDocumentTax(
-                ZugferdVatCategoryCodes::STAN_RATE,
+                self::vat_category_for_rate($b['rate']),
                 'VAT',
                 round($b['basis'], 2),
                 round($b['tax'], 2),
