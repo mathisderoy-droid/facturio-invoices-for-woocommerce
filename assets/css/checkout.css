@@ -54,3 +54,62 @@
 .mathisfx-b2b-fields[aria-hidden="true"] {
 	display: none;
 }
+
+/* ============================================================================
+ * Live validation feedback (Etape 4B)
+ * Visual state shown on the input AND in a small <div> appended below it.
+ * ========================================================================== */
+
+.mathisfx-b2b-fields input.mathisfx-checking {
+	border-color: #b8a04e;
+	background-image: linear-gradient(90deg, #fffaef, #fff);
+}
+
+.mathisfx-b2b-fields input.mathisfx-valid {
+	border-color: #4caf50;
+	background-color: #f1f8e9;
+}
+
+.mathisfx-b2b-fields input.mathisfx-invalid {
+	border-color: #e53935;
+	background-color: #ffebee;
+}
+
+.mathisfx-b2b-fields input.mathisfx-warning {
+	border-color: #ff9800;
+	background-color: #fff3e0;
+}
+
+.mathisfx-feedback {
+	font-size: 0.85em;
+	margin-top: 0.25em;
+	min-height: 1.1em; /* prevents layout shift when toggling */
+}
+
+.mathisfx-feedback.is-checking {
+	color: #8a7634;
+}
+
+.mathisfx-feedback.is-valid {
+	color: #2e7d32;
+}
+
+.mathisfx-feedback.is-valid::before {
+	content: "\2713 \00a0"; /* checkmark + nbsp */
+}
+
+.mathisfx-feedback.is-invalid {
+	color: #c62828;
+}
+
+.mathisfx-feedback.is-invalid::before {
+	content: "\2715 \00a0"; /* heavy x + nbsp */
+}
+
+.mathisfx-feedback.is-warning {
+	color: #ef6c00;
+}
+
+.mathisfx-feedback.is-warning::before {
+	content: "\26a0 \00a0"; /* warning sign + nbsp */
+}

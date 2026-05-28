@@ -199,6 +199,58 @@ avec eux avant de lancer (programme "éditeur agréé" ou similaire).
 
 ---
 
+## 28 mai 2026 — Apprentissages de l'étape 4B
+
+Trois enseignements importants à conserver pour la suite :
+
+### A. INSEE API : auth NON-standard sur le plan "Simple"
+
+Diagnostic empirique : l'application "Simple" du nouveau portail
+`portail-api.insee.fr` accepte UNIQUEMENT le header
+`X-INSEE-Api-Key-Integration: <key>` sur l'endpoint
+`https://api.insee.fr/api-sirene/3.11/siret/{siret}`. Bearer JWT et
+`X-INSEE-Api-Key` (sans `-Integration`) retournent tous les deux 401.
+L'ancien endpoint `entreprises/sirene/V3.11/` est deprecated (renvoie
+un message "url deprecated").
+
+Notre `SiretValidator::do_request()` essaie le header `Integration`
+d'abord, puis Bearer en fallback (au cas où certains utilisateurs
+auraient un plan Premium OAuth2). Ne pas inverser cet ordre.
+
+### B. VIES : SOAP fault à détecter sur HTTP 200
+
+Le service VIES est très fragile : il peut renvoyer un SOAP Fault
+(`MS_MAX_CONCURRENT_REQ`, `MS_UNAVAILABLE`, `GLOBAL_MAX_CONCURRENT_REQ`, etc.)
+**avec un HTTP 200**, pas 500. Notre `ViesValidator::detect_soap_fault()`
+inspecte le body avant tout autre check, traduit les codes connus en
+état "unavailable" (warning orange UX), et laisse passer le checkout
+sans bloquer parce que la validation de format locale est suffisante.
+
+Conséquence prod : ne JAMAIS bloquer une commande sur un échec VIES.
+Le format local valide + le SIRET INSEE validé suffisent. VIES est un
+"nice to have" d'enrichissement, pas une dépendance critique.
+
+### C. Zscaler (corporate VPN avec SSL interception)
+
+Mathis a un Zscaler installé sur son poste VINCI Energies. Ce type de
+VPN fait du MITM sur HTTPS, ce qui casse la vérification de
+certificats. À couper quand on teste les appels API tiers en local
+sinon erreurs `cURL error 60`. Aucun impact sur l'environnement de
+production (les serveurs des marchands ne sont pas derrière des
+firewalls SSL-inspectés).
+
+### D. À vérifier plus tard
+
+VIES happy-path (résultat ✓ vert "TVA valide") n'a pas pu être validé
+en live au moment du test parce que VIES était en rate-limit. À
+retester à un autre moment de la journée pour confirmer que le parsing
+des réponses correctes fonctionne bien. Format de réponse attendu :
+SOAP avec `<valid>true</valid>` + `<name>...</name>` + `<address>...</address>`,
+potentiellement avec préfixes de namespace (`ns2:`, `vies:`, etc.) qui
+sont déjà gérés par les regex namespace-tolerantes.
+
+---
+
 ## Légende des statuts
 
 - ✅ **Fait** — décision implémentée

@@ -63,6 +63,23 @@ final class CheckoutFields {
             MATHISFX_VERSION,
             true // load in footer
         );
+
+        // Expose the AJAX endpoint + a single-use nonce + i18n strings to JS.
+        // The nonce is the only auth gate on our endpoints; without it the
+        // server returns 403 immediately.
+        wp_localize_script('mathisfx-checkout', 'mathisfxCheckout', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce'   => wp_create_nonce(AjaxValidators::NONCE_ACTION),
+            'strings' => [
+                'checking'         => __('Vérification en cours…', 'factur-x-for-woocommerce'),
+                'siretValid'       => __('SIRET valide : %s', 'factur-x-for-woocommerce'),
+                'siretInactive'    => __('Établissement fermé selon Sirene.', 'factur-x-for-woocommerce'),
+                'vatValid'         => __('TVA valide.', 'factur-x-for-woocommerce'),
+                'vatValidWithName' => __('TVA valide : %s', 'factur-x-for-woocommerce'),
+                'unavailable'      => __('Service de validation temporairement indisponible. Réessayez plus tard.', 'factur-x-for-woocommerce'),
+                'unknownError'     => __('Erreur inconnue.', 'factur-x-for-woocommerce'),
+            ],
+        ]);
     }
 
     /**
