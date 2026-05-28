@@ -68,12 +68,35 @@ final class XmlBuilder {
         self::apply_metadata($document, $order, $invoice_number);
         self::apply_seller($document, $order);
         self::apply_buyer($document, $order);
+        self::apply_delivery($document, $order);
         self::apply_payment($document, $order);
         self::apply_payment_terms($document, $order);
         self::apply_lines($document, $order);
         self::apply_tax_breakdown_and_summation($document, $order);
 
         return $document;
+    }
+
+    /**
+     * Populate ApplicableHeaderTradeDelivery with at minimum the actual
+     * delivery date (BT-72).
+     *
+     * Without this, horstoeko emits an empty <ApplicableHeaderTradeDelivery/>
+     * element, which the FNFE-MPE validator (PEPPOL-EN16931-R008) refuses
+     * as a non-empty-elements violation.
+     *
+     * For a WooCommerce order the closest semantic to "delivery date" is
+     * the order completion date (when the merchant moved the order to
+     * "terminée" — physical shipment or service rendered). Falls back to
+     * the creation date for orders that are completed instantly.
+     */
+    private static function apply_delivery(ZugferdDocumentBuilder $document, \WC_Order $order): void {
+        $date = $order->get_date_completed() ?: $order->get_date_created();
+        if (!$date) {
+            return;
+        }
+        $php_date = new DateTime($date->format('Y-m-d'));
+        $document->setDocumentSupplyChainEvent($php_date);
     }
 
     /* ----------------------------------------------------------------- */
@@ -102,6 +125,31 @@ final class XmlBuilder {
             return ZugferdVatCategoryCodes::STAN_RATE;
         }
         return ZugferdVatCategoryCodes::EXEM_FROM_TAX;
+    }
+
+    /**
+     * Exemption reason text required when emitting category 'E' (Exempt).
+     *
+     * BR-E-10 in EN 16931 mandates that a VAT category "Exempt from VAT"
+     * MUST carry either an exemption reason text (BT-120) or an exemption
+     * reason code (BT-121). Without one of the two, the document is
+     * non-conformant — even if the rate is correctly 0 %.
+     *
+     * Default text covers the most common French case: franchise en base
+     * de TVA (auto-entrepreneurs, micro-entreprises under the threshold).
+     * Merchants in other exemption regimes (reverse charge intra-EU,
+     * export, etc.) can override via the `mathisfx_vat_exemption_reason`
+     * filter, or via a Settings field in a future release.
+     *
+     * Returns null for non-exempt categories — most invoices never need
+     * this branch.
+     */
+    private static function exemption_reason_for(string $category): ?string {
+        if ($category !== ZugferdVatCategoryCodes::EXEM_FROM_TAX) {
+            return null;
+        }
+        $default = __('TVA non applicable, art. 293 B du CGI', 'factur-x-for-woocommerce');
+        return (string) apply_filters('mathisfx_vat_exemption_reason', $default);
     }
 
     /* ----------------------------------------------------------------- */
@@ -320,6 +368,9 @@ final class XmlBuilder {
                 ->setDocumentPositionNetPrice($unit_price)
                 ->setDocumentPositionQuantity($quantity, ZugferdUnitCodes::REC20_ONE)
                 ->addDocumentPositionTax(
+                    // EN 16931 explicitly forbids the ExemptionReason element at line
+                    // level — it is only valid in the document-level VAT breakdown.
+                    // We pass categoryCode + typeCode + rate only here.
                     self::vat_category_for_rate(self::rate_for_line($line_subtotal, $line_tax)),
                     'VAT',
                     self::rate_for_line($line_subtotal, $line_tax)
@@ -409,12 +460,14 @@ final class XmlBuilder {
             $line_total += $b['basis'];
             $tax_total  += $b['tax'];
 
+            $category = self::vat_category_for_rate($b['rate']);
             $document->addDocumentTax(
-                self::vat_category_for_rate($b['rate']),
+                $category,
                 'VAT',
                 round($b['basis'], 2),
                 round($b['tax'], 2),
-                $b['rate']
+                $b['rate'],
+                self::exemption_reason_for($category)
             );
         }
 

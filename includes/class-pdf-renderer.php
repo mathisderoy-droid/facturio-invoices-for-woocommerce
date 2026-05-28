@@ -74,7 +74,15 @@ final class PdfRenderer {
      * XMP metadata declaring the Factur-X profile.
      */
     private static function make_tcpdf(\WC_Order $order, string $invoice_number, array $seller): TCPDF {
-        $pdf = new SilentTcpdf('P', 'mm', 'A4', true, 'UTF-8', false);
+        // 7th constructor param = $pdfa. TCPDF accepts integer values:
+        //   1 -> PDF/A-1B (most restrictive, no embedded files allowed)
+        //   3 -> PDF/A-3B (allows embedded files — required by Factur-X)
+        // We pick 3 because horstoeko's PdfBuilder then attaches the
+        // factur-x.xml inside this PDF/A-3 envelope, producing a true
+        // Factur-X hybrid. PDF/A-3 mode in TCPDF forces font embedding,
+        // sRGB output intent, no transparency, and the PDF/A
+        // identification XMP block — all required by FNFE-MPE validation.
+        $pdf = new SilentTcpdf('P', 'mm', 'A4', true, 'UTF-8', false, 3);
 
         $pdf->SetCreator('Factur-X for WooCommerce v' . MATHISFX_VERSION);
         $pdf->SetAuthor($seller['company_name'] ?: 'Factur-X for WooCommerce');

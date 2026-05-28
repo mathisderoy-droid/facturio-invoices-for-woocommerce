@@ -172,6 +172,47 @@ dans `BACKLOG.md` pour V0.5+.
 
 ---
 
+## 28 mai 2026 — Apprentissages Schematron EN 16931 (étape 5C)
+
+Quatre itérations FNFE-MPE pour arriver à "Fully Valid: YES". Notes
+pour ne plus avoir à les redécouvrir.
+
+### BR-S-05 — VAT category 'S' uniquement avec un taux strictement > 0
+Si une ligne a un taux 0%, on NE PEUT PAS déclarer category "S"
+(Standard rated). Fix : helper `vat_category_for_rate()` qui renvoie
+'S' si rate>0, 'E' (Exempt) sinon.
+
+### BR-E-10 — VAT category 'E' impose une raison d'exemption
+Une ligne ou un breakdown avec category 'E' DOIT porter soit BT-120
+(text) soit BT-121 (code). Sans ça, échec.
+
+### Subtilité ligne vs document pour ExemptionReason
+L'élément `<ram:ExemptionReason>` est valable UNIQUEMENT au niveau
+document (`ApplicableHeaderTradeSettlement/ApplicableTradeTax`),
+pas au niveau ligne (`SpecifiedLineTradeSettlement/ApplicableTradeTax`).
+Le validateur dit "marked as not used in the given context" si on le
+met au niveau ligne. Fix : passer `exemption_reason_for()` uniquement
+à `addDocumentTax()`, pas à `addDocumentPositionTax()`.
+
+### BR-CO-25 — Montant dû positif impose terme de paiement
+Si Amount due > 0 (toujours le cas pour nous), il faut soit Payment
+Due Date (BT-9) soit Payment Terms description (BT-20). Default
+"Paiement à réception de la facture." filterable.
+
+### PEPPOL-EN16931-R008 — pas d'éléments vides
+horstoeko émet `<ApplicableHeaderTradeDelivery/>` vide par défaut.
+Le remplir avec au minimum BT-72 (date de livraison effective) via
+`setDocumentSupplyChainEvent()` résout. On utilise la date de
+complétion de la commande WC.
+
+### Conclusion stratégique
+**FNFE-MPE est la source de vérité, pas horstoeko's Schematron.**
+horstoeko a un Schematron incomplet (n'avait flaggé aucune de ces 5
+règles). À chaque évolution future du plugin, valider à nouveau via
+FNFE-MPE en bout de chaîne.
+
+---
+
 ## 28 mai 2026 — Périmètre personnalisation V0.1 vs V0.5
 
 Décision produit prise avec Mathis suite au premier rendu PDF visuel.

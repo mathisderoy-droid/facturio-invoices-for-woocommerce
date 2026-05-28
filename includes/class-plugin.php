@@ -76,8 +76,14 @@ final class Plugin {
         // registrations in its constructor).
         new AjaxValidators();
 
+        // Étape 5C — orchestration: hook woocommerce_order_status_completed
+        // and produce Factur-X on demand. XmlBuilder, PdfRenderer are
+        // stateless utilities called from inside InvoiceGenerator.
+        new InvoiceGenerator();
+
         // Coming next:
-        //   Etape 5 — InvoiceGenerator + PdfRenderer + XmlBuilder.
+        //   Etape 6 — admin download + orders list column + metabox.
+        //   Etape 7 — email attachment.
     }
 
     /**
