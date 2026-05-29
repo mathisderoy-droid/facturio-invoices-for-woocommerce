@@ -2,6 +2,11 @@
 vendor/
 composer.phar
 
+# Strauss — the scoping tool (phar) and its prefixed output. The build
+# script regenerates vendor-prefixed/ from vendor/ at package time.
+strauss.phar
+vendor-prefixed/
+
 # OS / IDE clutter
 .DS_Store
 Thumbs.db

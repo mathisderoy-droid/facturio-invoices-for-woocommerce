@@ -28,5 +28,16 @@
         "allow-plugins": {
             "composer/installers": true
         }
+    },
+    "extra": {
+        "strauss": {
+            "target_directory": "vendor-prefixed",
+            "namespace_prefix": "Mathis\\FacturX\\Vendor\\",
+            "classmap_prefix": "Mathis_FacturX_Vendor_",
+            "constant_prefix": "MATHISFX_VENDOR_",
+            "delete_vendor_packages": true,
+            "include_modified_date": false,
+            "include_author": false
+        }
     }
 }

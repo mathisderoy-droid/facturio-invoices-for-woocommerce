@@ -10,6 +10,43 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
 Revue critique du prompt initial après avoir livré les étapes 1 à 3. Sept
 points soulevés et arbitrés avec Mathis.
 
+### 1bis. Strauss ne tourne PAS sur Windows — scoping déplacé en build Linux (29 mai 2026)
+
+**Constat.** Strauss 0.27.2 a été testé sur le poste Windows de Mathis
+(via Git Bash ET via PowerShell natif) : il génère un `vendor-prefixed/`
+vide (uniquement l'autoloader, aucun fichier package copié). Bug de
+résolution de chemins relatifs spécifique à Windows (chemins `../` à 9
+niveaux dans les warnings). Avec `delete_vendor_packages: true`, il a même
+supprimé les sources de `vendor/` sans les recopier → état cassé,
+récupéré par `composer install`. WSL absent (poste VINCI, install soumise
+à l'IT).
+
+**Décision.** Le scoping devient une étape de **build de release sur Linux**,
+pas une étape de dev. Concrètement :
+  - La config Strauss reste dans `composer.json` (`extra.strauss`), correcte.
+  - `bin/build.sh` exécute composer install --no-dev + Strauss +
+    updateCallSites + zip, dans un dossier `build/` séparé (la source
+    commitée n'est jamais modifiée). À lancer sur Linux/CI au moment de
+    packager pour WordPress.org.
+  - Le fichier principal charge `vendor-prefixed/autoload.php` EN PREMIER
+    s'il existe (build scopé), sinon `vendor/autoload.php` (dev non scopé).
+    Aucun effet en dev, bascule automatique dans le zip livré.
+
+**Conséquences.**
+  - Dev + tests V0.1 sur Windows : 100 % fonctionnels avec `vendor/` non scopé.
+  - `bin/build.sh` est écrit mais NON testé sur Windows (impossible) — à
+    valider lors du premier run Linux, avant soumission WP.org : régénérer
+    une facture depuis le zip buildé et la repasser au validateur FNFE-MPE.
+  - Risque résiduel si on shippait non scopé : mismatch de version quand un
+    autre plugin embarque les mêmes libs (TCPDF surtout). Pas un fatal
+    systématique (Composer autoload = premier chargé gagne), mais à éviter.
+    Le build scopé règle ça.
+
+**Statut.** 🔄 Config + build script prêts. Exécution + validation du zip
+scopé reportées à la phase de soumission WP.org (sur Linux/CI).
+
+---
+
 ### 1. Risque de conflits `vendor/` avec d'autres plugins
 
 **Contexte.** Le prompt prévoit d'embarquer `vendor/` directement dans le
