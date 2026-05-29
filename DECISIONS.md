@@ -5,6 +5,71 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
 
 ---
 
+## 🧭 ÉTAT ACTUEL (fin de session 29 mai 2026) — lire en premier
+
+**V0.1 développée, testée, taguée `v0.1.0`, sur GitHub avec build CI validé.**
+
+- **Code** : étapes 1→8 du prompt terminées. PHPCS zéro violation, PHPUnit vert
+  (15 tests + test de concurrence numérotation 720 nº). Plugin fonctionnel
+  bout-en-bout, vérifié manuellement jusqu'à l'email.
+- **Dépôt GitHub privé** : `mathisderoy-droid/factur-x-for-woocommerce`.
+  Branche `main`, tag `v0.1.0`. Auth via `gh` (compte mathisderoy-droid).
+- **Build du zip WP.org** : GitHub Actions (`.github/workflows/build.yml`)
+  lance `bin/build.sh` sur Linux (Strauss scope les deps sous
+  `Mathis\FacturX\Vendor\`). Déclencheur : push d'un tag `vX.Y.Z` OU
+  `gh workflow run build.yml --ref main`. Le zip sort en artefact.
+  **Build validé** (structure + autoloading scopé OK). Zip v0.1.0 dans Downloads.
+  Strauss NE TOURNE PAS sur Windows → toujours builder via CI/Linux.
+- **QA en cours** (voir tests/QA-checklist.md) : le scénario clé multi-taux
+  (vraie TVA 20 % + 5,5 % + exonéré) est **Fully Valid FNFE-MPE**, après
+  correction de 2 vrais bugs (commit 890f99b). Reste à valider les scénarios
+  simples 1,3,5,7,8,12,13 + screenshots + soumission WP.org.
+
+**Reste pour être EN LIGNE** : finir la QA (scénarios restants), 4 screenshots,
+créer le compte WordPress.org, soumettre le zip → review ~2-3 sem.
+
+**Environnement (chemins)** :
+- PHP CLI : `C:\Users\mathis.deroy\AppData\Roaming\Local\lightning-services\php-8.2.29+0\bin\win64\php.exe`
+- wp-cli : `...\AppData\Local\Programs\Local\resources\extraResources\bin\wp-cli\wp-cli.phar` (DB injoignable hors Site Shell → utiliser le Site Shell de Local)
+- composer : `C:\ProgramData\ComposerSetup\bin\composer.bat`
+- gh : `C:\Program Files\GitHub CLI\gh.exe`
+- PHPCS : `php vendor/bin/phpcs` (doit rester à zéro). PHPUnit : `php vendor/bin/phpunit`.
+- mysqli direct (pour scripts hors WP) : 127.0.0.1:10006 root/root/local.
+- **Zscaler à couper** pour tout appel INSEE/VIES.
+
+**Prochaines grosses tâches (tasks)** : #15 publication WP.org, #14 refacto
+Core/Adapter+DTO en V0.5.
+
+---
+
+## 29 mai 2026 — QA : 2 bugs de conformité TVA corrigés (commit 890f99b)
+
+Passe QA sur une commande B2B multi-taux (20 % + 5,5 % + exonéré). Deux bugs
+réels, invisibles tant qu'on ne testait que du 0 % :
+
+1. **Taux 5,51 % au lieu de 5,50 %.** On déduisait le taux via `tax/net*100` ;
+   WC arrondit chaque ligne à 2 décimales d'abord, donc la déduction dérive.
+   Corrigé : on lit le taux EXACT stocké par WC
+   (`WC_Order_Item_Tax::get_rate_percent`, mappé par rate_id par ligne), avec
+   la déduction en fallback. Helpers `get_rate_map()` + `line_rate()` ajoutés
+   dans XmlBuilder ET PdfRenderer.
+
+2. **BR-CO-10 échec.** `LineTotalAmount` document = `round(Σ nets bruts)` =
+   160.73, alors que la règle exige `Σ round(net par ligne)` = 160.72.
+   Corrigé : arrondir chaque ligne avant de sommer les buckets. Les autres
+   règles de sommation (BR-CO-13/14/15) restent cohérentes (160.72 + 19.28
+   = 180.00).
+
+Résultat : facture multi-taux **Fully Valid FNFE-MPE** (3 buckets E/S20/S5.5).
+Le validateur officiel est la source de vérité — le Schematron de horstoeko
+est plus permissif et n'avait rien signalé. Toujours valider sur FNFE-MPE.
+
+**Dette V0.1 → V0.5** : la logique de taux/sommation est dupliquée entre
+XmlBuilder et PdfRenderer (les deux lisent le WC_Order). La couche DTO de la
+V0.5 (task #14) doit unifier ça en un seul résolveur.
+
+---
+
 ## 27 mai 2026 — Revue critique fin d'étape 3
 
 Revue critique du prompt initial après avoir livré les étapes 1 à 3. Sept
