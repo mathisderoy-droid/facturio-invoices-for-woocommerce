@@ -432,6 +432,65 @@ Le plugin est fonctionnellement complet et propre.
 
 ---
 
+## 29 mai 2026 — Roadmap post-V1.0 & architecture portable (verdict)
+
+Évaluation de l'addon `Addon-CLAUDE-md-Roadmap-Extension.md` (séparation
+Core/Adapter, paramétrage profil+format, i18n multi-locale, filtres WP,
+extensions DE/PrestaShop/Peppol). Le fond est bon, le calendrier ne l'est
+pas pour la V0.1. **Décision : on N'applique RIEN en V0.1.** Le plugin est
+déjà construit (étapes 1-8) en structure plate `includes/` et PHPCS-clean ;
+retoucher maintenant = coût pur sans gain fonctionnel, à risque pour la
+deadline fin juin.
+
+### Pourquoi rien en V0.1
+- Le gros du gain (Core/Adapter + couche DTO) est cher des deux côtés et
+  re-churnerait 12 fichiers qu'on vient de finir et de nettoyer PHPCS.
+- Les éléments « pas chers » de l'addon sont **soit déjà en place, soit
+  spéculatifs** :
+  - Filtres WP Settings : DÉJÀ présents (`mathisfx_settings_sections`,
+    `mathisfx_settings_fields` dans class-settings.php depuis l'étape 2).
+  - i18n strict + .pot : DÉJÀ fait (étape 8).
+  - Paramètre profil/format dans les signatures : trivial à ajouter en
+    V0.5, et on aura alors les vraies contraintes EXTENDED → mieux vaut ne
+    pas figer une signature à l'aveugle maintenant.
+- Le `.po` allemand squelette en V0.1 = busywork (traduction partielle
+  affichée sur WP.org pour un marché à 2+ ans). **Rejeté.**
+- Le « HttpClient maison » pour garder Core pur = over-engineering que
+  l'addon lui-même dit vouloir éviter. **Rejeté pour V0.1.**
+
+### Corrections que j'apporte au plan de l'addon (pour la V0.5)
+- **Découpage à 3 niveaux, pas 2.** L'addon met SiretValidator (INSEE) et
+  ViesValidator dans `Core/`. Or ils sont franco-français. Le vrai
+  découpage : `Core/FacturX` (XML CII + PDF/A-3, générique) /
+  `Core/France` (SIRET, VIES, taux TVA FR) / `Adapter/WC`. La promesse
+  « ~0 % de réécriture moteur pour PrestaShop » est survendue : seul
+  `Core/FacturX` est vraiment transversal.
+- **Dette technique réelle à régler au passage en V0.5 :** `XmlBuilder` et
+  `PdfRenderer` dupliquent chacun leur extraction lignes/TVA depuis le
+  `WC_Order`. Un DTO `InvoiceData` partagé supprimerait cette duplication —
+  c'est le vrai argument pour la couche DTO (au-delà de la portabilité).
+
+### À faire en V0.5 (refactor justifié par les features EXTENDED + routage PA)
+1. Introduire la couche DTO (`InvoiceData`, `PartyData`, `LineItemData`,
+   `TaxData`) ; l'adaptateur mappe `WC_Order` → DTO, le moteur consomme le DTO.
+2. Restructurer `includes/` en `core/FacturX`, `core/France`, `adapter/`.
+3. Paramétrer `build($dto, $profile, $format)` (EN16931/EXTENDED, FACTUR_X/…).
+4. Filtre `mathisfx_available_profiles` quand il y aura >1 profil à exposer.
+5. PHPUnit du moteur isolé (déjà prévu en V0.5).
+
+Extensions marché (DE ZUGFeRD ~2 sem, PrestaShop 2-3 mois, Peppol module
+V3.0) : confirmées comme cibles 2027-2028, **après** validation de la
+traction V0.1/V0.5. Ne rien architecturer spécifiquement pour elles tant
+que la couche DTO + le découpage 3-niveaux de la V0.5 ne sont pas en place
+(ils suffisent à les accueillir).
+
+**Note :** l'addon n'est PAS recopié dans CLAUDE.md (il s'auto-décrit comme
+guidage V0.1 actif, ce qui contredit ce verdict). Ce résumé fait foi.
+
+**Statut.** 🧭 Vision enregistrée. Aucune action V0.1. Plan V0.5 cadré.
+
+---
+
 ## Légende des statuts
 
 - ✅ **Fait** — décision implémentée
