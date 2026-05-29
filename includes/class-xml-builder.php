@@ -485,9 +485,6 @@ final class XmlBuilder {
 		$rate_map = self::get_rate_map( $order );
 
 		$accumulate = function ( float $net, float $tax, float $rate ) use ( &$buckets ): void {
-			if ( $net <= 0.0 ) {
-				return;
-			}
 			// Round per line BEFORE summing. BR-CO-10 requires the document
 			// line-total (BT-106) to equal the sum of each line's already-
 			// rounded net amount (BT-131). Summing raw nets then rounding once
@@ -506,12 +503,23 @@ final class XmlBuilder {
 			$buckets[ $key ]['tax']   += $tax;
 		};
 
+		// Product lines always join the breakdown — even when a 100 % coupon
+		// brings every line to 0. EN 16931 (BR-CO-18) requires at least one VAT
+		// breakdown group, so a fully-discounted (0 EUR) order must still emit
+		// one. apply_lines() always renders product lines, so the breakdown must
+		// mirror them: a rendered line with category 'E' needs its 'E' group
+		// (BR-E-01), and dropping zero-net lines here would break that pairing.
 		foreach ( $order->get_items() as $item ) {
 			/** @var \WC_Order_Item_Product $item */
 			$accumulate( (float) $item->get_total(), (float) $item->get_total_tax(), self::line_rate( $item, $rate_map ) );
 		}
+		// Shipping mirrors apply_lines(): a zero-cost shipping line is not
+		// rendered, so it must not spawn a phantom VAT bucket either.
 		foreach ( $order->get_items( 'shipping' ) as $shipping ) {
 			/** @var \WC_Order_Item_Shipping $shipping */
+			if ( (float) $shipping->get_total() <= 0.0 ) {
+				continue;
+			}
 			$accumulate( (float) $shipping->get_total(), (float) $shipping->get_total_tax(), self::line_rate( $shipping, $rate_map ) );
 		}
 

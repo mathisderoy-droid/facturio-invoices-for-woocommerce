@@ -20,10 +20,11 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
   `gh workflow run build.yml --ref main`. Le zip sort en artefact.
   **Build validé** (structure + autoloading scopé OK). Zip v0.1.0 dans Downloads.
   Strauss NE TOURNE PAS sur Windows → toujours builder via CI/Linux.
-- **QA en cours** (voir tests/QA-checklist.md) : le scénario clé multi-taux
-  (vraie TVA 20 % + 5,5 % + exonéré) est **Fully Valid FNFE-MPE**, après
-  correction de 2 vrais bugs (commit 890f99b). Reste à valider les scénarios
-  simples 1,3,5,7,8,12,13 + screenshots + soumission WP.org.
+- **QA en cours** (voir tests/QA-checklist.md) : multi-taux (TVA 20 % + 5,5 %
+  + exonéré), remise/coupon (–10 %) ET commande à 0 € (coupon 100 %) sont tous
+  **Fully Valid FNFE-MPE**, après correction de 3 vrais bugs (commit 890f99b
+  pour 2, + le correctif 0 €). Reste les scénarios mécaniques 1,3,5,12,13,
+  puis screenshots + soumission WP.org.
 
 **Reste pour être EN LIGNE** : finir la QA (scénarios restants), 4 screenshots,
 créer le compte WordPress.org, soumettre le zip → review ~2-3 sem.
@@ -39,6 +40,31 @@ créer le compte WordPress.org, soumettre le zip → review ~2-3 sem.
 
 **Prochaines grosses tâches (tasks)** : #15 publication WP.org, #14 refacto
 Core/Adapter+DTO en V0.5.
+
+---
+
+## 29 mai 2026 — QA : bug « commande à 0 € » (coupon 100 %) corrigé
+
+Scénario 8 : coupon 100 % → commande à 0 €. La facture était **bien générée**
+mais **invalide** : XSD KO (`SpecifiedTradePaymentTerms` inattendu),
+BR-CO-18 (« au moins un groupe de ventilation TVA ») et BR-E-01 KO.
+
+Cause : dans `apply_tax_breakdown_and_summation` (XmlBuilder) et son jumeau
+`get_tax_breakdown` (PdfRenderer), le garde-fou `if ($net <= 0) return;` du
+cumul jetait toute ligne à net nul. Coupon 100 % → TOUTES les lignes à 0 →
+aucun bucket → aucun `ApplicableTradeTax` → XML structurellement invalide.
+Bug latent plus large : une ligne « cadeau gratuit » (net 0) dans une commande
+payante aurait aussi cassé BR-E-01 (ligne catégorie E affichée, sans groupe E).
+
+Décision : retirer le garde-fou. Les lignes **produit comptent toujours** dans
+la ventilation (elles sont toujours affichées par apply_lines) ; seule la
+**livraison à 0** reste ignorée (cohérence affichage/XML). Résultat : 0 € →
+un groupe « Exonéré » (base 0, taxe 0) → **Fully Valid FNFE-MPE** (vérifié).
+Correctif appliqué à l'identique dans PdfRenderer.
+
+Question produit ouverte (non bloquante) : faut-il *générer* une facture pour
+une commande à 0 €, ou l'ignorer ? La sortie est désormais valide dans les deux
+cas → à trancher avec Mathis (option simple : ne pas générer si total ≤ 0).
 
 ---
 

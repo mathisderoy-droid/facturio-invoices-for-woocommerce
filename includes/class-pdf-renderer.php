@@ -344,9 +344,6 @@ final class PdfRenderer {
 		$rate_map = self::get_rate_map( $order );
 
 		$accumulate = function ( float $net, float $tax, float $rate ) use ( &$buckets ) {
-			if ( $net <= 0.0 ) {
-				return;
-			}
 			// Round per line before summing, to match the XML breakdown
 			// (and BR-CO-10) so the displayed per-rate amounts are consistent.
 			$net = round( $net, 2 );
@@ -363,12 +360,18 @@ final class PdfRenderer {
 			$buckets[ $key ]['tax']   += $tax;
 		};
 
+		// Mirror XmlBuilder: product lines always count (so a 0 EUR order still
+		// shows its VAT summary row and matches the embedded XML), while a
+		// zero-cost shipping line is skipped just like it is omitted as a line.
 		foreach ( $order->get_items() as $item ) {
 			/** @var \WC_Order_Item_Product $item */
 			$accumulate( (float) $item->get_total(), (float) $item->get_total_tax(), self::line_rate( $item, $rate_map ) );
 		}
 		foreach ( $order->get_items( 'shipping' ) as $shipping ) {
 			/** @var \WC_Order_Item_Shipping $shipping */
+			if ( (float) $shipping->get_total() <= 0.0 ) {
+				continue;
+			}
 			$accumulate( (float) $shipping->get_total(), (float) $shipping->get_total_tax(), self::line_rate( $shipping, $rate_map ) );
 		}
 
