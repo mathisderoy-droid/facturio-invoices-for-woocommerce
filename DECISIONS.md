@@ -401,6 +401,37 @@ sont déjà gérés par les regex namespace-tolerantes.
 
 ---
 
+## 29 mai 2026 — CHECKPOINT (reprise cet après-midi)
+
+**Fait (commité, working tree propre, dernier commit `9ea30bc`) :**
+Étapes 1 à 7 + logo/couleur + i18n (.pot) + readme.txt WP.org + config
+Strauss/build script + PHPCS WordPress Coding Standards (zéro violation).
+Le plugin est fonctionnellement complet et propre.
+
+**À faire à la reprise, dans l'ordre :**
+1. **Re-vérif fonctionnelle** (rapide) : Local relancé → régénérer une
+   facture via le metabox admin → confirmer notice verte + (bonus) PDF
+   toujours « Fully Valid » sur services.fnfe-mpe.org. Le gros commit
+   PHPCS a reformaté tous les fichiers ; lint OK mais la génération
+   n'a pas été re-testée (DB Local éteinte au moment du smoke test).
+2. **PHPUnit suite complète** (task #11) : setup PHPUnit + Brain Monkey
+   pour les tests isolés (validators format SIRET/TVA, format
+   numérotation, calcul de taux XmlBuilder) + test de concurrence sur
+   la numérotation (celui-là a besoin d'une vraie DB MySQL → via le
+   Site Shell de Local). Nécessite Local + DB up.
+3. **Plugin Check Plugin** : installer https://wordpress.org/plugins/plugin-check/
+   dans Local, lancer sur notre plugin, corriger les warnings bloquants.
+4. **Tag git `v0.1.0`** quand tout est vert.
+
+**Rappels environnement :**
+- PHP CLI de Local : `C:\Users\mathis.deroy\AppData\Roaming\Local\lightning-services\php-8.2.29+0\bin\win64\php.exe`
+- wp-cli : `C:\Users\mathis.deroy\AppData\Local\Programs\Local\resources\extraResources\bin\wp-cli\wp-cli.phar`
+- composer : `C:\ProgramData\ComposerSetup\bin\composer.bat`
+- PHPCS : `php vendor/bin/phpcs` (ruleset phpcs.xml.dist) — doit rester à zéro.
+- Zscaler coupé pour tout appel réseau (INSEE/VIES/téléchargements).
+
+---
+
 ## Légende des statuts
 
 - ✅ **Fait** — décision implémentée
