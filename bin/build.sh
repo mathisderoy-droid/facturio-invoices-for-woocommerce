@@ -65,7 +65,13 @@ curl -fsSL -o strauss.phar \
     "https://github.com/BrianHenryIE/strauss/releases/download/${STRAUSS_VERSION}/strauss.phar"
 
 echo "==> Scoping dependencies into Mathis\\FacturX\\Vendor\\ + rewriting call sites"
-php strauss.phar --updateCallSites=includes
+# Strauss spins up Composer internally, which validates any stored GitHub
+# OAuth token. On CI the runner injects one (to dodge API rate limits) and
+# Strauss rejects its format — even though it needs no network at this step.
+# Composer install already ran above, so the token is no longer needed:
+# clear it (stored config + env) just for the scoping step.
+composer config --global --unset github-oauth.github.com 2>/dev/null || true
+COMPOSER_AUTH='{}' php strauss.phar --updateCallSites=includes
 
 echo "==> Regenerating the (own classes) autoloader"
 composer dump-autoload --optimize --no-dev --no-interaction
