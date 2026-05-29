@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<ruleset name="Factur-X for WooCommerce">
+    <description>WordPress coding standards for the plugin (own code only).</description>
+
+    <!-- What to scan: our code only, never the dependencies. -->
+    <file>factur-x-for-woocommerce.php</file>
+    <file>uninstall.php</file>
+    <file>includes</file>
+    <file>templates</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/vendor-prefixed/*</exclude-pattern>
+    <exclude-pattern>*/build/*</exclude-pattern>
+    <exclude-pattern>*/dist/*</exclude-pattern>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <!-- Core WordPress standard (security, escaping, nonces, SQL, etc.). -->
+    <rule ref="WordPress-Core"/>
+    <rule ref="WordPress-Extra"/>
+
+    <!-- Internationalisation: enforce our text domain. -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="factur-x-for-woocommerce"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Every global symbol must carry one of our prefixes. -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="mathisfx"/>
+                <element value="MATHISFX"/>
+                <element value="Mathis\FacturX"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!--
+        Template/view files receive their variables via extract() from
+        PdfRenderer; they are function-scoped at runtime even though the file
+        reads as global scope. Don't require a prefix on those view variables.
+    -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
+        <exclude-pattern>*/templates/*</exclude-pattern>
+    </rule>
+
+    <!-- 'manage_woocommerce' is a real WooCommerce capability; teach it to WPCS. -->
+    <rule ref="WordPress.WP.Capabilities">
+        <properties>
+            <property name="custom_capabilities" type="array">
+                <element value="manage_woocommerce"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!--
+        Consciously-disabled stylistic sniffs (documented project choices,
+        not security or correctness rules):
+          - YodaConditions: we use natural `$x === 'y'` order for readability.
+          - DisallowShortTernary: `?:` is allowed (modern PHP).
+          - InvalidClassFileName: we follow WP's `class-foo-bar.php` convention;
+            WPCS mis-derives the expected name from namespaced class names.
+          - OneObjectStructurePerFile: SilentTcpdf is a 2-line helper kept next
+            to PdfRenderer on purpose.
+          - UnusedFunctionParameter: WordPress hook callbacks must keep their
+            full signature even when a later parameter is unused.
+    -->
+    <rule ref="WordPress.PHP.YodaConditions.NotYoda">
+        <severity>0</severity>
+    </rule>
+    <rule ref="Universal.Operators.DisallowShortTernary.Found">
+        <severity>0</severity>
+    </rule>
+    <rule ref="WordPress.Files.FileName.InvalidClassFileName">
+        <severity>0</severity>
+    </rule>
+    <rule ref="Generic.Files.OneObjectStructurePerFile.MultipleFound">
+        <severity>0</severity>
+    </rule>
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter">
+        <severity>0</severity>
+    </rule>
+
+    <!-- PHP 8.0+ compatibility. -->
+    <config name="testVersion" value="8.0-"/>
+    <rule ref="PHPCompatibilityWP"/>
+    <config name="minimum_wp_version" value="6.0"/>
+</ruleset>

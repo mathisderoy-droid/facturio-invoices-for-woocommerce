@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Mathis\FacturX\WooCommerce;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Wires two admin-ajax.php endpoints used by the checkout JS on field blur.
@@ -23,52 +23,52 @@ defined('ABSPATH') || exit;
  */
 final class AjaxValidators {
 
-    /**
-     * Nonce action name. Used both in JS (form-side) and PHP (verification).
-     */
-    public const NONCE_ACTION = 'mathisfx_validate_b2b';
+	/**
+	 * Nonce action name. Used both in JS (form-side) and PHP (verification).
+	 */
+	public const NONCE_ACTION = 'mathisfx_validate_b2b';
 
-    /**
-     * Wire up the four handlers (siret + vat × auth + nopriv).
-     */
-    public function __construct() {
-        add_action('wp_ajax_mathisfx_validate_siret',        [$this, 'ajax_validate_siret']);
-        add_action('wp_ajax_nopriv_mathisfx_validate_siret', [$this, 'ajax_validate_siret']);
-        add_action('wp_ajax_mathisfx_validate_vat',          [$this, 'ajax_validate_vat']);
-        add_action('wp_ajax_nopriv_mathisfx_validate_vat',   [$this, 'ajax_validate_vat']);
-    }
+	/**
+	 * Wire up the four handlers (siret + vat × auth + nopriv).
+	 */
+	public function __construct() {
+		add_action( 'wp_ajax_mathisfx_validate_siret', array( $this, 'ajax_validate_siret' ) );
+		add_action( 'wp_ajax_nopriv_mathisfx_validate_siret', array( $this, 'ajax_validate_siret' ) );
+		add_action( 'wp_ajax_mathisfx_validate_vat', array( $this, 'ajax_validate_vat' ) );
+		add_action( 'wp_ajax_nopriv_mathisfx_validate_vat', array( $this, 'ajax_validate_vat' ) );
+	}
 
-    /**
-     * POST /wp-admin/admin-ajax.php?action=mathisfx_validate_siret
-     * Body: nonce=<...>&siret=<14 digits>
-     *
-     * Returns the result of SiretValidator::lookup() as JSON.
-     *
+	/**
+	 * POST /wp-admin/admin-ajax.php?action=mathisfx_validate_siret
+	 * Body: nonce=<...>&siret=<14 digits>
+	 *
+	 * Returns the result of SiretValidator::lookup() as JSON.
+	 *
      * phpcs:disable WordPress.Security.NonceVerification.Missing
-     *   -- check_ajax_referer below IS the nonce verification.
-     */
-    public function ajax_validate_siret(): void {
-        check_ajax_referer(self::NONCE_ACTION, 'nonce');
+	 *   -- check_ajax_referer below IS the nonce verification.
+	 */
+	public function ajax_validate_siret(): void {
+		check_ajax_referer( self::NONCE_ACTION, 'nonce' );
 
-        $siret = isset($_POST['siret'])
-            ? sanitize_text_field(wp_unslash($_POST['siret']))
-            : '';
+		$siret = isset( $_POST['siret'] )
+			? sanitize_text_field( wp_unslash( $_POST['siret'] ) )
+			: '';
 
-        wp_send_json(SiretValidator::lookup($siret));
-    }
+		wp_send_json( SiretValidator::lookup( $siret ) );
+	}
 
-    /**
-     * POST /wp-admin/admin-ajax.php?action=mathisfx_validate_vat
-     * Body: nonce=<...>&vat=<FR.........>
-     */
-    public function ajax_validate_vat(): void {
-        check_ajax_referer(self::NONCE_ACTION, 'nonce');
+	/**
+	 * POST /wp-admin/admin-ajax.php?action=mathisfx_validate_vat
+	 * Body: nonce=<...>&vat=<FR.........>
+	 */
+	public function ajax_validate_vat(): void {
+		check_ajax_referer( self::NONCE_ACTION, 'nonce' );
 
-        $vat = isset($_POST['vat'])
-            ? sanitize_text_field(wp_unslash($_POST['vat']))
-            : '';
+		$vat = isset( $_POST['vat'] )
+			? sanitize_text_field( wp_unslash( $_POST['vat'] ) )
+			: '';
 
-        wp_send_json(ViesValidator::lookup($vat));
-    }
+		wp_send_json( ViesValidator::lookup( $vat ) );
+	}
     // phpcs:enable WordPress.Security.NonceVerification.Missing
 }

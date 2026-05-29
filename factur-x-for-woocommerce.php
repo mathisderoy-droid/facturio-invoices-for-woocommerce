@@ -21,14 +21,14 @@
 declare(strict_types=1);
 
 // Block direct file access.
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 // Plugin constants — all prefixed with MATHISFX_ to avoid collisions.
-define('MATHISFX_VERSION', '0.1.0');
-define('MATHISFX_PLUGIN_FILE', __FILE__);
-define('MATHISFX_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('MATHISFX_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('MATHISFX_PLUGIN_BASENAME', plugin_basename(__FILE__));
+define( 'MATHISFX_VERSION', '0.1.0' );
+define( 'MATHISFX_PLUGIN_FILE', __FILE__ );
+define( 'MATHISFX_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'MATHISFX_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'MATHISFX_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 /*
  * Autoloaders.
@@ -45,14 +45,14 @@ define('MATHISFX_PLUGIN_BASENAME', plugin_basename(__FILE__));
  * In the build vendor-prefixed/ exists → conflict-proof scoped libs are used.
  */
 foreach (
-    [
-        __DIR__ . '/vendor-prefixed/autoload.php',
-        __DIR__ . '/vendor/autoload.php',
-    ] as $mathisfx_autoload
+	array(
+		__DIR__ . '/vendor-prefixed/autoload.php',
+		__DIR__ . '/vendor/autoload.php',
+	) as $mathisfx_autoload
 ) {
-    if (file_exists($mathisfx_autoload)) {
-        require_once $mathisfx_autoload;
-    }
+	if ( file_exists( $mathisfx_autoload ) ) {
+		require_once $mathisfx_autoload;
+	}
 }
 
 /*
@@ -63,16 +63,16 @@ foreach (
  * and may force-disable HPOS for the merchant.
  */
 add_action(
-    'before_woocommerce_init',
-    static function (): void {
-        if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
-            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
-                'custom_order_tables',
-                MATHISFX_PLUGIN_FILE,
-                true
-            );
-        }
-    }
+	'before_woocommerce_init',
+	static function (): void {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+				'custom_order_tables',
+				MATHISFX_PLUGIN_FILE,
+				true
+			);
+		}
+	}
 );
 
 /*
@@ -83,23 +83,23 @@ add_action(
  * fatal-erroring.
  */
 add_action(
-    'plugins_loaded',
-    static function (): void {
-        if (!class_exists(\Mathis\FacturX\WooCommerce\Plugin::class)) {
-            add_action(
-                'admin_notices',
-                static function (): void {
-                    echo '<div class="notice notice-error"><p>';
-                    echo esc_html__(
-                        'Factur-X for WooCommerce : dépendances Composer manquantes. Exécutez "composer install" dans le dossier du plugin.',
-                        'factur-x-for-woocommerce'
-                    );
-                    echo '</p></div>';
-                }
-            );
-            return;
-        }
+	'plugins_loaded',
+	static function (): void {
+		if ( ! class_exists( \Mathis\FacturX\WooCommerce\Plugin::class ) ) {
+			add_action(
+				'admin_notices',
+				static function (): void {
+					echo '<div class="notice notice-error"><p>';
+					echo esc_html__(
+						'Factur-X for WooCommerce : dépendances Composer manquantes. Exécutez "composer install" dans le dossier du plugin.',
+						'factur-x-for-woocommerce'
+					);
+					echo '</p></div>';
+				}
+			);
+			return;
+		}
 
-        \Mathis\FacturX\WooCommerce\Plugin::instance()->init();
-    }
+		\Mathis\FacturX\WooCommerce\Plugin::instance()->init();
+	}
 );

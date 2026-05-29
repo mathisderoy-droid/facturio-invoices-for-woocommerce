@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Mathis\FacturX\WooCommerce;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Hooks woocommerce_email_attachments to ship the generated Factur-X PDF
@@ -32,63 +32,66 @@ defined('ABSPATH') || exit;
  */
 final class Email {
 
-    /**
-     * Wire the attachment filter. 4 args: attachments, email_id, object, email.
-     */
-    public function __construct() {
-        add_filter('woocommerce_email_attachments', [$this, 'attach_invoice'], 10, 4);
-    }
+	/**
+	 * Wire the attachment filter. 4 args: attachments, email_id, object, email.
+	 */
+	public function __construct() {
+		add_filter( 'woocommerce_email_attachments', array( $this, 'attach_invoice' ), 10, 4 );
+	}
 
-    /**
-     * Append the order's Factur-X PDF path to the email attachments.
-     *
-     * @param mixed                 $attachments Array of file paths (defensive: may arrive non-array).
-     * @param string                $email_id    WC email identifier.
-     * @param mixed                 $object      Usually the WC_Order, but WC passes other objects for some emails.
-     * @param \WC_Email|null        $email       The email instance (unused, kept for signature completeness).
-     * @return array
-     */
-    public function attach_invoice($attachments, $email_id, $object, $email = null): array {
-        if (!is_array($attachments)) {
-            $attachments = [];
-        }
+	/**
+	 * Append the order's Factur-X PDF path to the email attachments.
+	 *
+	 * @param mixed          $attachments Array of file paths (defensive: may arrive non-array).
+	 * @param string         $email_id    WC email identifier.
+	 * @param mixed          $wc_object   Usually the WC_Order, but WC passes other objects for some emails.
+	 * @param \WC_Email|null $email       The email instance (unused, kept for signature completeness).
+	 * @return array
+	 */
+	public function attach_invoice( $attachments, $email_id, $wc_object, $email = null ): array {
+		if ( ! is_array( $attachments ) ) {
+			$attachments = array();
+		}
 
-        $target_ids = (array) apply_filters('mathisfx_invoice_email_ids', [
-            'customer_completed_order',
-            'customer_processing_order',
-            'customer_invoice',
-        ]);
+		$target_ids = (array) apply_filters(
+			'mathisfx_invoice_email_ids',
+			array(
+				'customer_completed_order',
+				'customer_processing_order',
+				'customer_invoice',
+			)
+		);
 
-        if (!in_array($email_id, $target_ids, true)) {
-            return $attachments;
-        }
+		if ( ! in_array( $email_id, $target_ids, true ) ) {
+			return $attachments;
+		}
 
-        if (!$object instanceof \WC_Order) {
-            return $attachments;
-        }
+		if ( ! $wc_object instanceof \WC_Order ) {
+			return $attachments;
+		}
 
-        $path = $this->resolve_invoice_path($object);
-        if ($path !== '' && file_exists($path) && is_readable($path)) {
-            $attachments[] = $path;
-        }
+		$path = $this->resolve_invoice_path( $wc_object );
+		if ( $path !== '' && file_exists( $path ) && is_readable( $path ) ) {
+			$attachments[] = $path;
+		}
 
-        return $attachments;
-    }
+		return $attachments;
+	}
 
-    /**
-     * Resolve the absolute path to the order's Factur-X PDF, or '' if none.
-     */
-    private function resolve_invoice_path(\WC_Order $order): string {
-        $rel = (string) $order->get_meta('_mathisfx_invoice_pdf_path');
-        if ($rel === '') {
-            return '';
-        }
+	/**
+	 * Resolve the absolute path to the order's Factur-X PDF, or '' if none.
+	 */
+	private function resolve_invoice_path( \WC_Order $order ): string {
+		$rel = (string) $order->get_meta( '_mathisfx_invoice_pdf_path' );
+		if ( $rel === '' ) {
+			return '';
+		}
 
-        $upload = wp_upload_dir();
-        if (!empty($upload['error'])) {
-            return '';
-        }
+		$upload = wp_upload_dir();
+		if ( ! empty( $upload['error'] ) ) {
+			return '';
+		}
 
-        return wp_normalize_path(trailingslashit((string) $upload['basedir']) . $rel);
-    }
+		return wp_normalize_path( trailingslashit( (string) $upload['basedir'] ) . $rel );
+	}
 }
