@@ -1,0 +1,40 @@
+name: Build distributable plugin zip
+
+# Produces the WordPress.org-ready, dependency-scoped plugin zip on Linux
+# (Strauss does not run on Windows). Triggers on a version tag push, or
+# manually from the Actions tab.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP 8.1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, gd, zip, fileinfo, dom, xml, curl
+          tools: composer
+
+      - name: Make build script executable
+        run: chmod +x bin/build.sh
+
+      - name: Run the scoped build
+        run: bash bin/build.sh
+
+      - name: Upload the plugin zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: factur-x-for-woocommerce
+          path: dist/factur-x-for-woocommerce.zip
+          if-no-files-found: error
