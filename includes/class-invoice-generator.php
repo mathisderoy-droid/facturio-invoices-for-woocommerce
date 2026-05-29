@@ -55,7 +55,10 @@ final class InvoiceGenerator {
         if (!in_array($trigger, ['processing', 'completed'], true)) {
             $trigger = 'completed';
         }
-        add_action('woocommerce_order_status_' . $trigger, [$this, 'maybe_generate_invoice'], 10, 2);
+        // Priority 5 (before WC_Emails::send_transactional_email at 10) so the
+        // PDF exists on disk by the time the email attachment filter fires
+        // within the same status-change request. See Email::attach_invoice().
+        add_action('woocommerce_order_status_' . $trigger, [$this, 'maybe_generate_invoice'], 5, 2);
     }
 
     /**

@@ -88,8 +88,8 @@ final class Plugin {
         new AdminOrders();
         new AdminOrderMetabox();
 
-        // Coming next:
-        //   Etape 7 — email attachment.
+        // Étape 7 — attach the Factur-X PDF to the customer order emails.
+        new Email();
     }
 
     /**
