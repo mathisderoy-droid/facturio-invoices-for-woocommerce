@@ -213,6 +213,36 @@ FNFE-MPE en bout de chaîne.
 
 ---
 
+## 28 mai 2026 — Limite chronique VIES France (MS_MAX_CONCURRENT_REQ)
+
+**Contexte.** La validation TVA live au checkout affiche souvent
+"service temporairement indisponible". Diagnostic effectué : le endpoint
+de statut de la Commission EU marque pourtant FR comme "Available", mais
+les deux endpoints VIES (SOAP `/services/checkVatService` ET REST
+`/rest-api/check-vat-number`) renvoient `MS_MAX_CONCURRENT_REQ` pour un
+numéro FR valide (testé avec FR66825215296 = Pennylane).
+
+**Conclusion.** Ce n'est pas un bug du plugin. Le registre TVA français
+derrière VIES a un plafond de requêtes *simultanées* très bas et est
+fréquemment saturé. C'est un problème documenté et chronique de VIES FR.
+Basculer SOAP -> REST ne change rien (même backend).
+
+**Décision V0.1.**
+- On garde l'endpoint SOAP (fonctionne, le fault est backend-level).
+- On ajoute UN retry automatique (~1,2s) sur `MS_MAX_CONCURRENT_REQ` —
+  le slot concurrent se libère souvent entre les deux tentatives. Délai
+  filtrable via `mathisfx_vies_retry_delay_us`.
+- La gestion gracieuse reste : jamais de blocage du checkout, la
+  validation de format locale (FR + 11) suffit à laisser passer.
+
+**Piste V0.5 Pro.** File d'attente / backoff exponentiel côté serveur,
+cache plus agressif, ou proxy VIES hébergé (même logique que l'idée
+proxy INSEE) pour lisser les pics de concurrence.
+
+**Statut.** ✅ Retry simple implémenté. Limitation externe assumée.
+
+---
+
 ## 28 mai 2026 — Périmètre personnalisation V0.1 vs V0.5
 
 Décision produit prise avec Mathis suite au premier rendu PDF visuel.

@@ -104,6 +104,19 @@ final class ViesValidator {
 
         $result = self::call_vies($country, $number);
 
+        // VIES France's registry has a notoriously low concurrent-request
+        // ceiling and frequently answers MS_MAX_CONCURRENT_REQ even when its
+        // global status is "available". A single retry after a short pause
+        // usually lands once a concurrent slot frees up. We retry only on
+        // the transient "unavailable" branch, never on a definitive answer.
+        if (!empty($result['unavailable'])) {
+            $delay_us = (int) apply_filters('mathisfx_vies_retry_delay_us', 1200000); // 1.2s
+            if ($delay_us > 0) {
+                usleep($delay_us);
+            }
+            $result = self::call_vies($country, $number);
+        }
+
         // Cache definitive answers (valid OR confirmed invalid). Never cache
         // MS_UNAVAILABLE or network errors — user might retry later.
         if (!empty($result['cacheable'])) {
