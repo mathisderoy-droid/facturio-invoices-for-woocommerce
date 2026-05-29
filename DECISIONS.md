@@ -491,6 +491,39 @@ guidage V0.1 actif, ce qui contredit ce verdict). Ce résumé fait foi.
 
 ---
 
+## 29 mai 2026 — Build scopé validé sur CI (jalon majeur)
+
+Le dernier risque technique du projet est levé. Dépôt GitHub privé créé
+(`mathisderoy-droid/factur-x-for-woocommerce`) avec un workflow GitHub
+Actions (`.github/workflows/build.yml`) qui exécute `bin/build.sh` sur
+ubuntu-latest (PHP 8.1) à chaque tag `v*` ou en manuel.
+
+Premier build : échec sur Strauss (`Your github oauth token contains
+invalid characters`) — Strauss instancie Composer qui lit le token CI
+injecté. Corrigé dans build.sh (`composer config --unset github-oauth` +
+`COMPOSER_AUTH='{}'` juste avant Strauss). Second build : **succès**.
+
+Le zip produit a été inspecté et validé :
+- Fichiers de dev exclus (CLAUDE.md, DECISIONS.md, tests, bin, .github,
+  composer.*, strauss.phar, *.dist, .gitignore).
+- `vendor/` ne garde que l'autoloader de nos classes ; toutes les libs
+  supprimées et recopiées scopées dans `vendor-prefixed/`.
+- Call sites réécrits dans `includes/` : `use Mathis\FacturX\Vendor\
+  horstoeko\...` et `use Mathis_FacturX_Vendor_TCPDF as TCPDF;`.
+- Fichier principal charge `vendor-prefixed/autoload.php` en premier.
+- Smoke test PHP : toutes les classes scopées + les nôtres se résolvent.
+
+Conclusion : `bin/build.sh` + le workflow CI produisent un paquet
+conforme, conflit-proof, prêt pour WordPress.org. Pour livrer une
+nouvelle version : `git tag vX.Y.Z && git push origin vX.Y.Z` → le zip
+sort tout seul dans les artefacts de l'Action. Zip v0.1.0 archivé dans
+Downloads.
+
+**Reste pour la mise en ligne (task #15)** : QA des 13 scénarios, 4
+screenshots, compte WordPress.org + soumission (review ~2-3 sem).
+
+---
+
 ## Légende des statuts
 
 - ✅ **Fait** — décision implémentée
