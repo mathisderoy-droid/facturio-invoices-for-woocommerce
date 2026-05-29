@@ -38,8 +38,11 @@ mkdir -p "${BUILD_DIR}" "${DIST_DIR}"
 echo "==> Copying source into build dir (excluding dev-only files)"
 rsync -a --delete \
     --exclude '.git' \
+    --exclude '.gitignore' \
+    --exclude '.github' \
     --exclude 'build' \
     --exclude 'dist' \
+    --exclude 'bin' \
     --exclude 'node_modules' \
     --exclude 'tests' \
     --exclude 'vendor' \
@@ -47,7 +50,8 @@ rsync -a --delete \
     --exclude 'strauss.phar' \
     --exclude 'phpunit.xml.dist' \
     --exclude 'phpcs.xml.dist' \
-    --exclude '.gitignore' \
+    --exclude 'CLAUDE.md' \
+    --exclude 'DECISIONS.md' \
     --exclude '*.log' \
     "${ROOT}/" "${BUILD_DIR}/"
 

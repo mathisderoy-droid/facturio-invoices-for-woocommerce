@@ -47,7 +47,7 @@ foreach ( $mathisfx_options as $mathisfx_option ) {
 // One-time uninstall cleanup. Direct queries are appropriate here (no caching
 // concern on uninstall) and the only interpolated identifier is a table name
 // derived from $wpdb, which cannot be bound via prepare().
-// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 // Delete every mathisfx_* post meta key (covers both legacy post-meta storage
 // and the CPT mathisfx_invoice meta).
@@ -65,7 +65,7 @@ if ( $mathisfx_table_exists === $mathisfx_hpos_meta_table ) {
 		"DELETE FROM {$mathisfx_hpos_meta_table} WHERE meta_key LIKE 'mathisfx\\_%' ESCAPE '\\\\'"
 	);
 }
-// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 /*
  * Intentionally NOT deleted:

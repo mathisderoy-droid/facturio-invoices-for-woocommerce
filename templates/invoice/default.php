@@ -23,9 +23,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// Primary color (chosen by the merchant in Réglages → Factur-X → Apparence).
-// Already sanitised in PdfRenderer::get_appearance_data().
-// Already a sanitized hex string (PdfRenderer::get_appearance_data); escaped
+// This is a view file: its variables ($seller, $buyer, $invoice, $lines,
+// $tax_breakdown, $totals, $appearance, $primary_color, loop vars) are
+// injected by PdfRenderer::render_template() via extract(), so they are
+// function-scoped at runtime even though the file reads as global scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
+// Primary colour (chosen by the merchant in Settings → Factur-X → Appearance).
+// Already a sanitised hex string (PdfRenderer::get_appearance_data); escaped
 // again at each echo site below so PHPCS can see the escaping inline.
 $primary_color = $appearance['primary_color'];
 ?>

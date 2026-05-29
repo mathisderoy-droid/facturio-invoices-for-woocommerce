@@ -1,99 +1,99 @@
 === Factur-X for WooCommerce ===
 Contributors: mathisderoy
-Tags: factur-x, facturation électronique, woocommerce, e-invoicing, france
+Tags: factur-x, e-invoicing, woocommerce, invoice, france
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 8.0
 Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Génère automatiquement des factures Factur-X (PDF/A-3 + XML EN 16931) conformes à la réforme française 2026 depuis vos commandes WooCommerce.
+Automatically generate compliant Factur-X invoices (PDF/A-3 + EN 16931 XML) from your WooCommerce orders for the French 2026 e-invoicing reform.
 
 == Description ==
 
-**Factur-X for WooCommerce** transforme chaque commande WooCommerce en une facture **Factur-X** conforme : un PDF lisible par un humain, avec à l'intérieur un fichier XML structuré (profil EN 16931) que les logiciels comptables et l'administration fiscale peuvent lire automatiquement. C'est le format pivot retenu par la France pour la réforme de la facturation électronique de 2026-2027.
+**Factur-X for WooCommerce** turns every WooCommerce order into a compliant **Factur-X** invoice: a human-readable PDF with a structured XML file (EN 16931 profile) embedded inside it, which accounting software and the tax administration can read automatically. Factur-X is the pivot format chosen by France for the 2026-2027 e-invoicing reform.
 
-Le plugin est pensé pour les boutiques WooCommerce françaises qui vendent à des professionnels (B2B) et doivent émettre des factures électroniques conformes, sans changer de logiciel comptable.
+The plugin is built for French WooCommerce stores that sell to businesses (B2B) and must issue compliant electronic invoices, without changing their accounting software.
 
-= Fonctionnalités de la version gratuite (V0.1) =
+= Free version features (V0.1) =
 
-* **Génération automatique** d'une facture Factur-X profil **EN 16931** au passage de la commande au statut « en cours » ou « terminée » (au choix).
-* **PDF/A-3 hybride** : le XML CII (`factur-x.xml`) est embarqué dans le PDF, avec les métadonnées XMP Factur-X et la relation `/Alternative` exigées par la norme.
-* **Validation des numéros professionnels au paiement** :
-  * SIRET vérifié en direct via l'**API INSEE Sirene** (récupération automatique de la raison sociale).
-  * Numéro de **TVA intracommunautaire** vérifié via le service **VIES** de la Commission européenne.
-* **Numérotation séquentielle inviolable** (format `F2026-000001`), sans trou ni doublon, conforme à l'obligation légale française.
-* **Champs B2B au checkout** : case « Je commande pour mon entreprise » + raison sociale, SIRET, TVA, code APE.
-* **Logo et couleur principale** personnalisables sur la facture.
-* **Téléchargement** de la facture depuis la liste des commandes et l'écran d'édition de commande, avec possibilité de **régénération**.
-* **Envoi automatique** de la facture en pièce jointe de l'e-mail de commande adressé au client.
-* **Compatible HPOS** (High-Performance Order Storage) de WooCommerce.
-* **Interface en français**, prête pour la traduction (fichier `.pot` fourni).
+* **Automatic generation** of an EN 16931 Factur-X invoice when an order reaches the "processing" or "completed" status (your choice).
+* **Hybrid PDF/A-3**: the CII XML (`factur-x.xml`) is embedded in the PDF, with the Factur-X XMP metadata and the `/Alternative` relationship required by the standard.
+* **Business number validation at checkout**:
+  * SIRET checked live against the **INSEE Sirene API** (the legal company name is fetched automatically).
+  * **Intra-community VAT number** checked against the European Commission **VIES** service.
+* **Tamper-proof sequential numbering** (format `F2026-000001`), with no gaps and no duplicates, as required by French law.
+* **B2B checkout fields**: an "I am ordering for my company" checkbox plus company name, SIRET, VAT and APE code.
+* **Customisable logo and primary colour** on the invoice.
+* **Download** the invoice from the orders list and the order edit screen, with a **regenerate** option.
+* **Automatic email delivery**: the invoice is attached to the WooCommerce order email sent to the customer.
+* **HPOS compatible** (High-Performance Order Storage).
+* **French interface**, translation-ready (a `.pot` file is included).
 
-= Ce que la version gratuite ne fait pas (encore) =
+= Not included in the free version (yet) =
 
-* Routage automatique vers une **Plateforme Agréée (PA / ex-PDP)** — prévu pour la version Pro.
-* **E-reporting B2C** automatique — prévu pour la version Pro.
-* Avoirs / factures d'acompte, profil EXTENDED-CTC-FR, multi-boutique — prévus pour les versions ultérieures.
+* Automatic routing to an accredited platform (Plateforme Agréée / former PDP) — planned for the Pro version.
+* Automatic B2C e-reporting — planned for the Pro version.
+* Credit notes, the EXTENDED-CTC-FR profile and multi-store — planned for later versions.
 
-= Validation de conformité =
+= Compliance validation =
 
-Les factures générées sont conçues pour passer le **validateur officiel FNFE-MPE** (https://services.fnfe-mpe.org/) : PDF/A-3 valide, XMP valide, XML valide contre le XSD et le Schematron EN 16931.
+Generated invoices are designed to pass the **official FNFE-MPE validator** (https://services.fnfe-mpe.org/): valid PDF/A-3, valid XMP, valid XML against the EN 16931 XSD and Schematron.
 
 == Installation ==
 
-1. Installez et activez le plugin depuis l'écran « Extensions » de WordPress.
-2. Activez **WooCommerce** s'il ne l'est pas déjà.
-3. Rendez-vous dans **WooCommerce → Réglages → Factur-X**.
-4. Renseignez vos **coordonnées vendeur** : raison sociale, SIRET, TVA intracommunautaire, adresse, code APE, mentions légales.
-5. Dans l'onglet **Intégrations**, collez votre **clé API INSEE Sirene** (gratuite, à demander sur https://portail-api.insee.fr/) pour activer la validation SIRET au paiement.
-6. Dans l'onglet **Apparence**, choisissez votre logo et votre couleur principale.
-7. Choisissez le **statut déclencheur** de la génération automatique (« en cours » ou « terminée »).
+1. Install and activate the plugin from the "Plugins" screen in WordPress.
+2. Activate **WooCommerce** if it is not already.
+3. Go to **WooCommerce → Settings → Factur-X**.
+4. Fill in your **seller details**: legal name, SIRET, intra-community VAT number, address, APE code, legal mentions.
+5. In the **Integrations** tab, paste your **INSEE Sirene API key** (free, request it at https://portail-api.insee.fr/) to enable SIRET validation at checkout.
+6. In the **Appearance** tab, choose your logo and primary colour.
+7. Choose the **trigger status** for automatic generation ("processing" or "completed").
 
-C'est prêt : chaque nouvelle commande atteignant ce statut génère sa facture Factur-X.
+Done: every new order reaching that status generates its Factur-X invoice.
 
 == Frequently Asked Questions ==
 
-= Ai-je besoin d'une clé API pour que le plugin fonctionne ? =
+= Do I need an API key for the plugin to work? =
 
-Le plugin génère des factures Factur-X conformes sans aucune clé. La clé **INSEE Sirene** (gratuite) sert uniquement à vérifier les SIRET en direct au paiement et à pré-remplir la raison sociale. Sans elle, seul le format du SIRET est contrôlé localement.
+The plugin generates compliant Factur-X invoices without any key. The (free) **INSEE Sirene** key is only used to verify SIRET numbers live at checkout and to pre-fill the company name. Without it, only the local format of the SIRET is checked.
 
-= Le plugin route-t-il mes factures vers une Plateforme Agréée ? =
+= Does the plugin route my invoices to an accredited platform? =
 
-Pas dans la version gratuite. La V0.1 produit la facture Factur-X conforme et l'archive. Le routage vers les Plateformes Agréées (Iopole, B2Brouter, Pennylane…) est prévu pour la version Pro.
+Not in the free version. V0.1 produces and archives the compliant Factur-X invoice. Routing to accredited platforms (Iopole, B2Brouter, Pennylane, etc.) is planned for the Pro version.
 
-= Mes factures déjà générées sont-elles supprimées si je désinstalle le plugin ? =
+= Are my generated invoices deleted if I uninstall the plugin? =
 
-Non. La désinstallation supprime les réglages et les métadonnées du plugin, mais **conserve les fichiers PDF** dans `wp-content/uploads/factur-x/` car ce sont des documents légaux à archiver.
+No. Uninstalling removes the plugin settings and metadata, but **keeps the PDF files** in `wp-content/uploads/factur-x/` because they are legal documents that must be archived.
 
-= Le plugin est-il compatible avec le stockage haute performance des commandes (HPOS) ? =
+= Is the plugin compatible with High-Performance Order Storage (HPOS)? =
 
-Oui, la compatibilité HPOS est déclarée et toutes les lectures/écritures de commande passent par l'API WooCommerce.
+Yes. HPOS compatibility is declared and all order reads/writes go through the WooCommerce API.
 
-= La validation de TVA affiche « service indisponible », est-ce un bug ? =
+= VAT validation shows "service unavailable" — is that a bug? =
 
-Non. Le service VIES de l'Union européenne (et particulièrement le registre français) limite le nombre de requêtes simultanées et tombe régulièrement. Le plugin réessaie automatiquement, et la commande n'est jamais bloquée : seul le contrôle de format local est requis.
+No. The European VIES service (and the French registry in particular) limits the number of concurrent requests and is regularly down. The plugin retries automatically, and checkout is never blocked: only the local format check is required.
 
 == Screenshots ==
 
-1. Réglages des coordonnées vendeur (WooCommerce → Réglages → Factur-X).
-2. Champs B2B et validation SIRET en direct au paiement.
-3. Facture Factur-X générée (PDF lisible + XML embarqué).
-4. Colonne « Facture » et téléchargement depuis la liste des commandes.
+1. Seller details settings (WooCommerce → Settings → Factur-X).
+2. B2B fields and live SIRET validation at checkout.
+3. Generated Factur-X invoice (readable PDF + embedded XML).
+4. "Invoice" column and download from the orders list.
 
 == Changelog ==
 
 = 0.1.0 =
-* Version initiale.
-* Génération automatique de factures Factur-X profil EN 16931 (PDF/A-3 + XML CII embarqué).
-* Validation SIRET (INSEE Sirene) et TVA intracommunautaire (VIES) au paiement.
-* Numérotation séquentielle inviolable.
-* Champs B2B au checkout, compatibles HPOS.
-* Logo et couleur personnalisables.
-* Téléchargement et régénération depuis l'admin, pièce jointe e-mail.
+* Initial release.
+* Automatic generation of EN 16931 Factur-X invoices (PDF/A-3 + embedded CII XML).
+* SIRET (INSEE Sirene) and intra-community VAT (VIES) validation at checkout.
+* Tamper-proof sequential numbering.
+* B2B checkout fields, HPOS compatible.
+* Customisable logo and colour.
+* Download and regenerate from the admin, email attachment.
 
 == Upgrade Notice ==
 
 = 0.1.0 =
-Version initiale du plugin.
+Initial release of the plugin.
