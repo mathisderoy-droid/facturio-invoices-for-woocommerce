@@ -34,6 +34,7 @@ $mathisfx_options = [
     'mathisfx_invoice_reset_yearly',
     'mathisfx_invoice_counter',
     'mathisfx_auto_generate',
+    'mathisfx_auto_generate_status',
     'mathisfx_insee_api_key',
     'mathisfx_logo_attachment_id',
     'mathisfx_primary_color',

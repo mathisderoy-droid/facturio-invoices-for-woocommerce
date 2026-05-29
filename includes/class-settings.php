@@ -298,10 +298,24 @@ final class Settings extends WC_Settings_Page {
             ],
             [
                 'title'   => __('Génération automatique', 'factur-x-for-woocommerce'),
-                'desc'    => __('Générer la facture Factur-X dès que la commande passe au statut « terminée ».', 'factur-x-for-woocommerce'),
+                'desc'    => __('Générer la facture Factur-X automatiquement lors d\'un changement de statut de la commande.', 'factur-x-for-woocommerce'),
                 'id'      => 'mathisfx_auto_generate',
                 'type'    => 'checkbox',
                 'default' => 'yes',
+            ],
+            [
+                'title'    => __('Statut déclencheur', 'factur-x-for-woocommerce'),
+                'desc'     => __('Statut WooCommerce qui déclenche la génération.', 'factur-x-for-woocommerce'),
+                'desc_tip' => true,
+                'id'       => 'mathisfx_auto_generate_status',
+                'type'     => 'select',
+                'options'  => [
+                    'processing' => __('En cours (dès paiement reçu) — recommandé pour services et produits numériques', 'factur-x-for-woocommerce'),
+                    'completed'  => __('Terminée (après livraison ou expédition) — recommandé pour produits physiques', 'factur-x-for-woocommerce'),
+                ],
+                'default'  => 'completed',
+                'class'    => 'wc-enhanced-select',
+                'css'      => 'min-width:420px;',
             ],
             [
                 'title'    => __('Mentions légales', 'factur-x-for-woocommerce'),

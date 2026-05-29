@@ -81,8 +81,14 @@ final class Plugin {
         // stateless utilities called from inside InvoiceGenerator.
         new InvoiceGenerator();
 
+        // Étape 6 — admin UX: column in the orders list, invoice metabox
+        // on the edit screen, and secured download / regenerate endpoints
+        // mounted on admin-post.php with per-resource nonces.
+        new AdminDownload();
+        new AdminOrders();
+        new AdminOrderMetabox();
+
         // Coming next:
-        //   Etape 6 — admin download + orders list column + metabox.
         //   Etape 7 — email attachment.
     }
 

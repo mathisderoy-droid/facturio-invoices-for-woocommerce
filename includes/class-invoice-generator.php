@@ -41,10 +41,21 @@ defined('ABSPATH') || exit;
 final class InvoiceGenerator {
 
     /**
-     * Wire up the hook.
+     * Wire up the hook. The trigger status is configurable in Settings —
+     * "processing" (payment received) or "completed" (delivery / dispatch),
+     * defaulting to "completed".
+     *
+     * We intentionally bind only ONE hook so a status transition through
+     * processing -> completed doesn't generate the invoice twice. The
+     * idempotency check inside maybe_generate_invoice() is a safety net
+     * but the single-hook design keeps the happy path clean.
      */
     public function __construct() {
-        add_action('woocommerce_order_status_completed', [$this, 'maybe_generate_invoice'], 10, 2);
+        $trigger = (string) get_option('mathisfx_auto_generate_status', 'completed');
+        if (!in_array($trigger, ['processing', 'completed'], true)) {
+            $trigger = 'completed';
+        }
+        add_action('woocommerce_order_status_' . $trigger, [$this, 'maybe_generate_invoice'], 10, 2);
     }
 
     /**
