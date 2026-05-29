@@ -342,15 +342,16 @@ final class XmlBuilder {
 	 */
 	private static function apply_lines( ZugferdDocumentBuilder $document, \WC_Order $order ): void {
 		$position = 0;
+		$rate_map = self::get_rate_map( $order );
 
 		// Product lines.
 		foreach ( $order->get_items() as $item ) {
 			/** @var \WC_Order_Item_Product $item */
 			++$position;
 			$line_subtotal = (float) $item->get_total();      // ex-VAT
-			$line_tax      = (float) $item->get_total_tax();  // VAT amount
 			$quantity      = (float) $item->get_quantity();
 			$unit_price    = $quantity > 0 ? round( $line_subtotal / $quantity, 4 ) : 0.0;
+			$rate          = self::line_rate( $item, $rate_map );
 
 			$product = $item->get_product();
 			$sku     = $product instanceof \WC_Product ? (string) $product->get_sku() : '';
@@ -371,9 +372,9 @@ final class XmlBuilder {
 					// EN 16931 explicitly forbids the ExemptionReason element at line
 					// level — it is only valid in the document-level VAT breakdown.
 					// We pass categoryCode + typeCode + rate only here.
-					self::vat_category_for_rate( self::rate_for_line( $line_subtotal, $line_tax ) ),
+					self::vat_category_for_rate( $rate ),
 					'VAT',
-					self::rate_for_line( $line_subtotal, $line_tax )
+					$rate
 				)
 				->setDocumentPositionLineSummation( round( $line_subtotal, 2 ) );
 		}
@@ -382,11 +383,11 @@ final class XmlBuilder {
 		foreach ( $order->get_items( 'shipping' ) as $shipping_item ) {
 			/** @var \WC_Order_Item_Shipping $shipping_item */
 			$line_subtotal = (float) $shipping_item->get_total();
-			$line_tax      = (float) $shipping_item->get_total_tax();
 			if ( $line_subtotal <= 0 ) {
 				continue;
 			}
 			++$position;
+			$rate = self::line_rate( $shipping_item, $rate_map );
 
 			$document
 				->addNewPosition( (string) $position )
@@ -394,9 +395,9 @@ final class XmlBuilder {
 				->setDocumentPositionNetPrice( round( $line_subtotal, 4 ) )
 				->setDocumentPositionQuantity( 1.0, ZugferdUnitCodes::REC20_ONE )
 				->addDocumentPositionTax(
-					self::vat_category_for_rate( self::rate_for_line( $line_subtotal, $line_tax ) ),
+					self::vat_category_for_rate( $rate ),
 					'VAT',
-					self::rate_for_line( $line_subtotal, $line_tax )
+					$rate
 				)
 				->setDocumentPositionLineSummation( round( $line_subtotal, 2 ) );
 		}
@@ -412,6 +413,56 @@ final class XmlBuilder {
 			return 0.0;
 		}
 		return round( ( $tax / $net ) * 100, 2 );
+	}
+
+	/**
+	 * Map WooCommerce tax-rate IDs to their exact percentage.
+	 *
+	 * Read straight from the order's stored tax items (the rate as applied
+	 * at checkout). This is authoritative, unlike deriving the rate from
+	 * amounts — derivation rounds 5.5 % to 5.51 % because WC rounds each
+	 * line's net and tax to 2 decimals first.
+	 *
+	 * @return array<int,float> rate_id => percent (e.g. 20.0, 5.5)
+	 */
+	private static function get_rate_map( \WC_Order $order ): array {
+		$map = array();
+		foreach ( $order->get_items( 'tax' ) as $tax_item ) {
+			/** @var \WC_Order_Item_Tax $tax_item */
+			$map[ (int) $tax_item->get_rate_id() ] = (float) $tax_item->get_rate_percent();
+		}
+		return $map;
+	}
+
+	/**
+	 * Exact VAT rate (percent) for a single order line, read from WC.
+	 *
+	 * Looks at the line's own tax entries, finds the rate that actually
+	 * applied, and returns its exact stored percentage. Falls back to the
+	 * amount-derived rate only if WC stored no usable percent. A line with
+	 * no effective tax returns 0.0 (handled as exempt downstream).
+	 *
+	 * @param \WC_Order_Item_Product|\WC_Order_Item_Shipping $item
+	 * @param array<int,float>                               $rate_map
+	 */
+	private static function line_rate( $item, array $rate_map ): float {
+		$taxes  = $item->get_taxes();
+		$totals = ( isset( $taxes['total'] ) && is_array( $taxes['total'] ) ) ? $taxes['total'] : array();
+
+		foreach ( $totals as $rate_id => $amount ) {
+			if ( '' === $amount || null === $amount || 0.0 === (float) $amount ) {
+				continue; // not the effective rate on this line
+			}
+			if ( isset( $rate_map[ (int) $rate_id ] ) ) {
+				return $rate_map[ (int) $rate_id ];
+			}
+		}
+
+		// The line carries tax but no usable stored percent (rare): derive
+		// from amounts rather than mislabel it exempt. Otherwise: exempt (0 %).
+		$net = (float) $item->get_total();
+		$tax = (float) $item->get_total_tax();
+		return $tax > 0.0 ? self::rate_for_line( $net, $tax ) : 0.0;
 	}
 
 	/* ----------------------------------------------------------------- */
@@ -430,14 +481,20 @@ final class XmlBuilder {
 	 */
 	private static function apply_tax_breakdown_and_summation( ZugferdDocumentBuilder $document, \WC_Order $order ): void {
 		// Bucket: rate(%) => [ basis (ex-VAT total), tax_amount ]
-		$buckets = array();
+		$buckets  = array();
+		$rate_map = self::get_rate_map( $order );
 
-		$accumulate = function ( float $net, float $tax ) use ( &$buckets ): void {
+		$accumulate = function ( float $net, float $tax, float $rate ) use ( &$buckets ): void {
 			if ( $net <= 0.0 ) {
 				return;
 			}
-			$rate = self::rate_for_line( $net, $tax );
-			$key  = (string) $rate;
+			// Round per line BEFORE summing. BR-CO-10 requires the document
+			// line-total (BT-106) to equal the sum of each line's already-
+			// rounded net amount (BT-131). Summing raw nets then rounding once
+			// drifts by a cent (e.g. 160.7267 -> 160.73 vs 160.72).
+			$net = round( $net, 2 );
+			$tax = round( $tax, 2 );
+			$key = (string) $rate;
 			if ( ! isset( $buckets[ $key ] ) ) {
 				$buckets[ $key ] = array(
 					'rate'  => $rate,
@@ -451,11 +508,11 @@ final class XmlBuilder {
 
 		foreach ( $order->get_items() as $item ) {
 			/** @var \WC_Order_Item_Product $item */
-			$accumulate( (float) $item->get_total(), (float) $item->get_total_tax() );
+			$accumulate( (float) $item->get_total(), (float) $item->get_total_tax(), self::line_rate( $item, $rate_map ) );
 		}
 		foreach ( $order->get_items( 'shipping' ) as $shipping ) {
 			/** @var \WC_Order_Item_Shipping $shipping */
-			$accumulate( (float) $shipping->get_total(), (float) $shipping->get_total_tax() );
+			$accumulate( (float) $shipping->get_total(), (float) $shipping->get_total_tax(), self::line_rate( $shipping, $rate_map ) );
 		}
 
 		$line_total = 0.0;
