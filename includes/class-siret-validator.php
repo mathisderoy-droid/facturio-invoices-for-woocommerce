@@ -173,6 +173,7 @@ final class SiretValidator {
         if (is_wp_error($response)) {
             return [
                 'valid'     => false,
+                /* translators: %s = network error message. */
                 'error'     => sprintf(__('Erreur réseau INSEE : %s', 'factur-x-for-woocommerce'), $response->get_error_message()),
                 'cacheable' => false,
             ];
@@ -193,6 +194,7 @@ final class SiretValidator {
             if (is_wp_error($response)) {
                 return [
                     'valid'     => false,
+                    /* translators: %s = network error message. */
                     'error'     => sprintf(__('Erreur réseau INSEE : %s', 'factur-x-for-woocommerce'), $response->get_error_message()),
                     'cacheable' => false,
                 ];
@@ -219,6 +221,7 @@ final class SiretValidator {
         if ($code !== 200) {
             return [
                 'valid'     => false,
+                /* translators: %d = HTTP status code. */
                 'error'     => sprintf(__('Erreur API INSEE (HTTP %d).', 'factur-x-for-woocommerce'), $code),
                 'cacheable' => false,
             ];

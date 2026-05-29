@@ -1,0 +1,570 @@
+# Copyright (C) 2026 Mathis Deroy
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Factur-X for WooCommerce 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/factur-x-for-woocommerce\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-05-29T09:17:11+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: factur-x-for-woocommerce\n"
+
+#. Plugin Name of the plugin
+#: factur-x-for-woocommerce.php
+msgid "Factur-X for WooCommerce"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: factur-x-for-woocommerce.php
+msgid "https://github.com/mathisderoy/factur-x-for-woocommerce"
+msgstr ""
+
+#. Description of the plugin
+#: factur-x-for-woocommerce.php
+msgid "Génère des factures Factur-X conformes à la réforme française 2026 depuis WooCommerce (PDF/A-3 + XML CII embarqué, profil EN 16931)."
+msgstr ""
+
+#. Author of the plugin
+#: factur-x-for-woocommerce.php
+msgid "Mathis Deroy"
+msgstr ""
+
+#. Author URI of the plugin
+#: factur-x-for-woocommerce.php
+msgid "https://github.com/mathisderoy"
+msgstr ""
+
+#: factur-x-for-woocommerce.php:93
+msgid "Factur-X for WooCommerce : dépendances Composer manquantes. Exécutez \"composer install\" dans le dossier du plugin."
+msgstr ""
+
+#: includes/class-admin-download.php:91
+#: includes/class-admin-download.php:141
+msgid "Accès refusé."
+msgstr ""
+
+#: includes/class-admin-download.php:96
+msgid "Facture introuvable."
+msgstr ""
+
+#: includes/class-admin-download.php:105
+msgid "Le fichier PDF est introuvable sur le serveur."
+msgstr ""
+
+#: includes/class-admin-download.php:146
+msgid "Commande introuvable."
+msgstr ""
+
+#: includes/class-admin-download.php:191
+msgid "La régénération de la facture a échoué. Consultez le journal de débogage pour le détail."
+msgstr ""
+
+#: includes/class-admin-download.php:198
+msgid "Facture régénérée avec succès. L'ancien PDF reste archivé."
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:39
+#: includes/class-invoice-post-type.php:55
+msgid "Facture Factur-X"
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:77
+msgid "Aucune facture générée pour cette commande."
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:83
+msgid "Générer la facture maintenant"
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:85
+msgid "Consomme le prochain numéro de facture et crée le PDF Factur-X conforme EN 16931."
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:98
+msgid "Numéro"
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:104
+msgid "Émise le"
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:111
+msgid "Taille"
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:119
+msgid "La facture actuelle est conservée comme archive (obligation légale). Un nouveau numéro sera attribué à la nouvelle version. Continuer ?"
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:124
+msgid "Télécharger le PDF"
+msgstr ""
+
+#: includes/class-admin-order-metabox.php:130
+msgid "Régénérer la facture"
+msgstr ""
+
+#: includes/class-admin-orders.php:58
+#: includes/class-admin-orders.php:64
+msgid "Facture"
+msgstr ""
+
+#: includes/class-admin-orders.php:111
+msgid "Télécharger le PDF Factur-X"
+msgstr ""
+
+#: includes/class-checkout-fields.php:74
+msgid "Vérification en cours…"
+msgstr ""
+
+#. translators: %s = legal company name returned by INSEE.
+#: includes/class-checkout-fields.php:76
+#, php-format
+msgid "SIRET valide : %s"
+msgstr ""
+
+#: includes/class-checkout-fields.php:77
+msgid "Établissement fermé selon Sirene."
+msgstr ""
+
+#: includes/class-checkout-fields.php:78
+msgid "TVA valide."
+msgstr ""
+
+#. translators: %s = company name returned by VIES.
+#: includes/class-checkout-fields.php:80
+#, php-format
+msgid "TVA valide : %s"
+msgstr ""
+
+#: includes/class-checkout-fields.php:81
+msgid "Service de validation temporairement indisponible. Réessayez plus tard."
+msgstr ""
+
+#: includes/class-checkout-fields.php:82
+msgid "Erreur inconnue."
+msgstr ""
+
+#: includes/class-checkout-fields.php:107
+msgid "Je commande pour mon entreprise"
+msgstr ""
+
+#: includes/class-checkout-fields.php:112
+msgid "Informations de votre entreprise"
+msgstr ""
+
+#: includes/class-checkout-fields.php:114
+msgid "Ces informations seront utilisées pour générer une facture Factur-X conforme à la réforme française 2026."
+msgstr ""
+
+#: includes/class-checkout-fields.php:122
+#: includes/class-order-meta.php:90
+#: includes/class-settings.php:177
+msgid "Raison sociale"
+msgstr ""
+
+#: includes/class-checkout-fields.php:134
+#: includes/class-order-meta.php:91
+#: includes/class-settings.php:186
+msgid "SIRET"
+msgstr ""
+
+#: includes/class-checkout-fields.php:135
+msgid "14 chiffres"
+msgstr ""
+
+#: includes/class-checkout-fields.php:150
+#: includes/class-settings.php:200
+msgid "Numéro de TVA intracommunautaire"
+msgstr ""
+
+#: includes/class-checkout-fields.php:162
+msgid "Code APE / NAF (optionnel)"
+msgstr ""
+
+#: includes/class-checkout-fields.php:163
+msgid "Ex. 6202A"
+msgstr ""
+
+#: includes/class-checkout-fields.php:199
+msgid "Veuillez saisir la raison sociale de votre entreprise."
+msgstr ""
+
+#: includes/class-checkout-fields.php:212
+msgid "Veuillez saisir le numéro SIRET de votre entreprise."
+msgstr ""
+
+#: includes/class-checkout-fields.php:217
+msgid "Le numéro SIRET saisi est invalide (14 chiffres requis, échec du contrôle Luhn). Vérifiez la saisie."
+msgstr ""
+
+#: includes/class-checkout-fields.php:230
+msgid "Le numéro de TVA intracommunautaire doit suivre le format français : FR suivi de 11 caractères."
+msgstr ""
+
+#: includes/class-invoice-post-type.php:54
+msgid "Factures Factur-X"
+msgstr ""
+
+#: includes/class-order-meta.php:59
+msgid "Informations B2B"
+msgstr ""
+
+#: includes/class-order-meta.php:85
+msgid "Commande B2C (particulier). Pas de Factur-X applicable."
+msgstr ""
+
+#: includes/class-order-meta.php:92
+msgid "TVA intra"
+msgstr ""
+
+#: includes/class-order-meta.php:93
+msgid "Code APE"
+msgstr ""
+
+#. translators: %s = invoice number
+#: includes/class-pdf-renderer.php:91
+#, php-format
+msgid "Facture %s"
+msgstr ""
+
+#. translators: %s = order number
+#: includes/class-pdf-renderer.php:96
+#, php-format
+msgid "Facture WooCommerce commande #%s"
+msgstr ""
+
+#: includes/class-pdf-renderer.php:278
+#: includes/class-xml-builder.php:393
+msgid "Livraison"
+msgstr ""
+
+#: includes/class-settings.php:37
+msgid "Factur-X"
+msgstr ""
+
+#: includes/class-settings.php:80
+msgid "Coordonnées vendeur"
+msgstr ""
+
+#: includes/class-settings.php:81
+msgid "Facturation"
+msgstr ""
+
+#: includes/class-settings.php:82
+msgid "Apparence"
+msgstr ""
+
+#: includes/class-settings.php:83
+msgid "Intégrations"
+msgstr ""
+
+#: includes/class-settings.php:134
+msgid "Apparence de la facture"
+msgstr ""
+
+#: includes/class-settings.php:136
+msgid "Personnalisez l'identité visuelle de vos factures Factur-X. Ces réglages s'appliquent immédiatement aux prochaines factures générées."
+msgstr ""
+
+#: includes/class-settings.php:140
+msgid "Logo"
+msgstr ""
+
+#: includes/class-settings.php:141
+msgid "Choisissez une image depuis votre Médiathèque. Format recommandé : JPG ou PNG opaque (sans transparence), ratio paysage, hauteur ≤ 80 px à l'impression."
+msgstr ""
+
+#: includes/class-settings.php:147
+msgid "Couleur principale"
+msgstr ""
+
+#: includes/class-settings.php:148
+msgid "Couleur des titres, du bandeau de tableau et du total TTC. Choisissez une couleur foncée — le texte par-dessus est blanc."
+msgstr ""
+
+#: includes/class-settings.php:168
+msgid "Coordonnées légales du vendeur"
+msgstr ""
+
+#: includes/class-settings.php:170
+msgid "Ces informations apparaissent sur chaque facture Factur-X générée. La raison sociale, le SIRET et l'adresse sont obligatoires pour une facture conforme à la réforme française 2026."
+msgstr ""
+
+#: includes/class-settings.php:180
+msgid "Nom légal complet de l'entité émettrice."
+msgstr ""
+
+#: includes/class-settings.php:189
+msgid "14 chiffres, sans espace (les espaces saisis seront supprimés à la sauvegarde)."
+msgstr ""
+
+#: includes/class-settings.php:203
+msgid "Format français : FR suivi de 11 caractères."
+msgstr ""
+
+#: includes/class-settings.php:212
+msgid "Code APE / NAF"
+msgstr ""
+
+#: includes/class-settings.php:215
+msgid "Format INSEE : 4 chiffres + 1 lettre (ex. 6202A)."
+msgstr ""
+
+#: includes/class-settings.php:221
+msgid "Adresse"
+msgstr ""
+
+#: includes/class-settings.php:224
+msgid "Numéro, rue, complément éventuel."
+msgstr ""
+
+#: includes/class-settings.php:230
+msgid "Code postal"
+msgstr ""
+
+#: includes/class-settings.php:237
+msgid "Ville"
+msgstr ""
+
+#: includes/class-settings.php:244
+msgid "Pays"
+msgstr ""
+
+#: includes/class-settings.php:265
+msgid "Numérotation et génération"
+msgstr ""
+
+#: includes/class-settings.php:267
+msgid "La numérotation séquentielle est inviolable et ne doit jamais comporter de trou (obligation légale française)."
+msgstr ""
+
+#: includes/class-settings.php:271
+msgid "Préfixe de numérotation"
+msgstr ""
+
+#: includes/class-settings.php:274
+msgid "Lettres au début du numéro. Ex. « F » donne « F2026-000001 »."
+msgstr ""
+
+#: includes/class-settings.php:280
+msgid "Padding du compteur"
+msgstr ""
+
+#: includes/class-settings.php:283
+msgid "Nombre de chiffres du compteur, complété par des zéros à gauche (6 = \"000001\")."
+msgstr ""
+
+#: includes/class-settings.php:293
+msgid "Réinitialisation annuelle du compteur"
+msgstr ""
+
+#: includes/class-settings.php:294
+msgid "Le compteur repart à 1 le 1er janvier (recommandé en France)."
+msgstr ""
+
+#: includes/class-settings.php:300
+msgid "Génération automatique"
+msgstr ""
+
+#: includes/class-settings.php:301
+msgid "Générer la facture Factur-X automatiquement lors d'un changement de statut de la commande."
+msgstr ""
+
+#: includes/class-settings.php:307
+msgid "Statut déclencheur"
+msgstr ""
+
+#: includes/class-settings.php:308
+msgid "Statut WooCommerce qui déclenche la génération."
+msgstr ""
+
+#: includes/class-settings.php:313
+msgid "En cours (dès paiement reçu) — recommandé pour services et produits numériques"
+msgstr ""
+
+#: includes/class-settings.php:314
+msgid "Terminée (après livraison ou expédition) — recommandé pour produits physiques"
+msgstr ""
+
+#: includes/class-settings.php:321
+msgid "Mentions légales"
+msgstr ""
+
+#: includes/class-settings.php:324
+msgid "Mentions ajoutées en pied de chaque facture (capital social, RCS, TVA non applicable art. 293 B, etc.)."
+msgstr ""
+
+#: includes/class-settings.php:342
+msgid "API INSEE Sirene"
+msgstr ""
+
+#. translators: %s = URL INSEE
+#: includes/class-settings.php:346
+#, php-format
+msgid "Demandez une clé API gratuite sur %s. Utilisée pour la validation SIRET au checkout et la récupération automatique de la raison sociale."
+msgstr ""
+
+#: includes/class-settings.php:352
+msgid "Clé API INSEE"
+msgstr ""
+
+#: includes/class-settings.php:355
+msgid "Laissez vide pour désactiver la validation SIRET en ligne (validation locale du format uniquement)."
+msgstr ""
+
+#: includes/class-settings.php:453
+msgid "Changer le logo"
+msgstr ""
+
+#: includes/class-settings.php:454
+#: includes/class-settings.php:499
+msgid "Choisir un logo"
+msgstr ""
+
+#: includes/class-settings.php:461
+msgid "Retirer"
+msgstr ""
+
+#: includes/class-settings.php:500
+msgid "Utiliser cette image"
+msgstr ""
+
+#: includes/class-siret-validator.php:115
+msgid "Format SIRET invalide (échec du contrôle Luhn local)."
+msgstr ""
+
+#: includes/class-siret-validator.php:130
+msgid "Clé API INSEE absente. Renseignez-la dans Réglages → Factur-X → Intégrations."
+msgstr ""
+
+#. translators: %s = network error message.
+#: includes/class-siret-validator.php:177
+#: includes/class-siret-validator.php:198
+#, php-format
+msgid "Erreur réseau INSEE : %s"
+msgstr ""
+
+#: includes/class-siret-validator.php:208
+msgid "Clé API INSEE refusée. Vérifiez son exactitude dans les Réglages."
+msgstr ""
+
+#: includes/class-siret-validator.php:216
+msgid "SIRET introuvable dans la base Sirene INSEE."
+msgstr ""
+
+#. translators: %d = HTTP status code.
+#: includes/class-siret-validator.php:225
+#, php-format
+msgid "Erreur API INSEE (HTTP %d)."
+msgstr ""
+
+#: includes/class-siret-validator.php:234
+msgid "Réponse INSEE inattendue."
+msgstr ""
+
+#: includes/class-vies-validator.php:83
+msgid "Numéro de TVA trop court."
+msgstr ""
+
+#: includes/class-vies-validator.php:94
+msgid "Préfixe pays invalide."
+msgstr ""
+
+#. translators: %s = network error message.
+#: includes/class-vies-validator.php:169
+#, php-format
+msgid "Erreur réseau VIES : %s"
+msgstr ""
+
+#. translators: %d = HTTP status code.
+#: includes/class-vies-validator.php:190
+#, php-format
+msgid "Erreur API VIES (HTTP %d)."
+msgstr ""
+
+#: includes/class-vies-validator.php:208
+msgid "Réponse VIES illisible."
+msgstr ""
+
+#: includes/class-vies-validator.php:262
+msgid "Service VIES temporairement saturé (taux d'appels limité côté UE). Réessayez dans quelques secondes."
+msgstr ""
+
+#: includes/class-vies-validator.php:272
+msgid "Numéro de TVA mal formé (refusé par VIES)."
+msgstr ""
+
+#. translators: %s = VIES SOAP fault code.
+#: includes/class-vies-validator.php:284
+#, php-format
+msgid "Erreur VIES : %s"
+msgstr ""
+
+#: includes/class-xml-builder.php:151
+msgid "TVA non applicable, art. 293 B du CGI"
+msgstr ""
+
+#: includes/class-xml-builder.php:319
+msgid "Paiement à réception de la facture."
+msgstr ""
+
+#: templates/invoice/default.php:85
+msgid "FACTURE"
+msgstr ""
+
+#: templates/invoice/default.php:87
+msgid "Date d'émission"
+msgstr ""
+
+#: templates/invoice/default.php:90
+msgid "Échéance"
+msgstr ""
+
+#: templates/invoice/default.php:103
+msgid "Facturé à"
+msgstr ""
+
+#: templates/invoice/default.php:125
+msgid "Mode de paiement"
+msgstr ""
+
+#: templates/invoice/default.php:139
+msgid "Description"
+msgstr ""
+
+#: templates/invoice/default.php:140
+msgid "Qté"
+msgstr ""
+
+#: templates/invoice/default.php:141
+msgid "Prix unit. HT"
+msgstr ""
+
+#: templates/invoice/default.php:142
+msgid "TVA"
+msgstr ""
+
+#: templates/invoice/default.php:143
+#: templates/invoice/default.php:169
+msgid "Total HT"
+msgstr ""
+
+#. translators: %s = VAT rate percentage, e.g. 20.00
+#: templates/invoice/default.php:175
+#, php-format
+msgid "TVA %s %%"
+msgstr ""
+
+#: templates/invoice/default.php:180
+msgid "Total TTC"
+msgstr ""
+
+#: templates/invoice/default.php:184
+msgid "Montant dû"
+msgstr ""

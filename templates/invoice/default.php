@@ -171,6 +171,7 @@ $primary_color = esc_attr($appearance['primary_color']);
     </tr>
     <?php foreach ($tax_breakdown as $tax) : ?>
         <tr>
+            <?php /* translators: %s = VAT rate percentage, e.g. 20.00 */ ?>
             <td><?php printf(esc_html__('TVA %s %%', 'factur-x-for-woocommerce'), esc_html(number_format_i18n($tax['rate'], 2))); ?></td>
             <td class="num"><?php echo esc_html(number_format_i18n($tax['tax'], 2)); ?> <?php echo esc_html($invoice['currency_symbol']); ?></td>
         </tr>

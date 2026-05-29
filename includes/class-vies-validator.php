@@ -165,6 +165,7 @@ final class ViesValidator {
         if (is_wp_error($response)) {
             return [
                 'valid'     => false,
+                /* translators: %s = network error message. */
                 'error'     => sprintf(__('Erreur réseau VIES : %s', 'factur-x-for-woocommerce'), $response->get_error_message()),
                 'cacheable' => false,
             ];
@@ -185,6 +186,7 @@ final class ViesValidator {
         if ($code !== 200) {
             return [
                 'valid'     => false,
+                /* translators: %d = HTTP status code. */
                 'error'     => sprintf(__('Erreur API VIES (HTTP %d).', 'factur-x-for-woocommerce'), $code),
                 'cacheable' => false,
             ];
@@ -278,6 +280,7 @@ final class ViesValidator {
         }
         return [
             'valid'     => false,
+            /* translators: %s = VIES SOAP fault code. */
             'error'     => sprintf(__('Erreur VIES : %s', 'factur-x-for-woocommerce'), $fault_code),
             'cacheable' => false,
         ];

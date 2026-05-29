@@ -72,9 +72,11 @@ final class CheckoutFields {
             'nonce'   => wp_create_nonce(AjaxValidators::NONCE_ACTION),
             'strings' => [
                 'checking'         => __('Vérification en cours…', 'factur-x-for-woocommerce'),
+                /* translators: %s = legal company name returned by INSEE. */
                 'siretValid'       => __('SIRET valide : %s', 'factur-x-for-woocommerce'),
                 'siretInactive'    => __('Établissement fermé selon Sirene.', 'factur-x-for-woocommerce'),
                 'vatValid'         => __('TVA valide.', 'factur-x-for-woocommerce'),
+                /* translators: %s = company name returned by VIES. */
                 'vatValidWithName' => __('TVA valide : %s', 'factur-x-for-woocommerce'),
                 'unavailable'      => __('Service de validation temporairement indisponible. Réessayez plus tard.', 'factur-x-for-woocommerce'),
                 'unknownError'     => __('Erreur inconnue.', 'factur-x-for-woocommerce'),
