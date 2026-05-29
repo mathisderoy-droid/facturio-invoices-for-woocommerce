@@ -28,6 +28,11 @@
         "allow-plugins": {
             "composer/installers": true,
             "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "audit": {
+            "ignore": {
+                "GHSA-vvj3-c3rp-c85p": "PHPUnit is a dev-only test tool; the 9.x line is EOL and never ships to production (release build uses --no-dev). Advisory irrelevant to end users."
+            }
         }
     },
     "extra": {
@@ -43,6 +48,7 @@
     },
     "require-dev": {
         "wp-coding-standards/wpcs": "3.1",
-        "phpcompatibility/phpcompatibility-wp": "2.1"
+        "phpcompatibility/phpcompatibility-wp": "2.1",
+        "phpunit/phpunit": "9.6"
     }
 }
