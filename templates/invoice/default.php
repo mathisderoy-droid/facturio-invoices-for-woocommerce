@@ -9,6 +9,7 @@
  *   @var array     $lines          [ { name, sku, quantity, unit_price, vat_rate, line_total } ]
  *   @var array     $tax_breakdown  [ { rate, basis, tax } ]
  *   @var array     $totals         (line_total, tax_total, grand_total, due_payable, payment_method_title)
+ *   @var array     $appearance     (logo_path, primary_color)
  *
  * Constraints:
  *   - TCPDF understands a subset of HTML/CSS: tables, basic colors, font-size,
@@ -22,29 +23,32 @@
 
 defined('ABSPATH') || exit;
 
+// Primary color (chosen by the merchant in Réglages → Factur-X → Apparence).
+// Already sanitised in PdfRenderer::get_appearance_data().
+$primary_color = esc_attr($appearance['primary_color']);
 ?>
 <style>
     body { font-family: helvetica, sans-serif; font-size: 9pt; color: #222; }
-    h1 { font-size: 18pt; color: #2271b1; margin: 0; }
-    h2 { font-size: 11pt; color: #2271b1; margin: 10px 0 4px 0; }
+    h1 { font-size: 18pt; color: <?php echo $primary_color; ?>; margin: 0; }
+    h2 { font-size: 11pt; color: <?php echo $primary_color; ?>; margin: 10px 0 4px 0; }
     table { border-collapse: collapse; width: 100%; }
     .header-bar { width: 100%; }
     .header-bar td { vertical-align: top; }
     .header-bar .seller { width: 60%; }
     .header-bar .invoice-meta { width: 40%; text-align: right; }
-    .invoice-number { font-size: 14pt; font-weight: bold; color: #2271b1; }
+    .invoice-number { font-size: 14pt; font-weight: bold; color: <?php echo $primary_color; ?>; }
     .label { color: #888; font-size: 8pt; }
     .parties { margin-top: 18px; width: 100%; }
     .parties td { vertical-align: top; width: 50%; padding-right: 8px; }
-    .party-box { background-color: #f7f7f9; padding: 8px; border-left: 3px solid #2271b1; }
+    .party-box { background-color: #f7f7f9; padding: 8px; border-left: 3px solid <?php echo $primary_color; ?>; }
     .lines { margin-top: 14px; }
     .lines th, .lines td { padding: 6px 8px; border-bottom: 1px solid #ddd; }
-    .lines th { background-color: #2271b1; color: #fff; text-align: left; font-weight: bold; font-size: 9pt; }
+    .lines th { background-color: <?php echo $primary_color; ?>; color: #fff; text-align: left; font-weight: bold; font-size: 9pt; }
     .lines td.num, .lines th.num { text-align: right; }
     .lines td.center, .lines th.center { text-align: center; }
     .totals { width: 50%; margin-top: 10px; margin-left: 50%; }
     .totals td { padding: 4px 8px; }
-    .totals .grand { background-color: #2271b1; color: #fff; font-weight: bold; }
+    .totals .grand { background-color: <?php echo $primary_color; ?>; color: #fff; font-weight: bold; }
     .footer { margin-top: 30px; font-size: 8pt; color: #666; border-top: 1px solid #ddd; padding-top: 8px; }
 </style>
 
@@ -54,6 +58,10 @@ defined('ABSPATH') || exit;
 <table class="header-bar">
     <tr>
         <td class="seller">
+            <?php if (!empty($appearance['logo_path'])) : ?>
+                <?php /* Local filesystem path — esc_attr, NOT esc_url (which would mangle backslashes/colons on Windows). TCPDF resolves the path internally. */ ?>
+                <img src="<?php echo esc_attr($appearance['logo_path']); ?>" style="max-width:200px;max-height:80px;margin-bottom:6px;" /><br>
+            <?php endif; ?>
             <h1><?php echo esc_html($seller['company_name'] ?: '—'); ?></h1>
             <?php if (!empty($seller['address'])) : ?>
                 <?php echo nl2br(esc_html($seller['address'])); ?><br>
@@ -87,7 +95,7 @@ defined('ABSPATH') || exit;
 </table>
 
 <!-- =============================================================
-     Buyer block + (optional) shipping reference
+     Buyer block + payment method
      ============================================================= -->
 <table class="parties">
     <tr>

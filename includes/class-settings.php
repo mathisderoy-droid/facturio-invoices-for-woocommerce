@@ -50,6 +50,24 @@ final class Settings extends WC_Settings_Page {
             10,
             3
         );
+        add_filter(
+            'woocommerce_admin_settings_sanitize_option_mathisfx_logo_attachment_id',
+            [$this, 'sanitize_attachment_id'],
+            10,
+            3
+        );
+        add_filter(
+            'woocommerce_admin_settings_sanitize_option_mathisfx_primary_color',
+            [$this, 'sanitize_color'],
+            10,
+            3
+        );
+
+        // Custom WC settings field type for the Media Library image picker.
+        add_action('woocommerce_admin_field_mathisfx_media_image', [$this, 'render_media_image_field']);
+
+        // Enqueue the picker JS + WP color picker on our Settings page only.
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 
     /**
@@ -61,6 +79,7 @@ final class Settings extends WC_Settings_Page {
         $sections = [
             ''             => __('Coordonnées vendeur', 'factur-x-for-woocommerce'),
             'invoicing'    => __('Facturation', 'factur-x-for-woocommerce'),
+            'appearance'   => __('Apparence', 'factur-x-for-woocommerce'),
             'integrations' => __('Intégrations', 'factur-x-for-woocommerce'),
         ];
 
@@ -81,6 +100,9 @@ final class Settings extends WC_Settings_Page {
             case 'invoicing':
                 $settings = $this->get_invoicing_settings();
                 break;
+            case 'appearance':
+                $settings = $this->get_appearance_settings();
+                break;
             case 'integrations':
                 $settings = $this->get_integrations_settings();
                 break;
@@ -94,6 +116,47 @@ final class Settings extends WC_Settings_Page {
             $settings,
             $current_section
         );
+    }
+
+    /**
+     * Appearance fields (logo + primary color).
+     *
+     * The logo is stored as a WP Media Library attachment id (`mathisfx_logo_attachment_id`)
+     * so we can resolve it to a local file path at render time — required by
+     * TCPDF in PDF/A-3 mode (no external HTTP fetches allowed).
+     *
+     * The primary color replaces every hardcoded `#2271b1` in the invoice
+     * template via a CSS variable substitution at render time.
+     */
+    private function get_appearance_settings(): array {
+        return [
+            [
+                'title' => __('Apparence de la facture', 'factur-x-for-woocommerce'),
+                'type'  => 'title',
+                'desc'  => __('Personnalisez l\'identité visuelle de vos factures Factur-X. Ces réglages s\'appliquent immédiatement aux prochaines factures générées.', 'factur-x-for-woocommerce'),
+                'id'    => 'mathisfx_appearance_section',
+            ],
+            [
+                'title' => __('Logo', 'factur-x-for-woocommerce'),
+                'desc'  => __('Choisissez une image depuis votre Médiathèque. Format recommandé : JPG ou PNG opaque (sans transparence), ratio paysage, hauteur ≤ 80 px à l\'impression.', 'factur-x-for-woocommerce'),
+                'id'    => 'mathisfx_logo_attachment_id',
+                'type'  => 'mathisfx_media_image',
+                'default' => 0,
+            ],
+            [
+                'title'   => __('Couleur principale', 'factur-x-for-woocommerce'),
+                'desc'    => __('Couleur des titres, du bandeau de tableau et du total TTC. Choisissez une couleur foncée — le texte par-dessus est blanc.', 'factur-x-for-woocommerce'),
+                'desc_tip' => true,
+                'id'      => 'mathisfx_primary_color',
+                'type'    => 'color',
+                'default' => '#2271b1',
+                'css'     => 'width:80px;',
+            ],
+            [
+                'type' => 'sectionend',
+                'id'   => 'mathisfx_appearance_section',
+            ],
+        ];
     }
 
     /**
@@ -312,5 +375,115 @@ final class Settings extends WC_Settings_Page {
      */
     public function sanitize_vat($value, $option = [], $raw_value = ''): string {
         return strtoupper(preg_replace('/\s+/', '', (string) $value));
+    }
+
+    /**
+     * Make sure the attachment ID is a positive int that actually points
+     * to an image. Returns 0 on any mismatch (treated as "no logo").
+     */
+    public function sanitize_attachment_id($value, $option = [], $raw_value = ''): int {
+        $id = absint($value);
+        if ($id === 0) {
+            return 0;
+        }
+        if (function_exists('wp_attachment_is_image') && !wp_attachment_is_image($id)) {
+            return 0;
+        }
+        return $id;
+    }
+
+    /**
+     * Validate hex color, fall back to the brand default on bad input.
+     */
+    public function sanitize_color($value, $option = [], $raw_value = ''): string {
+        $clean = sanitize_hex_color((string) $value);
+        return $clean ?: '#2271b1';
+    }
+
+    /**
+     * Render the custom Media Library picker field for the logo.
+     *
+     * Invoked by WC_Admin_Settings::output_fields() when it encounters a
+     * field of type 'mathisfx_media_image'. Outputs an HTML row that fits
+     * inside the standard WC settings <table>.
+     *
+     * @param array $value Field definition (id, title, desc, default).
+     */
+    public function render_media_image_field(array $value): void {
+        $field_id     = isset($value['id']) ? (string) $value['id'] : '';
+        $title        = isset($value['title']) ? (string) $value['title'] : '';
+        $description  = isset($value['desc']) ? (string) $value['desc'] : '';
+        $current_id   = (int) get_option($field_id, 0);
+        $thumb_url    = ($current_id > 0) ? wp_get_attachment_image_url($current_id, 'thumbnail') : '';
+
+        ?>
+        <tr valign="top">
+            <th scope="row" class="titledesc">
+                <label for="<?php echo esc_attr($field_id); ?>"><?php echo esc_html($title); ?></label>
+            </th>
+            <td class="forminp">
+                <div class="mathisfx-media-picker" data-field="<?php echo esc_attr($field_id); ?>">
+                    <input
+                        type="hidden"
+                        id="<?php echo esc_attr($field_id); ?>"
+                        name="<?php echo esc_attr($field_id); ?>"
+                        value="<?php echo esc_attr((string) $current_id); ?>"
+                    />
+                    <div class="mathisfx-media-preview" style="margin-bottom:8px;min-height:84px;">
+                        <?php if ($thumb_url !== '') : ?>
+                            <img src="<?php echo esc_url($thumb_url); ?>" style="max-width:160px;max-height:80px;border:1px solid #ddd;padding:4px;background:#fff;" />
+                        <?php endif; ?>
+                    </div>
+                    <button type="button" class="button mathisfx-media-choose">
+                        <?php echo $current_id > 0
+                            ? esc_html__('Changer le logo', 'factur-x-for-woocommerce')
+                            : esc_html__('Choisir un logo', 'factur-x-for-woocommerce'); ?>
+                    </button>
+                    <button
+                        type="button"
+                        class="button mathisfx-media-remove"
+                        style="<?php echo $current_id > 0 ? '' : 'display:none;'; ?>"
+                    >
+                        <?php esc_html_e('Retirer', 'factur-x-for-woocommerce'); ?>
+                    </button>
+                    <?php if ($description !== '') : ?>
+                        <p class="description"><?php echo wp_kses_post($description); ?></p>
+                    <?php endif; ?>
+                </div>
+            </td>
+        </tr>
+        <?php
+    }
+
+    /**
+     * Enqueue WP Media (modal), color picker, and our JS — only when the
+     * user is actually on WooCommerce → Settings → Factur-X.
+     */
+    public function enqueue_admin_assets(string $hook): void {
+        if ($hook !== 'woocommerce_page_wc-settings') {
+            return;
+        }
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only tab inspection
+        $tab = isset($_GET['tab']) ? sanitize_text_field(wp_unslash($_GET['tab'])) : '';
+        if ($tab !== 'facturx') {
+            return;
+        }
+
+        wp_enqueue_media();
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
+
+        wp_enqueue_script(
+            'mathisfx-admin-settings',
+            MATHISFX_PLUGIN_URL . 'assets/js/admin-settings.js',
+            ['jquery', 'wp-color-picker'],
+            MATHISFX_VERSION,
+            true
+        );
+
+        wp_localize_script('mathisfx-admin-settings', 'mathisfxAdminSettings', [
+            'mediaTitle'  => __('Choisir un logo', 'factur-x-for-woocommerce'),
+            'mediaButton' => __('Utiliser cette image', 'factur-x-for-woocommerce'),
+        ]);
     }
 }

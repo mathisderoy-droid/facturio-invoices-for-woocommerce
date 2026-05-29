@@ -163,6 +163,37 @@ final class PdfRenderer {
             'lines'         => self::get_lines($order),
             'tax_breakdown' => self::get_tax_breakdown($order),
             'totals'        => self::get_totals($order),
+            'appearance'    => self::get_appearance_data(),
+        ];
+    }
+
+    /**
+     * Logo (local file path, suitable for TCPDF + PDF/A-3) and primary color.
+     *
+     * Returns an empty logo_path when no logo is set, or when the attachment
+     * record is broken (deleted file, wrong type, etc.). The template handles
+     * the empty case by simply not rendering the <img>.
+     *
+     * @return array{logo_path: string, primary_color: string}
+     */
+    private static function get_appearance_data(): array {
+        $color = (string) get_option('mathisfx_primary_color', '#2271b1');
+        if (sanitize_hex_color($color) === null) {
+            $color = '#2271b1';
+        }
+
+        $logo_id = (int) get_option('mathisfx_logo_attachment_id', 0);
+        $logo_path = '';
+        if ($logo_id > 0 && function_exists('get_attached_file')) {
+            $candidate = get_attached_file($logo_id);
+            if (is_string($candidate) && $candidate !== '' && file_exists($candidate)) {
+                $logo_path = $candidate;
+            }
+        }
+
+        return [
+            'logo_path'     => $logo_path,
+            'primary_color' => $color,
         ];
     }
 

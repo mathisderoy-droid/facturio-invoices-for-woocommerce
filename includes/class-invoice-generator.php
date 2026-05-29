@@ -168,6 +168,15 @@ final class InvoiceGenerator {
         // recipient sees the XML attachment without digging through menus.
         $builder->showAttachmentPane();
 
+        // Brand the PDF Creator field with our plugin name + version, so
+        // viewers (Adobe, Foxit, browser PDF) display "Factur-X for
+        // WooCommerce v0.1.0" in File → Properties → Creator instead of
+        // just the underlying horstoeko/TCPDF default. Visible only in the
+        // properties pane, never on the rendered page.
+        $builder->setAdditionalCreatorTool(
+            sprintf('Factur-X for WooCommerce v%s', MATHISFX_VERSION)
+        );
+
         $builder->generateDocument();
         return $builder->downloadString();
     }
