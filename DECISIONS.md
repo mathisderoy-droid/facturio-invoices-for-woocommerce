@@ -45,6 +45,24 @@ Core/Adapter+DTO en V0.5.
 
 ---
 
+## 30 mai 2026 — Packaging : zip réduit de 21 Mo à 3,8 Mo
+
+Le 1er build complet du zip pesait **21 Mo** (52 Mo décompressé) — trop lourd
+(la limite d'upload WP.org tourne autour de 10 Mo, et c'est peu pro). Cause :
+TCPDF embarque ~25 Mo de polices (DejaVu, FreeFont, CID CJK) dont on n'utilise
+AUCUNE — le plugin n'emploie que `helvetica` (rendue en `pdfahelvetica`, sa
+variante embarquable en mode PDF/A). S'ajoutaient les `tests/` des dépendances.
+
+Décision : `bin/build.sh` élague désormais, après Strauss :
+  - les polices TCPDF, sauf les core base-14 + toutes les `pdfa*` (704 Ko au
+    lieu de 25 Mo) ;
+  - les dossiers `tests/` / `docs/` / `examples/` des dépendances.
+Résultat mesuré localement : **zip 3,81 Mo**. Aucune incidence sur la sortie
+(la police réellement utilisée est conservée). À re-valider sur FNFE-MPE après
+le build CI, par sécurité.
+
+---
+
 ## 30 mai 2026 — Fonctionnalité : « Prochain numéro de facture » éditable
 
 Ajout (demandé par Mathis) d'un champ dans Réglages → Facturation pour voir ET
