@@ -24,6 +24,7 @@ The plugin is built for French WooCommerce stores that sell to businesses (B2B) 
   * SIRET checked live against the **INSEE Sirene API** (the legal company name is fetched automatically).
   * **Intra-community VAT number** checked against the European Commission **VIES** service.
 * **Tamper-proof sequential numbering** (format `F2026-000001`), with no gaps and no duplicates, as required by French law.
+* **Set the next invoice number** to resume an existing series — useful when migrating from another tool mid-year (the plugin refuses any value that would reuse a number).
 * **B2B checkout fields**: an "I am ordering for my company" checkbox plus company name, SIRET, VAT and APE code.
 * **Customisable logo and primary colour** on the invoice.
 * **Download** the invoice from the orders list and the order edit screen, with a **regenerate** option.
@@ -65,7 +66,7 @@ Not in the free version. V0.1 produces and archives the compliant Factur-X invoi
 
 = Are my generated invoices deleted if I uninstall the plugin? =
 
-No. Uninstalling removes the plugin settings and metadata, but **keeps the PDF files** in `wp-content/uploads/factur-x/` because they are legal documents that must be archived.
+No. Uninstalling removes only the plugin **settings** and its temporary caches. It **keeps your whole invoice archive**: the PDF files in `wp-content/uploads/factur-x/`, the invoice records, the B2B data stored on your orders, and the numbering counter — because invoices are legal documents that must be archived, and so that a later re-install never re-issues an already-used number.
 
 = Is the plugin compatible with High-Performance Order Storage (HPOS)? =
 
@@ -88,7 +89,7 @@ No. The European VIES service (and the French registry in particular) limits the
 * Initial release.
 * Automatic generation of EN 16931 Factur-X invoices (PDF/A-3 + embedded CII XML).
 * SIRET (INSEE Sirene) and intra-community VAT (VIES) validation at checkout.
-* Tamper-proof sequential numbering.
+* Tamper-proof sequential numbering, with an editable "next invoice number" to resume an existing series.
 * B2B checkout fields, HPOS compatible.
 * Customisable logo and colour.
 * Download and regenerate from the admin, email attachment.
