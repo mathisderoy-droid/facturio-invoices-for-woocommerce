@@ -73,6 +73,24 @@ echo "==> Scoping dependencies into Mathis\\FacturX\\Vendor\\ + rewriting call s
 composer config --global --unset github-oauth.github.com 2>/dev/null || true
 COMPOSER_AUTH='{}' php strauss.phar --updateCallSites=includes
 
+echo "==> Trimming bundled dependencies (unused TCPDF fonts + dependency tests/docs)"
+# TCPDF ships ~25 MB of fonts; this plugin only ever uses the base-14 'helvetica'
+# (TCPDF substitutes its embeddable 'pdfahelvetica' variant in PDF/A mode). Keep
+# the base-14 cores + every PDF/A embeddable font, and drop the rest (DejaVu,
+# FreeFont, CJK CID maps, …) — about 24 MB saved, with no effect on output.
+FONTS_DIR="${BUILD_DIR}/vendor-prefixed/tecnickcom/tcpdf/fonts"
+if [ -d "${FONTS_DIR}" ]; then
+    find "${FONTS_DIR}" -type f \
+        ! -iname 'helvetica*' ! -iname 'courier*' ! -iname 'times*' \
+        ! -iname 'symbol*'    ! -iname 'zapfdingbats*' \
+        ! -iname 'pdfa*' \
+        -delete
+fi
+# Dependency test/doc/example folders never run in production.
+find "${BUILD_DIR}/vendor-prefixed" -type d \
+    \( -name 'tests' -o -name 'Tests' -o -name 'test' -o -name 'docs' -o -name 'doc' -o -name 'examples' \) \
+    -prune -exec rm -rf {} + 2>/dev/null || true
+
 echo "==> Regenerating the (own classes) autoloader"
 composer dump-autoload --optimize --no-dev --no-interaction
 
@@ -85,5 +103,6 @@ zip -rq "${DIST_DIR}/${SLUG}.zip" "${SLUG}" \
     -x "*/.DS_Store" -x "*/Thumbs.db"
 
 echo "==> Done: ${DIST_DIR}/${SLUG}.zip"
+du -h "${DIST_DIR}/${SLUG}.zip" | awk '{print "    Package size: " $1}'
 echo "    Validate one generated invoice from this build against"
 echo "    https://services.fnfe-mpe.org/ before submitting to WordPress.org."
