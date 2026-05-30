@@ -95,6 +95,19 @@ final class ViesValidator {
 			);
 		}
 
+		// French numbers: reject a malformed value locally instead of paying
+		// for a VIES round-trip. An obviously broken input (e.g. "FR123") makes
+		// VIES answer slowly or with a fault, which can make the AJAX call slow
+		// enough that the browser falls back to a generic "unknown error". A
+		// local check gives instant, clear feedback and mirrors the server-side
+		// checkout validation (is_valid_french_format).
+		if ( 'FR' === $country && ! self::is_valid_french_format( $vat ) ) {
+			return array(
+				'valid' => false,
+				'error' => __( 'Numéro de TVA français mal formé (format attendu : FR + 11 caractères).', 'factur-x-for-woocommerce' ),
+			);
+		}
+
 		// Cache check.
 		$cache_key = 'mathisfx_vies_' . md5( $vat );
 		$cached    = get_transient( $cache_key );
@@ -217,7 +230,7 @@ final class ViesValidator {
 		$name    = self::extract_soap_field( $raw_body, 'name' );
 		$address = self::extract_soap_field( $raw_body, 'address' );
 
-		return array(
+		$result = array(
 			'valid'        => $is_valid,
 			'vat_number'   => $country . $number,
 			'country'      => $country,
@@ -225,6 +238,12 @@ final class ViesValidator {
 			'address'      => $address,
 			'cacheable'    => true,
 		);
+		// A clean VIES answer of "not valid" must still carry a human-readable
+		// message, otherwise the checkout JS falls back to "Erreur inconnue".
+		if ( ! $is_valid ) {
+			$result['error'] = __( 'Numéro de TVA non reconnu par VIES.', 'factur-x-for-woocommerce' );
+		}
+		return $result;
 	}
 
 	/**

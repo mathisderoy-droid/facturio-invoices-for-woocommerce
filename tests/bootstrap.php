@@ -26,4 +26,13 @@ if ( ! defined( 'DAY_IN_SECONDS' ) ) {
 	define( 'DAY_IN_SECONDS', 86400 );
 }
 
+// Minimal i18n stub: lets classes that build user-facing strings via __()
+// run their pure, network-free code paths (e.g. ViesValidator::lookup()'s
+// local format rejection) under PHPUnit without loading WordPress.
+if ( ! function_exists( '__' ) ) {
+	function __( $text, $domain = 'default' ) { // phpcs:ignore
+		return $text;
+	}
+}
+
 require dirname( __DIR__ ) . '/vendor/autoload.php';

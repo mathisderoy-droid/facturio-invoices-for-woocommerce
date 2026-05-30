@@ -9,11 +9,15 @@ Statut : ⬜ à faire · 🔄 en cours · ✅ OK · ❌ KO
 - ✅ Zscaler coupé pour INSEE/VIES
 
 ## Scénarios
-1. ⬜ Commande B2C simple — pas testé formellement (chemin B2C existe, plus simple que B2B qui marche)
+1. ✅ Commande B2C simple (sans champs B2B) → facture générée, bloc acheteur = nom + adresse (sans SIRET/TVA),
+      **Fully Valid FNFE-MPE**. (1ʳᵉ validation d'une facture B2C — forme de document sans identifiant acheteur.)
 2. ✅ Commande B2B SIRET valide (82521529600013 Pennylane) → raison sociale auto, SIRET/TVA dans le XML
-3. ⬜ Commande B2B SIRET invalide — format validé en test unitaire ; flux checkout pas re-testé
+3. ✅ Commande B2B SIRET invalide (Luhn KO) → **bloquée** au checkout (wc_add_notice serveur) + retour live « SIRET invalide ».
 4. ✅ Commande B2B TVA intra → VIES (gestion gracieuse « indisponible » + format validé)
-5. ⬜ Commande B2B TVA intra invalide — pas re-testé en flux checkout
+5. ✅ Commande B2B TVA intra invalide (FR123) → **bloquée** au checkout (message format).
+      A révélé un défaut UX : le retour live affichait « Erreur inconnue ». Corrigé : rejet local du format FR dans
+      ViesValidator::lookup() (message clair + plus d'appel VIES inutile) + message sur réponse VIES « non valide ».
+      Test de non-régression ajouté (16 tests verts).
 6. ✅✅ **Multi-taux (20 % + 5,5 % + exonéré) → 3 buckets distincts, totaux corrects, Fully Valid FNFE-MPE.**
       A révélé et corrigé 2 bugs : taux 5,51→5,50 (lecture taux exact WC) + BR-CO-10 (arrondi par ligne). Commit 890f99b.
 7. ✅ Commande avec remise/coupon (TEST10 –10 %) → total remisé correct, Fully Valid FNFE-MPE.
@@ -28,6 +32,6 @@ Statut : ⬜ à faire · 🔄 en cours · ✅ OK · ❌ KO
 13. ⬜ Désinstallation (options/meta supprimés, PDF conservés) — à faire
 
 ## Reste à valider à la prochaine session
-Scénarios 1, 3, 5, 12, 13 (les plus simples / mécaniques ; le cœur — TVA multi-taux + remises + 0 € — est prouvé conforme).
+Scénarios 12, 13 (cycle de vie du plugin) ; le cœur — TVA multi-taux + remises + 0 € + B2C — est prouvé conforme.
 Décision en attente : faut-il générer une facture pour une commande à 0 € ou l'ignorer ? (sortie déjà valide dans les deux cas).
 Puis : screenshots (4) + soumission WordPress.org.

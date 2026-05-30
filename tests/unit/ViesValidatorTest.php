@@ -57,4 +57,19 @@ final class ViesValidatorTest extends TestCase {
 	public function test_non_french_prefix_is_not_french_format(): void {
 		$this->assertFalse( ViesValidator::is_valid_french_format( 'DE123456789' ) );
 	}
+
+	/**
+	 * A malformed French VAT is rejected locally (no VIES round-trip) and the
+	 * result carries a human-readable error message. Regression guard for the
+	 * QA finding where the live checkout feedback showed "Erreur inconnue"
+	 * instead of a clear "format invalide" message for input like "FR123".
+	 */
+	public function test_malformed_french_vat_rejected_locally_with_message(): void {
+		$result = ViesValidator::lookup( 'FR123' );
+
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['valid'] );
+		$this->assertArrayHasKey( 'error', $result );
+		$this->assertNotSame( '', trim( (string) $result['error'] ) );
+	}
 }
