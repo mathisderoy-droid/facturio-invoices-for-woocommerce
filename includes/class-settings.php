@@ -62,6 +62,15 @@ final class Settings extends WC_Settings_Page {
 			10,
 			3
 		);
+		// The "Prochain numéro de facture" field is virtual: instead of being
+		// stored as its own option, its save handler writes the real (per-year)
+		// invoice counter and returns null so nothing is persisted for it.
+		add_filter(
+			'woocommerce_admin_settings_sanitize_option_mathisfx_invoice_next_number',
+			array( $this, 'apply_invoice_next_number' ),
+			10,
+			3
+		);
 
 		// Custom WC settings field type for the Media Library image picker.
 		add_action( 'woocommerce_admin_field_mathisfx_media_image', array( $this, 'render_media_image_field' ) );
@@ -297,6 +306,18 @@ final class Settings extends WC_Settings_Page {
 				'default' => 'yes',
 			),
 			array(
+				'title'             => __( 'Prochain numéro de facture', 'factur-x-for-woocommerce' ),
+				'id'                => 'mathisfx_invoice_next_number',
+				'type'              => 'number',
+				'desc'              => __( 'Numéro de la prochaine facture (saisissez seulement le chiffre : le préfixe et l\'année sont ajoutés automatiquement, ex. « F2026-000248 »). À ne modifier que pour reprendre une numérotation existante, par exemple lors d\'une migration depuis un autre outil. ⚠ N\'indiquez jamais un numéro inférieur ou égal au dernier déjà émis : cela créerait des doublons interdits.', 'factur-x-for-woocommerce' ),
+				'default'           => (string) ( InvoiceNumbering::get_current_counter_value() + 1 ),
+				'custom_attributes' => array(
+					'min'  => '1',
+					'step' => '1',
+				),
+				'css'               => 'width:120px;',
+			),
+			array(
 				'title'   => __( 'Génération automatique', 'factur-x-for-woocommerce' ),
 				'desc'    => __( 'Générer la facture Factur-X automatiquement lors d\'un changement de statut de la commande.', 'factur-x-for-woocommerce' ),
 				'id'      => 'mathisfx_auto_generate',
@@ -412,6 +433,57 @@ final class Settings extends WC_Settings_Page {
 	public function sanitize_color( $value, $option = array(), $raw_value = '' ): string {
 		$clean = sanitize_hex_color( (string) $value );
 		return $clean ?: '#2271b1';
+	}
+
+	/**
+	 * Save handler for the virtual "Prochain numéro de facture" field.
+	 *
+	 * Instead of persisting an option, it writes the real (per-year) invoice
+	 * counter so the next issued number matches what the merchant typed. A
+	 * forward-only guard refuses any value at or below the last issued number
+	 * (which would create duplicate, illegal invoice numbers) and surfaces a
+	 * clear admin error. Returning null tells WC to NOT store this field.
+	 *
+	 * @param mixed $value     Cleaned value (unused; we read the raw POST).
+	 * @param array $option    Field definition.
+	 * @param mixed $raw_value Raw POSTed value.
+	 * @return null Always null → WC skips storing this virtual field.
+	 */
+	public function apply_invoice_next_number( $value, $option = array(), $raw_value = '' ) {
+		$requested_next = absint( $raw_value );
+		if ( $requested_next < 1 ) {
+			return null; // Empty/invalid input: leave the counter untouched.
+		}
+
+		$last_issued = InvoiceNumbering::get_current_counter_value();
+
+		// Unchanged value (field still shows last_issued + 1): nothing to do.
+		if ( $requested_next === $last_issued + 1 ) {
+			return null;
+		}
+
+		if ( ! InvoiceNumbering::is_acceptable_next_number( $requested_next, $last_issued ) ) {
+			\WC_Admin_Settings::add_error(
+				sprintf(
+					/* translators: 1: requested next number, 2: last issued number. */
+					__( 'Numéro de facture inchangé : le prochain numéro (%1$d) doit être strictement supérieur au dernier numéro déjà émis (%2$d), sinon des factures porteraient le même numéro (interdit).', 'factur-x-for-woocommerce' ),
+					$requested_next,
+					$last_issued
+				)
+			);
+			return null;
+		}
+
+		// Forward move: apply it (atomic write that never lowers the counter).
+		InvoiceNumbering::set_current_counter_value( $requested_next - 1 );
+		\WC_Admin_Settings::add_message(
+			sprintf(
+				/* translators: %d = the next invoice number now configured. */
+				__( 'Prochain numéro de facture réglé sur %d.', 'factur-x-for-woocommerce' ),
+				$requested_next
+			)
+		);
+		return null;
 	}
 
 	/**

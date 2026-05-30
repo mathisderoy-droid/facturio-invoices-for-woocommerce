@@ -103,6 +103,65 @@ final class InvoiceNumbering {
 	}
 
 	/**
+	 * Whether a requested "next invoice number" may be applied, given the last
+	 * number already issued in the current series.
+	 *
+	 * The next number must be STRICTLY greater than the last issued one;
+	 * anything at or below would re-issue an already-used number, which French
+	 * sequential numbering forbids. Pure + side-effect free → unit-tested.
+	 *
+	 * @param int $requested_next The next number the merchant wants to use.
+	 * @param int $last_issued    The current counter value (last number used).
+	 */
+	public static function is_acceptable_next_number( int $requested_next, int $last_issued ): bool {
+		return $requested_next >= $last_issued + 1;
+	}
+
+	/**
+	 * Force the current year's counter to a given value (the "last used"
+	 * number; the next issued number will be $counter + 1).
+	 *
+	 * Used by the "Prochain numéro de facture" setting, mostly so a merchant
+	 * migrating from another tool can resume their existing series.
+	 *
+	 * SAFETY: the write is an atomic conditional UPDATE that NEVER lowers the
+	 * counter. If a concurrent get_next_invoice_number() pushed the counter
+	 * past $counter between the caller's check and this write, the WHERE clause
+	 * no longer matches and we leave the (higher) value untouched — so this can
+	 * never roll the counter back and re-issue a number.
+	 *
+	 * @param int $counter Desired "last used" value (clamped to >= 0).
+	 */
+	public static function set_current_counter_value( int $counter ): void {
+		global $wpdb;
+
+		$counter     = max( 0, $counter );
+		$year        = self::current_year();
+		$counter_key = self::get_counter_key( $year );
+
+		// Make sure the row exists (no-op if it already does), autoload='no'.
+		add_option( $counter_key, '0', '', 'no' );
+
+		// Atomic, monotonic set: only ever increases (or no-ops). See the
+		// method doc for the concurrency rationale.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$wpdb->options}
+                 SET option_value = %d
+                 WHERE option_name = %s AND CAST(option_value AS UNSIGNED) <= %d",
+				$counter,
+				$counter_key,
+				$counter
+			)
+		);
+
+		// Drop WP's options cache so the new value is visible immediately.
+		wp_cache_delete( $counter_key, 'options' );
+		wp_cache_delete( 'alloptions', 'options' );
+	}
+
+	/**
 	 * Year in the WordPress timezone.
 	 */
 	private static function current_year(): int {

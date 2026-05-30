@@ -28,13 +28,14 @@ Statut : ⬜ à faire · 🔄 en cours · ✅ OK · ❌ KO
 9. ✅ Numérotation séquentielle (test de concurrence 720 numéros sans trou + génération séquentielle observée)
 10. ✅ Téléchargement depuis l'admin (utilisé de façon répétée)
 11. ✅ Email commande → Factur-X en pièce jointe (vérifié dans Mailpit)
-12. ⬜ Désactivation/réactivation du plugin — à faire
+12. ✅ Désactivation/réactivation du plugin → aucune erreur, réglages conservés (pas de hook d'activation/désactivation destructif).
 13. ✅ Désinstallation — vérifiée par **revue de code** (on ne fait PAS un vrai « Supprimer » : le dossier du plugin = dépôt Git).
       2 défauts trouvés : (a) aucune meta supprimée (LIKE 'mathisfx_' au lieu de '_mathisfx_') ; (b) compteur effacé → doublons de numéros au réinstall.
       Décision (validée) : **PRÉSERVER l'archive** → uninstall efface réglages + caches uniquement ; conserve factures (PDF + CPT + meta), meta B2B
       commandes et compteur. uninstall.php réécrit (php -l + PHPCS 0). Transients désormais purgés.
 
-## Reste à valider à la prochaine session
-Scénario 12 (désactiver/réactiver) ; le cœur — TVA multi-taux + remises + 0 € + B2C — est prouvé conforme.
-Décision en attente : faut-il générer une facture pour une commande à 0 € ou l'ignorer ? (sortie déjà valide dans les deux cas).
-Puis : screenshots (4) + soumission WordPress.org.
+## Statut : QA TERMINÉE ✅ (13/13)
+Tous les scénarios sont validés. Le cœur (TVA multi-taux + remises + 0 € + B2C) est prouvé **Fully Valid FNFE-MPE**.
+Commande à 0 € : on génère bien une facture (valide) — comportement conservé.
+Bonus ajouté en cours de QA : champ « Prochain numéro de facture » éditable (reprise de série / migration), avec sécurité anti-retour.
+Reste pour la MISE EN LIGNE : 4 screenshots + création du compte WordPress.org + soumission du zip → review ~2-3 sem.

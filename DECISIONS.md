@@ -20,12 +20,13 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
   `gh workflow run build.yml --ref main`. Le zip sort en artefact.
   **Build validé** (structure + autoloading scopé OK). Zip v0.1.0 dans Downloads.
   Strauss NE TOURNE PAS sur Windows → toujours builder via CI/Linux.
-- **QA quasi terminée** (voir tests/QA-checklist.md) : multi-taux, remise/coupon,
-  commande à 0 € ET facture B2C → tous **Fully Valid FNFE-MPE**. SIRET/TVA
-  invalides → blocage checkout OK. **5 bugs/défauts trouvés et corrigés par la
-  QA** : 3 de conformité TVA (890f99b + 0 €), 1 UX VIES (« Erreur inconnue »),
-  1 sur l'uninstall (ne supprimait aucune meta + effaçait le compteur).
-  Reste : scénario 12 (désactiver/réactiver) ; puis screenshots + soumission WP.org.
+- **QA TERMINÉE — 13/13 scénarios validés** (voir tests/QA-checklist.md) :
+  multi-taux, remise/coupon, commande à 0 € ET facture B2C → tous **Fully Valid
+  FNFE-MPE** ; SIRET/TVA invalides → blocage checkout OK ; désactiver/réactiver
+  et désinstallation OK. **5 bugs/défauts corrigés par la QA** (3 conformité TVA,
+  1 UX VIES, 1 uninstall) + **ajout d'une fonctionnalité** : champ « Prochain
+  numéro de facture » éditable (reprise de série / migration, sécurité anti-retour).
+  PHPUnit 23 verts, PHPCS 0. Reste pour être EN LIGNE : screenshots + soumission WP.org.
 
 **Reste pour être EN LIGNE** : finir la QA (scénarios restants), 4 screenshots,
 créer le compte WordPress.org, soumettre le zip → review ~2-3 sem.
@@ -41,6 +42,29 @@ créer le compte WordPress.org, soumettre le zip → review ~2-3 sem.
 
 **Prochaines grosses tâches (tasks)** : #15 publication WP.org, #14 refacto
 Core/Adapter+DTO en V0.5.
+
+---
+
+## 30 mai 2026 — Fonctionnalité : « Prochain numéro de facture » éditable
+
+Ajout (demandé par Mathis) d'un champ dans Réglages → Facturation pour voir ET
+fixer le prochain numéro de facture. Besoin réel : un commerçant qui adopte le
+plugin en cours d'année et a déjà émis des factures (autre outil) doit pouvoir
+reprendre sa série (ex. « prochain = 248 ») au lieu de repartir à 1.
+
+Champ « virtuel » : il n'est PAS stocké comme option propre. Son handler de
+sauvegarde (filtre `woocommerce_admin_settings_sanitize_option_*`) écrit le vrai
+compteur (par année) puis retourne `null` → WC ne persiste rien pour ce champ.
+La valeur affichée est toujours recalculée (compteur courant + 1).
+
+Sécurité « jamais en arrière » à deux niveaux :
+  1. Garde-fou applicatif : refuse un numéro ≤ dernier émis, message clair
+     (`is_acceptable_next_number()`, testé unitairement).
+  2. Écriture SQL atomique conditionnelle (`... WHERE CAST(option_value) <= n`)
+     qui n'abaisse JAMAIS le compteur — protège même contre la course où une
+     commande consomme un numéro pile pendant la sauvegarde des réglages.
+Cohérent avec la numérotation atomique existante (LAST_INSERT_ID). Testé en réel
+(refus du recul + acceptation + génération conforme). PHPUnit 23 verts, PHPCS 0.
 
 ---
 
