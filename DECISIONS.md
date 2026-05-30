@@ -28,8 +28,10 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
   numéro de facture » éditable (reprise de série / migration, sécurité anti-retour).
   PHPUnit 23 verts, PHPCS 0. Reste pour être EN LIGNE : screenshots + soumission WP.org.
 
-**Reste pour être EN LIGNE** : finir la QA (scénarios restants), 4 screenshots,
-créer le compte WordPress.org, soumettre le zip → review ~2-3 sem.
+**Reste pour être EN LIGNE** : soumettre le zip (3,8 Mo) → review ~2-3 sem.
+Compte WP.org créé : identifiant **mathisdd** (= champ Contributors du readme ;
+c'est l'identifiant perso de Mathis pour tout). Screenshots à ajouter via SVN
+après approbation (ils ne bloquent pas le démarrage de la revue).
 
 **Environnement (chemins)** :
 - PHP CLI : `C:\Users\mathis.deroy\AppData\Roaming\Local\lightning-services\php-8.2.29+0\bin\win64\php.exe`

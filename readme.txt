@@ -1,5 +1,5 @@
 === Factur-X for WooCommerce ===
-Contributors: mathisderoy
+Contributors: mathisdd
 Tags: factur-x, e-invoicing, woocommerce, invoice, france
 Requires at least: 6.0
 Tested up to: 7.0
@@ -75,6 +75,15 @@ Yes. HPOS compatibility is declared and all order reads/writes go through the Wo
 = VAT validation shows "service unavailable" — is that a bug? =
 
 No. The European VIES service (and the French registry in particular) limits the number of concurrent requests and is regularly down. The plugin retries automatically, and checkout is never blocked: only the local format check is required.
+
+== External services ==
+
+This plugin validates business identifiers against two official third-party services. A request is sent **only** when a SIRET or VAT number is entered in the B2B checkout fields (or saved in the settings); nothing is sent otherwise. The plugin includes no analytics and no tracking.
+
+* **INSEE Sirene API** — when a SIRET is entered, the 14-digit SIRET is sent to the INSEE Sirene API to confirm the establishment exists and to retrieve its legal company name. A request is made only if you have configured your own (free) INSEE API key; with no key, the SIRET is only checked locally and nothing is sent. Service: https://api.insee.fr/ — Terms: https://api.insee.fr/catalogue/ — Privacy: https://www.insee.fr/fr/information/2381863
+* **European Commission VIES** — when an intra-community VAT number is entered, that VAT number is sent to the EU VIES service to check its validity (and, when the member state returns it, the trader name). Service & terms: https://ec.europa.eu/taxation_customs/vies/
+
+No invoice content or customer data is sent to the plugin author or to any other server.
 
 == Screenshots ==
 
