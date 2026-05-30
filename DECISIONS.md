@@ -20,11 +20,12 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
   `gh workflow run build.yml --ref main`. Le zip sort en artefact.
   **Build validé** (structure + autoloading scopé OK). Zip v0.1.0 dans Downloads.
   Strauss NE TOURNE PAS sur Windows → toujours builder via CI/Linux.
-- **QA en cours** (voir tests/QA-checklist.md) : multi-taux (TVA 20 % + 5,5 %
-  + exonéré), remise/coupon (–10 %) ET commande à 0 € (coupon 100 %) sont tous
-  **Fully Valid FNFE-MPE**, après correction de 3 vrais bugs (commit 890f99b
-  pour 2, + le correctif 0 €). Reste les scénarios mécaniques 1,3,5,12,13,
-  puis screenshots + soumission WP.org.
+- **QA quasi terminée** (voir tests/QA-checklist.md) : multi-taux, remise/coupon,
+  commande à 0 € ET facture B2C → tous **Fully Valid FNFE-MPE**. SIRET/TVA
+  invalides → blocage checkout OK. **5 bugs/défauts trouvés et corrigés par la
+  QA** : 3 de conformité TVA (890f99b + 0 €), 1 UX VIES (« Erreur inconnue »),
+  1 sur l'uninstall (ne supprimait aucune meta + effaçait le compteur).
+  Reste : scénario 12 (désactiver/réactiver) ; puis screenshots + soumission WP.org.
 
 **Reste pour être EN LIGNE** : finir la QA (scénarios restants), 4 screenshots,
 créer le compte WordPress.org, soumettre le zip → review ~2-3 sem.
@@ -40,6 +41,33 @@ créer le compte WordPress.org, soumettre le zip → review ~2-3 sem.
 
 **Prochaines grosses tâches (tasks)** : #15 publication WP.org, #14 refacto
 Core/Adapter+DTO en V0.5.
+
+---
+
+## 30 mai 2026 — QA : désinstallation revue (préserver l'archive de factures)
+
+Scénario 13 (désinstallation). Revue de code de `uninstall.php` (on ne fait PAS
+un vrai « Supprimer » depuis l'admin : le dossier du plugin **est** le dépôt
+Git, WordPress le supprimerait). Deux problèmes trouvés :
+
+1. **Aucune meta n'était supprimée.** Le code cherchait `LIKE 'mathisfx\_%'`
+   alors que TOUTES les meta du plugin sont préfixées `_mathisfx_` (underscore
+   devant, convention WC). Les requêtes ne matchaient donc rien.
+2. **Le compteur de numéros était effacé.** `mathisfx_invoice_counter` était
+   dans la liste des options supprimées → après désinstallation/réinstallation,
+   la numérotation repartait à 0 et **réémettait des numéros déjà utilisés**
+   (interdit pour une facturation légale séquentielle).
+
+Décision (validée avec Mathis via AskUserQuestion) : **préserver l'archive**.
+La désinstallation efface UNIQUEMENT les réglages (identité vendeur, clé INSEE,
+format, apparence) + les caches (transients INSEE/VIES). Elle CONSERVE :
+les PDF (documents légaux, ~10 ans de conservation en France), les posts CPT
+`mathisfx_invoice` + leurs meta (piste d'audit), les meta B2B des commandes, et
+le compteur (pour que la numérotation ne collisionne jamais après réinstall).
+Alternative « nettoyage complet » écartée (risque de doublons de numéros).
+
+`uninstall.php` réécrit en ce sens (PHPCS 0, php -l OK). Au passage : nettoyage
+des transients ajouté (ils n'étaient pas purgés).
 
 ---
 
