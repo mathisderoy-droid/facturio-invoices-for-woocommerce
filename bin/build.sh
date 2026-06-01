@@ -109,6 +109,18 @@ find "${BUILD_DIR}/vendor-prefixed" -type d \
 echo "==> Regenerating the (own classes) autoloader"
 composer dump-autoload --optimize --no-dev --no-interaction
 
+echo "==> Renaming vendor/ -> lib/ (avoid Plugin Check's vendor-without-composer.json warning)"
+# After Strauss, vendor/ holds ONLY our own classmap autoloader + Composer's
+# autoload infrastructure (no third-party packages — those live in
+# vendor-prefixed/). Plugin Check flags any directory literally named "vendor"
+# that has no composer.json (which we intentionally don't ship). The autoloader
+# uses dirname(__DIR__) for every path, so renaming the directory is safe — it
+# self-locates. The main plugin file also looks for lib/autoload.php.
+if [ -d "${BUILD_DIR}/vendor" ]; then
+    rm -rf "${BUILD_DIR}/lib"
+    mv "${BUILD_DIR}/vendor" "${BUILD_DIR}/lib"
+fi
+
 echo "==> Removing build-only tooling from the package"
 rm -f strauss.phar composer.json composer.lock
 
