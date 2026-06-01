@@ -49,6 +49,30 @@ Core/Adapter+DTO en V0.5.
 
 ---
 
+## 1er juin 2026 — Plugin Check : garder composer.json (NE PAS renommer vendor/)
+
+Plugin Check sur le zip → 1 warning unique `missing_composer_json_file`
+(dossier vendor/ présent sans composer.json). Première tentative (commit
+5365cea) : renommer vendor/ → lib/. **MAUVAISE idée** : Plugin Check ignore
+volontairement le CONTENU de tout dossier nommé `vendor`/`vendor-prefixed` ;
+en renommant, on a exposé l'autoloader généré par Composer (lib/composer/*) au
+scan PHPCS → ~25 erreurs bidon (escaping, heredoc, unlink, fwrite, direct file
+access) dans du code Composer qu'on ne contrôle pas. Aucune dans notre code.
+
+Bonne solution (ce commit) : revenir à vendor/ et au contraire INCLURE
+composer.json dans le zip (c'est littéralement ce que le message demande).
+composer.json est du JSON → non analysé par PHPCS ; et le nom « vendor »
+garde l'autoloader Composer hors du scan. build.sh ne supprime plus que
+strauss.phar + composer.lock. Fichier principal : retour à 2 chemins
+d'autoload (vendor-prefixed/ puis vendor/).
+
+Incident annexe : à force de renommer/réinstaller les dossiers de plugins,
+le dossier de dev local (-DEV) a été vidé/corrompu (git cassé). Sans gravité :
+tout est sur GitHub → re-cloné proprement. LEÇON : ne pas jongler avec les
+dossiers ; tester le zip via une COPIE, garder le dev intact.
+
+---
+
 ## 1er juin 2026 — Bug CRITIQUE de packaging : YAML zugferd non scopés
 
 Test du ZIP packagé sur le site (pas le dev) → la génération de facture échoue :

@@ -109,20 +109,17 @@ find "${BUILD_DIR}/vendor-prefixed" -type d \
 echo "==> Regenerating the (own classes) autoloader"
 composer dump-autoload --optimize --no-dev --no-interaction
 
-echo "==> Renaming vendor/ -> lib/ (avoid Plugin Check's vendor-without-composer.json warning)"
-# After Strauss, vendor/ holds ONLY our own classmap autoloader + Composer's
-# autoload infrastructure (no third-party packages — those live in
-# vendor-prefixed/). Plugin Check flags any directory literally named "vendor"
-# that has no composer.json (which we intentionally don't ship). The autoloader
-# uses dirname(__DIR__) for every path, so renaming the directory is safe — it
-# self-locates. The main plugin file also looks for lib/autoload.php.
-if [ -d "${BUILD_DIR}/vendor" ]; then
-    rm -rf "${BUILD_DIR}/lib"
-    mv "${BUILD_DIR}/vendor" "${BUILD_DIR}/lib"
-fi
-
 echo "==> Removing build-only tooling from the package"
-rm -f strauss.phar composer.json composer.lock
+# Keep composer.json in the shipped zip. Plugin Check raises the
+# 'missing_composer_json_file' warning when a vendor/ directory ships WITHOUT a
+# composer.json; the documented fix is to INCLUDE composer.json, not to rename
+# the folder. Just as importantly, Plugin Check skips the *contents* of any
+# directory literally named "vendor" (and "vendor-prefixed"), which is exactly
+# what keeps Composer's generated autoloader files out of the PHPCS scan.
+# Renaming vendor/ would expose all that infra and trigger dozens of bogus
+# escaping/heredoc/file-access errors. composer.lock and strauss.phar are
+# build-only and removed.
+rm -f strauss.phar composer.lock
 
 echo "==> Zipping"
 cd "${BUILD_DIR}/.."

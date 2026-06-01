@@ -33,24 +33,20 @@ define( 'MATHISFX_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 /*
  * Autoloaders.
  *
- * Three paths are supported so the same source works in development and in the
+ * Two are supported so the same source works in development and in the
  * distributed build:
  *   - vendor-prefixed/autoload.php : the Strauss-scoped dependencies, only
  *     present in the WP.org build zip (produced by bin/build.sh on Linux).
  *     Loaded FIRST so scoped classes win over any other plugin's copies.
- *   - lib/autoload.php             : our own classmap (includes/) in the build
- *     zip. The build renames vendor/ to lib/ so there is no directory literally
- *     named "vendor" without a composer.json (a Plugin Check warning).
- *   - vendor/autoload.php          : our own classmap and, in development, the
- *     unscoped dependencies installed by `composer install`.
+ *   - vendor/autoload.php          : our own classmap (includes/) and, in
+ *     development, the unscoped dependencies installed by `composer install`.
  *
  * In dev only vendor/ exists → unscoped libs are used (fine locally).
- * In the build vendor-prefixed/ + lib/ exist → conflict-proof scoped libs.
+ * In the build vendor-prefixed/ exists → conflict-proof scoped libs are used.
  */
 foreach (
 	array(
 		__DIR__ . '/vendor-prefixed/autoload.php',
-		__DIR__ . '/lib/autoload.php',
 		__DIR__ . '/vendor/autoload.php',
 	) as $mathisfx_autoload
 ) {
