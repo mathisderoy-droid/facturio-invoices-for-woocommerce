@@ -20,6 +20,8 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
   `gh workflow run build.yml --ref main`. Le zip sort en artefact.
   **Build validé** (structure + autoloading scopé OK). Zip v0.1.0 dans Downloads.
   Strauss NE TOURNE PAS sur Windows → toujours builder via CI/Linux.
+  ⚠️ TOUJOURS tester le ZIP packagé lui-même (pas seulement le dev) : un bug de
+  scoping (cf. YAML zugferd, 1er juin) n'apparaît QUE dans le zip scopé.
 - **QA TERMINÉE — 13/13 scénarios validés** (voir tests/QA-checklist.md) :
   multi-taux, remise/coupon, commande à 0 € ET facture B2C → tous **Fully Valid
   FNFE-MPE** ; SIRET/TVA invalides → blocage checkout OK ; désactiver/réactiver
@@ -44,6 +46,28 @@ après approbation (ils ne bloquent pas le démarrage de la revue).
 
 **Prochaines grosses tâches (tasks)** : #15 publication WP.org, #14 refacto
 Core/Adapter+DTO en V0.5.
+
+---
+
+## 1er juin 2026 — Bug CRITIQUE de packaging : YAML zugferd non scopés
+
+Test du ZIP packagé sur le site (pas le dev) → la génération de facture échoue :
+« Expected metadata for class Mathis\FacturX\Vendor\horstoeko\zugferd\…\
+CrossIndustryInvoiceType to be defined in …/CrossIndustryInvoiceType.yml ».
+
+Cause : horstoeko/zugferd embarque 267 fichiers `*.yml` (lus à l'exécution par
+jms/serializer pour mapper classe → XML). Strauss réécrit les classes PHP mais
+PAS le contenu des `.yml` → après scoping, le code cherche la classe préfixée
+`Mathis\FacturX\Vendor\horstoeko\zugferd\…` alors que le YAML dit encore
+`horstoeko\zugferd\…`. Résultat : **le plugin packagé ne génère AUCUNE facture**
+(invisible en dev, qui utilise le vendor/ non scopé). Le 1er zip soumis aurait
+été totalement cassé — attrapé par le test du zip réel (d'où la règle ci-dessus).
+
+Correctif : script `bin/fix-zugferd-yaml-namespace.py` (idempotent, + mode
+`--check`) qui préfixe la chaîne dans les 267 YAML, branché dans `bin/build.sh`
+juste après Strauss (write puis check qui fait échouer le build si un ref reste).
+`bin/` est exclu du zip → seul l'EFFET (YAML corrigés) est livré, pas le script.
+Vérifié sur les 267 fichiers réels (write → 267 réécrits ; check → 0 restant).
 
 ---
 

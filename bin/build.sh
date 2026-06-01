@@ -73,6 +73,21 @@ echo "==> Scoping dependencies into Mathis\\FacturX\\Vendor\\ + rewriting call s
 composer config --global --unset github-oauth.github.com 2>/dev/null || true
 COMPOSER_AUTH='{}' php strauss.phar --updateCallSites=includes
 
+echo "==> Rewriting zugferd YAML metadata namespace (Strauss skips *.yml)"
+# horstoeko/zugferd ships 267 *.yml metadata files that jms/serializer reads at
+# runtime to map classes to XML. Strauss rewrites PHP class names but NOT the
+# strings inside these YAML files, so after scoping the serializer looks for
+# `Mathis\FacturX\Vendor\horstoeko\zugferd\...` while the YAML still says
+# `horstoeko\zugferd\...` and throws "Expected metadata for class ... to be
+# defined in ...". That makes the BUILT plugin unable to generate any invoice
+# (works in dev only because dev uses the unscoped vendor/). Patch the YAML to
+# match, then assert nothing was missed.
+ZUGFERD_YAML="${BUILD_DIR}/vendor-prefixed/horstoeko/zugferd/src/yaml"
+if [ -d "${ZUGFERD_YAML}" ]; then
+    python3 "${ROOT}/bin/fix-zugferd-yaml-namespace.py" "${ZUGFERD_YAML}"
+    python3 "${ROOT}/bin/fix-zugferd-yaml-namespace.py" "${ZUGFERD_YAML}" --check
+fi
+
 echo "==> Trimming bundled dependencies (unused TCPDF fonts + dependency tests/docs)"
 # TCPDF ships ~25 MB of fonts; this plugin only ever uses the base-14 'helvetica'
 # (TCPDF substitutes its embeddable 'pdfahelvetica' variant in PDF/A mode). Keep
