@@ -5,6 +5,45 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
 
 ---
 
+## 1er juin 2026 — Stratégie monétisation V0.5 (décision de principe)
+
+Discussion business (pas de code décidé). À prendre en compte DÈS la conception
+de la V0.5, mais l'intégration technique reste légère.
+
+**Modèle retenu : freemium « plugin unique ».**
+- UN seul plugin (pas deux) contenant le code gratuit ET le code Pro ; le Pro
+  est verrouillé derrière la licence. Éviter absolument deux plugins séparés
+  (double maintenance, double bugs).
+- Plateforme de vente/licence : **Freemius** (recommandé pour démarrer seul).
+  Gère en clé-en-main : page de paiement (CB/PayPal via Stripe), génération +
+  vérification des clés de licence (côté serveur), mises à jour auto du Pro,
+  ET la TVA UE. Alternative notée : Lemon Squeezy / Paddle (Merchant of Record,
+  TVA mondiale gérée pour nous). EDD/WooCommerce auto-hébergé = plus tard.
+- Côté code : SDK Freemius inclus → un simple portillon
+  `if ( mathisfx_fs()->can_use_premium_code() ) { … }` devant chaque feature Pro.
+  Seul ajout maison : champ « clé de licence » dans les réglages (fourni par le SDK).
+
+**Lien clé avec l'archi :** le refactor Core/Adapter (tâche V0.5 déjà notée) EST
+la préparation à la licence. Séparer cœur gratuit / modules Pro = pouvoir poser
+les portillons proprement. Donc « prendre en compte la licence » ≈ « bien faire
+le Core/Adapter ». Les deux ne sont pas séparés.
+
+**Site de vente :** simple VITRINE (1-3 pages : présentation + bouton Acheter qui
+ouvre la page de paiement Freemius). PAS une boutique e-commerce — ni paiement ni
+base clients à héberger soi-même. Réalisable facilement le moment venu. C'est la
+DERNIÈRE étape (après approbation WP.org + code V0.5), pas un prérequis.
+
+**Anti-piratage :** pas de protection à coder (Freemius s'en charge :
+vérif serveur, limite de sites/licence, révocation à distance). Protection
+naturelle = le plugin DOIT rester à jour pour rester conforme à la loi fiscale
+FR (qui évolue) → un plugin piraté/figé devient non conforme. Ne pas se bloquer
+là-dessus.
+
+Ordre des étapes : 1) WP.org approuve V0.1 → 2) coder V0.5 (Core/Adapter +
+modules Pro) → 3) Freemius + site vitrine + bouton d'achat.
+
+---
+
 ## 🧭 ÉTAT ACTUEL (fin de session 29 mai 2026) — lire en premier
 
 **V0.1 développée, testée, taguée `v0.1.0`, sur GitHub avec build CI validé.**
