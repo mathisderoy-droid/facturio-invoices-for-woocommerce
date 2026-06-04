@@ -118,6 +118,15 @@ bin/inspect-facturx.py — FNFE était down, mais c'est la même sortie déjà
 Fully Valid avant, seul l'emballage avait changé). Zip prêt dans Downloads.
 Licences deps : 23 MIT + 2 LGPL → toutes GPL-compatibles (case 4 OK).
 
+✅ RESOUMIS sous le nom **Facturio Invoices for WooCommerce**
+(slug `facturio-invoices-for-woocommerce`) le 3 juin, après le mail
+« Review in Progress » du 2 juin (tous les points corrigés — cf. entrée
+2-3 juin). Zip Facturio re-uploadé + réponse au reviewer envoyée (demande de
+réservation du nouveau slug + clarification du faux positif `<style>` PDF).
+Facture F2026-000048 du build Facturio = conforme. **EN ATTENTE de la
+ré-assignation à un volontaire / approbation.** Dépôt GitHub :
+mathisderoy-droid/facturio-invoices-for-woocommerce (public).
+
 **Environnement (chemins)** :
 - PHP CLI : `C:\Users\mathis.deroy\AppData\Roaming\Local\lightning-services\php-8.2.29+0\bin\win64\php.exe`
 - wp-cli : `...\AppData\Local\Programs\Local\resources\extraResources\bin\wp-cli\wp-cli.phar` (DB injoignable hors Site Shell → utiliser le Site Shell de Local)
