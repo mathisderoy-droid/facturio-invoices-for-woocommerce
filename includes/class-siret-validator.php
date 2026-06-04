@@ -112,7 +112,7 @@ final class SiretValidator {
 		if ( ! self::is_valid_format( $siret ) ) {
 			return array(
 				'valid' => false,
-				'error' => __( 'Format SIRET invalide (échec du contrôle Luhn local).', 'factur-x-for-woocommerce' ),
+				'error' => __( 'Format SIRET invalide (échec du contrôle Luhn local).', 'facturflow-invoices-for-woocommerce' ),
 			);
 		}
 
@@ -127,7 +127,7 @@ final class SiretValidator {
 		if ( $api_key === '' ) {
 			return array(
 				'valid' => false,
-				'error' => __( 'Clé API INSEE absente. Renseignez-la dans Réglages → Factur-X → Intégrations.', 'factur-x-for-woocommerce' ),
+				'error' => __( 'Clé API INSEE absente. Renseignez-la dans Réglages → Factur-X → Intégrations.', 'facturflow-invoices-for-woocommerce' ),
 			);
 		}
 
@@ -177,7 +177,7 @@ final class SiretValidator {
 			return array(
 				'valid'     => false,
 				/* translators: %s = network error message. */
-				'error'     => sprintf( __( 'Erreur réseau INSEE : %s', 'factur-x-for-woocommerce' ), $response->get_error_message() ),
+				'error'     => sprintf( __( 'Erreur réseau INSEE : %s', 'facturflow-invoices-for-woocommerce' ), $response->get_error_message() ),
 				'cacheable' => false,
 			);
 		}
@@ -201,7 +201,7 @@ final class SiretValidator {
 				return array(
 					'valid'     => false,
 					/* translators: %s = network error message. */
-					'error'     => sprintf( __( 'Erreur réseau INSEE : %s', 'factur-x-for-woocommerce' ), $response->get_error_message() ),
+					'error'     => sprintf( __( 'Erreur réseau INSEE : %s', 'facturflow-invoices-for-woocommerce' ), $response->get_error_message() ),
 					'cacheable' => false,
 				);
 			}
@@ -211,7 +211,7 @@ final class SiretValidator {
 		if ( $code === 401 || $code === 403 ) {
 			return array(
 				'valid'     => false,
-				'error'     => __( 'Clé API INSEE refusée. Vérifiez son exactitude dans les Réglages.', 'factur-x-for-woocommerce' ),
+				'error'     => __( 'Clé API INSEE refusée. Vérifiez son exactitude dans les Réglages.', 'facturflow-invoices-for-woocommerce' ),
 				'cacheable' => false, // user might fix the key and retry
 			);
 		}
@@ -219,7 +219,7 @@ final class SiretValidator {
 		if ( $code === 404 ) {
 			return array(
 				'valid'     => false,
-				'error'     => __( 'SIRET introuvable dans la base Sirene INSEE.', 'factur-x-for-woocommerce' ),
+				'error'     => __( 'SIRET introuvable dans la base Sirene INSEE.', 'facturflow-invoices-for-woocommerce' ),
 				'cacheable' => true,
 			);
 		}
@@ -228,7 +228,7 @@ final class SiretValidator {
 			return array(
 				'valid'     => false,
 				/* translators: %d = HTTP status code. */
-				'error'     => sprintf( __( 'Erreur API INSEE (HTTP %d).', 'factur-x-for-woocommerce' ), $code ),
+				'error'     => sprintf( __( 'Erreur API INSEE (HTTP %d).', 'facturflow-invoices-for-woocommerce' ), $code ),
 				'cacheable' => false,
 			);
 		}
@@ -237,7 +237,7 @@ final class SiretValidator {
 		if ( ! is_array( $body ) || empty( $body['etablissement'] ) ) {
 			return array(
 				'valid'     => false,
-				'error'     => __( 'Réponse INSEE inattendue.', 'factur-x-for-woocommerce' ),
+				'error'     => __( 'Réponse INSEE inattendue.', 'facturflow-invoices-for-woocommerce' ),
 				'cacheable' => false,
 			);
 		}

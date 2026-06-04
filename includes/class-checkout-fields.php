@@ -74,15 +74,15 @@ final class CheckoutFields {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( AjaxValidators::NONCE_ACTION ),
 				'strings' => array(
-					'checking'         => __( 'Vérification en cours…', 'factur-x-for-woocommerce' ),
+					'checking'         => __( 'Vérification en cours…', 'facturflow-invoices-for-woocommerce' ),
 					/* translators: %s = legal company name returned by INSEE. */
-					'siretValid'       => __( 'SIRET valide : %s', 'factur-x-for-woocommerce' ),
-					'siretInactive'    => __( 'Établissement fermé selon Sirene.', 'factur-x-for-woocommerce' ),
-					'vatValid'         => __( 'TVA valide.', 'factur-x-for-woocommerce' ),
+					'siretValid'       => __( 'SIRET valide : %s', 'facturflow-invoices-for-woocommerce' ),
+					'siretInactive'    => __( 'Établissement fermé selon Sirene.', 'facturflow-invoices-for-woocommerce' ),
+					'vatValid'         => __( 'TVA valide.', 'facturflow-invoices-for-woocommerce' ),
 					/* translators: %s = company name returned by VIES. */
-					'vatValidWithName' => __( 'TVA valide : %s', 'factur-x-for-woocommerce' ),
-					'unavailable'      => __( 'Service de validation temporairement indisponible. Réessayez plus tard.', 'factur-x-for-woocommerce' ),
-					'unknownError'     => __( 'Erreur inconnue.', 'factur-x-for-woocommerce' ),
+					'vatValidWithName' => __( 'TVA valide : %s', 'facturflow-invoices-for-woocommerce' ),
+					'unavailable'      => __( 'Service de validation temporairement indisponible. Réessayez plus tard.', 'facturflow-invoices-for-woocommerce' ),
+					'unknownError'     => __( 'Erreur inconnue.', 'facturflow-invoices-for-woocommerce' ),
 				),
 			)
 		);
@@ -108,14 +108,14 @@ final class CheckoutFields {
 			<p class="form-row mathisfx-b2b-toggle">
 				<label class="checkbox">
 					<input type="checkbox" name="mathisfx_is_b2b" id="mathisfx_is_b2b" value="1" <?php checked( '1', $checkout->get_value( 'mathisfx_is_b2b' ) ); ?> />
-					<span><?php esc_html_e( 'Je commande pour mon entreprise', 'factur-x-for-woocommerce' ); ?></span>
+					<span><?php esc_html_e( 'Je commande pour mon entreprise', 'facturflow-invoices-for-woocommerce' ); ?></span>
 				</label>
 			</p>
 
 			<div id="mathisfx_b2b_fields" class="mathisfx-b2b-fields" aria-hidden="true">
-				<h3><?php esc_html_e( 'Informations de votre entreprise', 'factur-x-for-woocommerce' ); ?></h3>
+				<h3><?php esc_html_e( 'Informations de votre entreprise', 'facturflow-invoices-for-woocommerce' ); ?></h3>
 				<p class="mathisfx-b2b-help">
-					<?php esc_html_e( 'Ces informations seront utilisées pour générer une facture Factur-X conforme à la réforme française 2026.', 'factur-x-for-woocommerce' ); ?>
+					<?php esc_html_e( 'Ces informations seront utilisées pour générer une facture Factur-X conforme à la réforme française 2026.', 'facturflow-invoices-for-woocommerce' ); ?>
 				</p>
 
 				<?php
@@ -123,7 +123,7 @@ final class CheckoutFields {
 					'mathisfx_company_name',
 					array(
 						'type'         => 'text',
-						'label'        => __( 'Raison sociale', 'factur-x-for-woocommerce' ),
+						'label'        => __( 'Raison sociale', 'facturflow-invoices-for-woocommerce' ),
 						'required'     => false,
 						'class'        => array( 'form-row-wide' ),
 						'autocomplete' => 'organization',
@@ -135,8 +135,8 @@ final class CheckoutFields {
 					'mathisfx_siret',
 					array(
 						'type'              => 'text',
-						'label'             => __( 'SIRET', 'factur-x-for-woocommerce' ),
-						'placeholder'       => __( '14 chiffres', 'factur-x-for-woocommerce' ),
+						'label'             => __( 'SIRET', 'facturflow-invoices-for-woocommerce' ),
+						'placeholder'       => __( '14 chiffres', 'facturflow-invoices-for-woocommerce' ),
 						'required'          => false,
 						'class'             => array( 'form-row-first' ),
 						'custom_attributes' => array(
@@ -151,7 +151,7 @@ final class CheckoutFields {
 					'mathisfx_vat',
 					array(
 						'type'        => 'text',
-						'label'       => __( 'Numéro de TVA intracommunautaire', 'factur-x-for-woocommerce' ),
+						'label'       => __( 'Numéro de TVA intracommunautaire', 'facturflow-invoices-for-woocommerce' ),
 						'placeholder' => 'FR00000000000',
 						'required'    => false,
 						'class'       => array( 'form-row-last' ),
@@ -163,8 +163,8 @@ final class CheckoutFields {
 					'mathisfx_ape_code',
 					array(
 						'type'        => 'text',
-						'label'       => __( 'Code APE / NAF (optionnel)', 'factur-x-for-woocommerce' ),
-						'placeholder' => __( 'Ex. 6202A', 'factur-x-for-woocommerce' ),
+						'label'       => __( 'Code APE / NAF (optionnel)', 'facturflow-invoices-for-woocommerce' ),
+						'placeholder' => __( 'Ex. 6202A', 'facturflow-invoices-for-woocommerce' ),
 						'required'    => false,
 						'class'       => array( 'form-row-wide' ),
 					),
@@ -200,7 +200,7 @@ final class CheckoutFields {
 			: '';
 		if ( $company_name === '' ) {
 			wc_add_notice(
-				__( 'Veuillez saisir la raison sociale de votre entreprise.', 'factur-x-for-woocommerce' ),
+				__( 'Veuillez saisir la raison sociale de votre entreprise.', 'facturflow-invoices-for-woocommerce' ),
 				'error'
 			);
 		}
@@ -213,12 +213,12 @@ final class CheckoutFields {
 
 		if ( $siret === '' ) {
 			wc_add_notice(
-				__( 'Veuillez saisir le numéro SIRET de votre entreprise.', 'factur-x-for-woocommerce' ),
+				__( 'Veuillez saisir le numéro SIRET de votre entreprise.', 'facturflow-invoices-for-woocommerce' ),
 				'error'
 			);
 		} elseif ( ! SiretValidator::is_valid_format( $siret ) ) {
 			wc_add_notice(
-				__( 'Le numéro SIRET saisi est invalide (14 chiffres requis, échec du contrôle Luhn). Vérifiez la saisie.', 'factur-x-for-woocommerce' ),
+				__( 'Le numéro SIRET saisi est invalide (14 chiffres requis, échec du contrôle Luhn). Vérifiez la saisie.', 'facturflow-invoices-for-woocommerce' ),
 				'error'
 			);
 		}
@@ -231,7 +231,7 @@ final class CheckoutFields {
 
 		if ( $vat !== '' && ! ViesValidator::is_valid_french_format( $vat ) ) {
 			wc_add_notice(
-				__( 'Le numéro de TVA intracommunautaire doit suivre le format français : FR suivi de 11 caractères.', 'factur-x-for-woocommerce' ),
+				__( 'Le numéro de TVA intracommunautaire doit suivre le format français : FR suivi de 11 caractères.', 'facturflow-invoices-for-woocommerce' ),
 				'error'
 			);
 		}

@@ -5,6 +5,40 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
 
 ---
 
+## 2-3 juin 2026 — Revue WP.org « Review in Progress » → renommage + corrections
+
+Mail plugins@wordpress.org (2 juin) : soumission **mise en pause** (PAS rejetée)
+avec une liste de points. Traités :
+
+1. **NOM (point principal).** « Factur-X for WooCommerce » refusé : un nom ne doit
+   pas COMMENCER par une marque/projet non possédé (Factur-X, WooCommerce). Choisi
+   avec Mathis : **« FacturFlow Invoices for WooCommerce »** (terme unique
+   « FacturFlow » en tête, marque à la fin). Nouveau slug + text domain :
+   **`facturflow-invoices-for-woocommerce`**. Renommés : nom affiché, slug,
+   text-domain (172 remplacements, script auditable bin/rename-plugin.py),
+   fichier principal `*.php`, `languages/*.pot`, SLUG de build.sh (= nom du
+   dossier dans le zip, critique), artefact CI. Préfixes code internes
+   (mathisfx_/MATHISFX_/namespace Mathis\FacturX) CONSERVÉS (déjà conformes).
+   ⚠️ À FAIRE dans la réponse au reviewer : **demander explicitement la
+   réservation du nouveau slug** (le permalink est définitif après approbation).
+2. **URLs 404.** Author/Plugin URI pointaient vers `github.com/mathisderoy`
+   (compte inexistant) → corrigé en `mathisderoy-droid`. Dépôt GitHub **rendu
+   public** + **renommé** `facturflow-invoices-for-woocommerce` (URLs valides).
+3. **Requires Plugins: woocommerce** ajouté à l'en-tête (dépendance WC déclarée).
+4. **Dossier dev parasite** `vendor-prefixed/doctrine/deprecations/src/PHPUnit`
+   → ajout de `PHPUnit` à l'élagage de bin/build.sh.
+5. **Services externes** : section readme « External services » déjà complète
+   (INSEE/VIES : quoi/quand/où + liens terms+privacy) — conforme.
+6. **`<style>` dans templates/invoice/default.php** (ligne 37) signalé « à
+   enqueue » → **FAUX POSITIF** : c'est le CSS du PDF (TCPDF), pas une page web ;
+   wp_enqueue n'a pas de sens. À EXPLIQUER brièvement dans la réponse au reviewer.
+
+Process : corriger → rebuild zip → ré-uploader via « Add your plugin » →
+RÉPONDRE au mail (court, direct ; demander la réservation du slug ; mentionner
+le faux positif du `<style>`). Reste en review tant que non approuvé.
+
+---
+
 ## 1er juin 2026 — Stratégie monétisation V0.5 (décision de principe)
 
 Discussion business (pas de code décidé). À prendre en compte DÈS la conception

@@ -14,7 +14,7 @@
 #   Windows keeps using the unscoped vendor/ and works fine.
 #
 # USAGE
-#   bash bin/build.sh            # builds dist/factur-x-for-woocommerce.zip
+#   bash bin/build.sh            # builds dist/facturflow-invoices-for-woocommerce.zip
 #
 # REQUIREMENTS (on the build machine)
 #   - php >= 8.0 with ext-zip, ext-fileinfo, ext-gd
@@ -24,7 +24,8 @@
 set -euo pipefail
 
 STRAUSS_VERSION="0.27.2"
-SLUG="factur-x-for-woocommerce"
+# Must match the WordPress.org slug: it names the plugin folder inside the zip.
+SLUG="facturflow-invoices-for-woocommerce"
 
 # Resolve repo root (this script lives in bin/).
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -101,9 +102,12 @@ if [ -d "${FONTS_DIR}" ]; then
         ! -iname 'pdfa*' \
         -delete
 fi
-# Dependency test/doc/example folders never run in production.
+# Dependency test/doc/example folders never run in production. Includes
+# PHPUnit/ subfolders some packages ship (e.g. doctrine/deprecations), which the
+# WP.org reviewer flagged as an unneeded development folder.
 find "${BUILD_DIR}/vendor-prefixed" -type d \
-    \( -name 'tests' -o -name 'Tests' -o -name 'test' -o -name 'docs' -o -name 'doc' -o -name 'examples' \) \
+    \( -name 'tests' -o -name 'Tests' -o -name 'test' -o -name 'PHPUnit' \
+       -o -name 'docs' -o -name 'doc' -o -name 'examples' \) \
     -prune -exec rm -rf {} + 2>/dev/null || true
 
 echo "==> Regenerating the (own classes) autoloader"

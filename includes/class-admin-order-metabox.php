@@ -36,7 +36,7 @@ final class AdminOrderMetabox {
 		}
 		add_meta_box(
 			'mathisfx_order_invoice',
-			__( 'Facture Factur-X', 'factur-x-for-woocommerce' ),
+			__( 'Facture Factur-X', 'facturflow-invoices-for-woocommerce' ),
 			array( $this, 'render' ),
 			wc_get_page_screen_id( 'shop-order' ),
 			'side',
@@ -74,15 +74,15 @@ final class AdminOrderMetabox {
 	 * No invoice yet — show a one-click "Generate now" button.
 	 */
 	private function render_empty_state( \WC_Order $order ): void {
-		echo '<p>' . esc_html__( 'Aucune facture générée pour cette commande.', 'factur-x-for-woocommerce' ) . '</p>';
+		echo '<p>' . esc_html__( 'Aucune facture générée pour cette commande.', 'facturflow-invoices-for-woocommerce' ) . '</p>';
 
 		$url = AdminDownload::get_regenerate_url( $order->get_id() );
 		printf(
 			'<p><a href="%s" class="button button-primary">%s</a></p>',
 			esc_url( $url ),
-			esc_html__( 'Générer la facture maintenant', 'factur-x-for-woocommerce' )
+			esc_html__( 'Générer la facture maintenant', 'facturflow-invoices-for-woocommerce' )
 		);
-		echo '<p class="description">' . esc_html__( 'Consomme le prochain numéro de facture et crée le PDF Factur-X conforme EN 16931.', 'factur-x-for-woocommerce' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Consomme le prochain numéro de facture et crée le PDF Factur-X conforme EN 16931.', 'facturflow-invoices-for-woocommerce' ) . '</p>';
 	}
 
 	/**
@@ -95,20 +95,20 @@ final class AdminOrderMetabox {
 		echo '<table class="widefat striped" style="margin-top:0;border:0;"><tbody>';
 		printf(
 			'<tr><th style="text-align:left;padding:6px;width:90px;">%s</th><td style="padding:6px;"><strong>%s</strong></td></tr>',
-			esc_html__( 'Numéro', 'factur-x-for-woocommerce' ),
+			esc_html__( 'Numéro', 'facturflow-invoices-for-woocommerce' ),
 			esc_html( $invoice_number )
 		);
 		if ( $generated_at !== '' ) {
 			printf(
 				'<tr><th style="text-align:left;padding:6px;">%s</th><td style="padding:6px;">%s</td></tr>',
-				esc_html__( 'Émise le', 'factur-x-for-woocommerce' ),
+				esc_html__( 'Émise le', 'facturflow-invoices-for-woocommerce' ),
 				esc_html( $generated_at )
 			);
 		}
 		if ( $filesize > 0 ) {
 			printf(
 				'<tr><th style="text-align:left;padding:6px;">%s</th><td style="padding:6px;">%s</td></tr>',
-				esc_html__( 'Taille', 'factur-x-for-woocommerce' ),
+				esc_html__( 'Taille', 'facturflow-invoices-for-woocommerce' ),
 				esc_html( size_format( $filesize ) )
 			);
 		}
@@ -120,13 +120,13 @@ final class AdminOrderMetabox {
 		printf(
 			'<p style="margin-top:1em;"><a href="%s" class="button button-primary" style="width:100%%;text-align:center;">%s</a></p>',
 			esc_url( $download_url ),
-			esc_html__( 'Télécharger le PDF', 'factur-x-for-woocommerce' )
+			esc_html__( 'Télécharger le PDF', 'facturflow-invoices-for-woocommerce' )
 		);
 		printf(
 			'<p><a href="%s" class="button" style="width:100%%;text-align:center;" onclick="return confirm(\'%s\');">%s</a></p>',
 			esc_url( $regenerate_url ),
-			esc_attr__( 'La facture actuelle est conservée comme archive (obligation légale). Un nouveau numéro sera attribué à la nouvelle version. Continuer ?', 'factur-x-for-woocommerce' ),
-			esc_html__( 'Régénérer la facture', 'factur-x-for-woocommerce' )
+			esc_attr__( 'La facture actuelle est conservée comme archive (obligation légale). Un nouveau numéro sera attribué à la nouvelle version. Continuer ?', 'facturflow-invoices-for-woocommerce' ),
+			esc_html__( 'Régénérer la facture', 'facturflow-invoices-for-woocommerce' )
 		);
 	}
 }

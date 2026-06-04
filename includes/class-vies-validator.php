@@ -80,7 +80,7 @@ final class ViesValidator {
 		if ( strlen( $vat ) < 4 ) {
 			return array(
 				'valid' => false,
-				'error' => __( 'Numéro de TVA trop court.', 'factur-x-for-woocommerce' ),
+				'error' => __( 'Numéro de TVA trop court.', 'facturflow-invoices-for-woocommerce' ),
 			);
 		}
 
@@ -91,7 +91,7 @@ final class ViesValidator {
 		if ( ! preg_match( '/^[A-Z]{2}$/', $country ) ) {
 			return array(
 				'valid' => false,
-				'error' => __( 'Préfixe pays invalide.', 'factur-x-for-woocommerce' ),
+				'error' => __( 'Préfixe pays invalide.', 'facturflow-invoices-for-woocommerce' ),
 			);
 		}
 
@@ -104,7 +104,7 @@ final class ViesValidator {
 		if ( 'FR' === $country && ! self::is_valid_french_format( $vat ) ) {
 			return array(
 				'valid' => false,
-				'error' => __( 'Numéro de TVA français mal formé (format attendu : FR + 11 caractères).', 'factur-x-for-woocommerce' ),
+				'error' => __( 'Numéro de TVA français mal formé (format attendu : FR + 11 caractères).', 'facturflow-invoices-for-woocommerce' ),
 			);
 		}
 
@@ -182,7 +182,7 @@ final class ViesValidator {
 			return array(
 				'valid'     => false,
 				/* translators: %s = network error message. */
-				'error'     => sprintf( __( 'Erreur réseau VIES : %s', 'factur-x-for-woocommerce' ), $response->get_error_message() ),
+				'error'     => sprintf( __( 'Erreur réseau VIES : %s', 'facturflow-invoices-for-woocommerce' ), $response->get_error_message() ),
 				'cacheable' => false,
 			);
 		}
@@ -203,7 +203,7 @@ final class ViesValidator {
 			return array(
 				'valid'     => false,
 				/* translators: %d = HTTP status code. */
-				'error'     => sprintf( __( 'Erreur API VIES (HTTP %d).', 'factur-x-for-woocommerce' ), $code ),
+				'error'     => sprintf( __( 'Erreur API VIES (HTTP %d).', 'facturflow-invoices-for-woocommerce' ), $code ),
 				'cacheable' => false,
 			);
 		}
@@ -222,7 +222,7 @@ final class ViesValidator {
 			}
 			return array(
 				'valid'     => false,
-				'error'     => __( 'Réponse VIES illisible.', 'factur-x-for-woocommerce' ),
+				'error'     => __( 'Réponse VIES illisible.', 'facturflow-invoices-for-woocommerce' ),
 				'cacheable' => false,
 			);
 		}
@@ -241,7 +241,7 @@ final class ViesValidator {
 		// A clean VIES answer of "not valid" must still carry a human-readable
 		// message, otherwise the checkout JS falls back to "Erreur inconnue".
 		if ( ! $is_valid ) {
-			$result['error'] = __( 'Numéro de TVA non reconnu par VIES.', 'factur-x-for-woocommerce' );
+			$result['error'] = __( 'Numéro de TVA non reconnu par VIES.', 'facturflow-invoices-for-woocommerce' );
 		}
 		return $result;
 	}
@@ -282,7 +282,7 @@ final class ViesValidator {
 			return array(
 				'valid'       => false,
 				'unavailable' => true,
-				'error'       => __( 'Service VIES temporairement saturé (taux d\'appels limité côté UE). Réessayez dans quelques secondes.', 'factur-x-for-woocommerce' ),
+				'error'       => __( 'Service VIES temporairement saturé (taux d\'appels limité côté UE). Réessayez dans quelques secondes.', 'facturflow-invoices-for-woocommerce' ),
 				'cacheable'   => false,
 			);
 		}
@@ -292,7 +292,7 @@ final class ViesValidator {
 		if ( $fault_code === 'INVALID_INPUT' ) {
 			return array(
 				'valid'     => false,
-				'error'     => __( 'Numéro de TVA mal formé (refusé par VIES).', 'factur-x-for-woocommerce' ),
+				'error'     => __( 'Numéro de TVA mal formé (refusé par VIES).', 'facturflow-invoices-for-woocommerce' ),
 				'cacheable' => true,
 			);
 		}
@@ -305,7 +305,7 @@ final class ViesValidator {
 		return array(
 			'valid'     => false,
 			/* translators: %s = VIES SOAP fault code. */
-			'error'     => sprintf( __( 'Erreur VIES : %s', 'factur-x-for-woocommerce' ), $fault_code ),
+			'error'     => sprintf( __( 'Erreur VIES : %s', 'facturflow-invoices-for-woocommerce' ), $fault_code ),
 			'cacheable' => false,
 		);
 	}

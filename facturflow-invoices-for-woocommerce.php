@@ -1,16 +1,17 @@
 <?php
 /**
- * Plugin Name:          Factur-X for WooCommerce
- * Plugin URI:           https://github.com/mathisderoy/factur-x-for-woocommerce
+ * Plugin Name:          FacturFlow Invoices for WooCommerce
+ * Plugin URI:           https://github.com/mathisderoy-droid/facturflow-invoices-for-woocommerce
  * Description:          Génère des factures Factur-X conformes à la réforme française 2026 depuis WooCommerce (PDF/A-3 + XML CII embarqué, profil EN 16931).
  * Version:              0.1.0
  * Requires at least:    6.0
  * Requires PHP:         8.0
+ * Requires Plugins:     woocommerce
  * Author:               Mathis Deroy
- * Author URI:           https://github.com/mathisderoy
+ * Author URI:           https://github.com/mathisderoy-droid
  * License:              GPL v2 or later
  * License URI:          https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:          factur-x-for-woocommerce
+ * Text Domain:          facturflow-invoices-for-woocommerce
  * Domain Path:          /languages
  * WC requires at least: 9.0
  * WC tested up to:      10.8
@@ -91,8 +92,8 @@ add_action(
 				static function (): void {
 					echo '<div class="notice notice-error"><p>';
 					echo esc_html__(
-						'Factur-X for WooCommerce : dépendances Composer manquantes. Exécutez "composer install" dans le dossier du plugin.',
-						'factur-x-for-woocommerce'
+						'FacturFlow Invoices for WooCommerce : dépendances Composer manquantes. Exécutez "composer install" dans le dossier du plugin.',
+						'facturflow-invoices-for-woocommerce'
 					);
 					echo '</p></div>';
 				}

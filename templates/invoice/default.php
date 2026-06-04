@@ -89,12 +89,12 @@ $primary_color = $appearance['primary_color'];
 			<?php endif; ?>
 		</td>
 		<td class="invoice-meta">
-			<span class="label"><?php esc_html_e( 'FACTURE', 'factur-x-for-woocommerce' ); ?></span><br>
+			<span class="label"><?php esc_html_e( 'FACTURE', 'facturflow-invoices-for-woocommerce' ); ?></span><br>
 			<span class="invoice-number"><?php echo esc_html( $invoice['number'] ); ?></span><br><br>
-			<span class="label"><?php esc_html_e( 'Date d\'émission', 'factur-x-for-woocommerce' ); ?></span><br>
+			<span class="label"><?php esc_html_e( 'Date d\'émission', 'facturflow-invoices-for-woocommerce' ); ?></span><br>
 			<?php echo esc_html( $invoice['issue_date_display'] ); ?><br><br>
 			<?php if ( ! empty( $invoice['due_date_display'] ) ) : ?>
-				<span class="label"><?php esc_html_e( 'Échéance', 'factur-x-for-woocommerce' ); ?></span><br>
+				<span class="label"><?php esc_html_e( 'Échéance', 'facturflow-invoices-for-woocommerce' ); ?></span><br>
 				<?php echo esc_html( $invoice['due_date_display'] ); ?>
 			<?php endif; ?>
 		</td>
@@ -107,7 +107,7 @@ $primary_color = $appearance['primary_color'];
 <table class="parties">
 	<tr>
 		<td>
-			<h2><?php esc_html_e( 'Facturé à', 'factur-x-for-woocommerce' ); ?></h2>
+			<h2><?php esc_html_e( 'Facturé à', 'facturflow-invoices-for-woocommerce' ); ?></h2>
 			<div class="party-box">
 				<strong><?php echo esc_html( $buyer['name'] ?: '—' ); ?></strong><br>
 				<?php foreach ( $buyer['address_lines'] as $line ) : ?>
@@ -129,7 +129,7 @@ $primary_color = $appearance['primary_color'];
 			</div>
 		</td>
 		<td>
-			<h2><?php esc_html_e( 'Mode de paiement', 'factur-x-for-woocommerce' ); ?></h2>
+			<h2><?php esc_html_e( 'Mode de paiement', 'facturflow-invoices-for-woocommerce' ); ?></h2>
 			<div class="party-box">
 				<?php echo esc_html( $totals['payment_method_title'] ); ?>
 			</div>
@@ -143,11 +143,11 @@ $primary_color = $appearance['primary_color'];
 <table class="lines" cellspacing="0">
 	<thead>
 		<tr>
-			<th><?php esc_html_e( 'Description', 'factur-x-for-woocommerce' ); ?></th>
-			<th class="num"><?php esc_html_e( 'Qté', 'factur-x-for-woocommerce' ); ?></th>
-			<th class="num"><?php esc_html_e( 'Prix unit. HT', 'factur-x-for-woocommerce' ); ?></th>
-			<th class="center"><?php esc_html_e( 'TVA', 'factur-x-for-woocommerce' ); ?></th>
-			<th class="num"><?php esc_html_e( 'Total HT', 'factur-x-for-woocommerce' ); ?></th>
+			<th><?php esc_html_e( 'Description', 'facturflow-invoices-for-woocommerce' ); ?></th>
+			<th class="num"><?php esc_html_e( 'Qté', 'facturflow-invoices-for-woocommerce' ); ?></th>
+			<th class="num"><?php esc_html_e( 'Prix unit. HT', 'facturflow-invoices-for-woocommerce' ); ?></th>
+			<th class="center"><?php esc_html_e( 'TVA', 'facturflow-invoices-for-woocommerce' ); ?></th>
+			<th class="num"><?php esc_html_e( 'Total HT', 'facturflow-invoices-for-woocommerce' ); ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -173,22 +173,22 @@ $primary_color = $appearance['primary_color'];
 	============================================================= -->
 <table class="totals">
 	<tr>
-		<td><?php esc_html_e( 'Total HT', 'factur-x-for-woocommerce' ); ?></td>
+		<td><?php esc_html_e( 'Total HT', 'facturflow-invoices-for-woocommerce' ); ?></td>
 		<td class="num"><?php echo esc_html( number_format_i18n( $totals['line_total'], 2 ) ); ?> <?php echo esc_html( $invoice['currency_symbol'] ); ?></td>
 	</tr>
 	<?php foreach ( $tax_breakdown as $tax_row ) : ?>
 		<tr>
 			<?php /* translators: %s = VAT rate percentage, e.g. 20.00 */ ?>
-			<td><?php printf( esc_html__( 'TVA %s %%', 'factur-x-for-woocommerce' ), esc_html( number_format_i18n( $tax_row['rate'], 2 ) ) ); ?></td>
+			<td><?php printf( esc_html__( 'TVA %s %%', 'facturflow-invoices-for-woocommerce' ), esc_html( number_format_i18n( $tax_row['rate'], 2 ) ) ); ?></td>
 			<td class="num"><?php echo esc_html( number_format_i18n( $tax_row['tax'], 2 ) ); ?> <?php echo esc_html( $invoice['currency_symbol'] ); ?></td>
 		</tr>
 	<?php endforeach; ?>
 	<tr class="grand">
-		<td><strong><?php esc_html_e( 'Total TTC', 'factur-x-for-woocommerce' ); ?></strong></td>
+		<td><strong><?php esc_html_e( 'Total TTC', 'facturflow-invoices-for-woocommerce' ); ?></strong></td>
 		<td class="num"><strong><?php echo esc_html( number_format_i18n( $totals['grand_total'], 2 ) ); ?> <?php echo esc_html( $invoice['currency_symbol'] ); ?></strong></td>
 	</tr>
 	<tr>
-		<td><?php esc_html_e( 'Montant dû', 'factur-x-for-woocommerce' ); ?></td>
+		<td><?php esc_html_e( 'Montant dû', 'facturflow-invoices-for-woocommerce' ); ?></td>
 		<td class="num"><?php echo esc_html( number_format_i18n( $totals['due_payable'], 2 ) ); ?> <?php echo esc_html( $invoice['currency_symbol'] ); ?></td>
 	</tr>
 </table>

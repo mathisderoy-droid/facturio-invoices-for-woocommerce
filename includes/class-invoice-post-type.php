@@ -51,8 +51,8 @@ final class InvoicePostType {
 			self::POST_TYPE,
 			array(
 				'labels'              => array(
-					'name'          => __( 'Factures Factur-X', 'factur-x-for-woocommerce' ),
-					'singular_name' => __( 'Facture Factur-X', 'factur-x-for-woocommerce' ),
+					'name'          => __( 'Factures Factur-X', 'facturflow-invoices-for-woocommerce' ),
+					'singular_name' => __( 'Facture Factur-X', 'facturflow-invoices-for-woocommerce' ),
 				),
 				'public'              => false,
 				'publicly_queryable'  => false,

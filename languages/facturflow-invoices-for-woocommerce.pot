@@ -2,8 +2,8 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Factur-X for WooCommerce 0.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/factur-x-for-woocommerce\n"
+"Project-Id-Version: FacturFlow Invoices for WooCommerce 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/facturflow-invoices-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,35 +12,35 @@ msgstr ""
 "POT-Creation-Date: 2026-05-30T08:25:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: factur-x-for-woocommerce\n"
+"X-Domain: facturflow-invoices-for-woocommerce\n"
 
 #. Plugin Name of the plugin
-#: factur-x-for-woocommerce.php
-msgid "Factur-X for WooCommerce"
+#: facturflow-invoices-for-woocommerce.php
+msgid "FacturFlow Invoices for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: factur-x-for-woocommerce.php
-msgid "https://github.com/mathisderoy/factur-x-for-woocommerce"
+#: facturflow-invoices-for-woocommerce.php
+msgid "https://github.com/mathisderoy-droid/facturflow-invoices-for-woocommerce"
 msgstr ""
 
 #. Description of the plugin
-#: factur-x-for-woocommerce.php
+#: facturflow-invoices-for-woocommerce.php
 msgid "Génère des factures Factur-X conformes à la réforme française 2026 depuis WooCommerce (PDF/A-3 + XML CII embarqué, profil EN 16931)."
 msgstr ""
 
 #. Author of the plugin
-#: factur-x-for-woocommerce.php
+#: facturflow-invoices-for-woocommerce.php
 msgid "Mathis Deroy"
 msgstr ""
 
 #. Author URI of the plugin
-#: factur-x-for-woocommerce.php
-msgid "https://github.com/mathisderoy"
+#: facturflow-invoices-for-woocommerce.php
+msgid "https://github.com/mathisderoy-droid"
 msgstr ""
 
-#: factur-x-for-woocommerce.php:93
-msgid "Factur-X for WooCommerce : dépendances Composer manquantes. Exécutez \"composer install\" dans le dossier du plugin."
+#: facturflow-invoices-for-woocommerce.php:93
+msgid "FacturFlow Invoices for WooCommerce : dépendances Composer manquantes. Exécutez \"composer install\" dans le dossier du plugin."
 msgstr ""
 
 #: includes/class-admin-download.php:91

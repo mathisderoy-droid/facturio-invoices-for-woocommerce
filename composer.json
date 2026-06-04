@@ -1,5 +1,5 @@
 {
-    "name": "mathisderoy/factur-x-for-woocommerce",
+    "name": "mathisderoy/facturflow-invoices-for-woocommerce",
     "description": "Génère des factures Factur-X conformes à la réforme française 2026 depuis WooCommerce (PDF/A-3 + XML CII embarqué, profil EN 16931).",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",

@@ -12,7 +12,7 @@ namespace Mathis\FacturX\WooCommerce;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Singleton bootstrap for Factur-X for WooCommerce.
+ * Singleton bootstrap for FacturFlow Invoices for WooCommerce.
  *
  * Keep this class small — orchestration only, no business logic.
  * Feature classes (Settings, CheckoutFields, InvoiceGenerator, ...) are

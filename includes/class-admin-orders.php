@@ -55,13 +55,13 @@ final class AdminOrders {
 		foreach ( $columns as $key => $label ) {
 			$new[ $key ] = $label;
 			if ( $key === $insert_after ) {
-				$new[ self::COLUMN_KEY ] = __( 'Facture', 'factur-x-for-woocommerce' );
+				$new[ self::COLUMN_KEY ] = __( 'Facture', 'facturflow-invoices-for-woocommerce' );
 				$inserted                = true;
 			}
 		}
 
 		if ( ! $inserted ) {
-			$new[ self::COLUMN_KEY ] = __( 'Facture', 'factur-x-for-woocommerce' );
+			$new[ self::COLUMN_KEY ] = __( 'Facture', 'facturflow-invoices-for-woocommerce' );
 		}
 
 		return $new;
@@ -108,7 +108,7 @@ final class AdminOrders {
 		printf(
 			'<a href="%s" title="%s">%s <span aria-hidden="true">⬇</span></a>',
 			esc_url( $download_url ),
-			esc_attr__( 'Télécharger le PDF Factur-X', 'factur-x-for-woocommerce' ),
+			esc_attr__( 'Télécharger le PDF Factur-X', 'facturflow-invoices-for-woocommerce' ),
 			esc_html( $invoice_number )
 		);
 	}

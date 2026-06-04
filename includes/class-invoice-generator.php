@@ -193,7 +193,7 @@ final class InvoiceGenerator {
 		// just the underlying horstoeko/TCPDF default. Visible only in the
 		// properties pane, never on the rendered page.
 		$builder->setAdditionalCreatorTool(
-			sprintf( 'Factur-X for WooCommerce v%s', MATHISFX_VERSION )
+			sprintf( 'FacturFlow Invoices for WooCommerce v%s', MATHISFX_VERSION )
 		);
 
 		$builder->generateDocument();
