@@ -14,7 +14,7 @@
 #   Windows keeps using the unscoped vendor/ and works fine.
 #
 # USAGE
-#   bash bin/build.sh            # builds dist/facturflow-invoices-for-woocommerce.zip
+#   bash bin/build.sh            # builds dist/facturio-invoices-for-woocommerce.zip
 #
 # REQUIREMENTS (on the build machine)
 #   - php >= 8.0 with ext-zip, ext-fileinfo, ext-gd
@@ -25,7 +25,7 @@ set -euo pipefail
 
 STRAUSS_VERSION="0.27.2"
 # Must match the WordPress.org slug: it names the plugin folder inside the zip.
-SLUG="facturflow-invoices-for-woocommerce"
+SLUG="facturio-invoices-for-woocommerce"
 
 # Resolve repo root (this script lives in bin/).
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<ruleset name="FacturFlow Invoices for WooCommerce">
+<ruleset name="Facturio Invoices for WooCommerce">
     <description>WordPress coding standards for the plugin (own code only).</description>
 
     <!-- What to scan: our code only, never the dependencies. -->
-    <file>facturflow-invoices-for-woocommerce.php</file>
+    <file>facturio-invoices-for-woocommerce.php</file>
     <file>uninstall.php</file>
     <file>includes</file>
     <file>templates</file>
@@ -27,7 +27,7 @@
     <rule ref="WordPress.WP.I18n">
         <properties>
             <property name="text_domain" type="array">
-                <element value="facturflow-invoices-for-woocommerce"/>
+                <element value="facturio-invoices-for-woocommerce"/>
             </property>
         </properties>
     </rule>

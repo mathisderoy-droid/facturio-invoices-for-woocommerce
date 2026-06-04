@@ -88,12 +88,12 @@ final class AdminDownload {
 		check_admin_referer( 'mathisfx_download_' . $invoice_id );
 
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'facturflow-invoices-for-woocommerce' ), '', array( 'response' => 403 ) );
+			wp_die( esc_html__( 'Accès refusé.', 'facturio-invoices-for-woocommerce' ), '', array( 'response' => 403 ) );
 		}
 
 		$post = get_post( $invoice_id );
 		if ( ! $post || $post->post_type !== InvoicePostType::POST_TYPE ) {
-			wp_die( esc_html__( 'Facture introuvable.', 'facturflow-invoices-for-woocommerce' ), '', array( 'response' => 404 ) );
+			wp_die( esc_html__( 'Facture introuvable.', 'facturio-invoices-for-woocommerce' ), '', array( 'response' => 404 ) );
 		}
 
 		$rel_path   = (string) get_post_meta( $invoice_id, '_mathisfx_pdf_path', true );
@@ -102,7 +102,7 @@ final class AdminDownload {
 		$abs_path   = wp_normalize_path( $abs_path );
 
 		if ( $rel_path === '' || ! file_exists( $abs_path ) || ! is_readable( $abs_path ) ) {
-			wp_die( esc_html__( 'Le fichier PDF est introuvable sur le serveur.', 'facturflow-invoices-for-woocommerce' ), '', array( 'response' => 404 ) );
+			wp_die( esc_html__( 'Le fichier PDF est introuvable sur le serveur.', 'facturio-invoices-for-woocommerce' ), '', array( 'response' => 404 ) );
 		}
 
 		$filename = basename( $abs_path );
@@ -138,12 +138,12 @@ final class AdminDownload {
 		check_admin_referer( 'mathisfx_regenerate_' . $order_id );
 
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'facturflow-invoices-for-woocommerce' ), '', array( 'response' => 403 ) );
+			wp_die( esc_html__( 'Accès refusé.', 'facturio-invoices-for-woocommerce' ), '', array( 'response' => 403 ) );
 		}
 
 		$order = wc_get_order( $order_id );
 		if ( ! $order instanceof \WC_Order ) {
-			wp_die( esc_html__( 'Commande introuvable.', 'facturflow-invoices-for-woocommerce' ), '', array( 'response' => 404 ) );
+			wp_die( esc_html__( 'Commande introuvable.', 'facturio-invoices-for-woocommerce' ), '', array( 'response' => 404 ) );
 		}
 
 		// Forget the previous invoice link so generate_for_order issues fresh.
@@ -191,14 +191,14 @@ final class AdminDownload {
 		if ( $flag === 'error' ) {
 			printf(
 				'<div class="notice notice-error is-dismissible"><p>%s</p></div>',
-				esc_html__( 'La régénération de la facture a échoué. Consultez le journal de débogage pour le détail.', 'facturflow-invoices-for-woocommerce' )
+				esc_html__( 'La régénération de la facture a échoué. Consultez le journal de débogage pour le détail.', 'facturio-invoices-for-woocommerce' )
 			);
 			return;
 		}
 
 		printf(
 			'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
-			esc_html__( 'Facture régénérée avec succès. L\'ancien PDF reste archivé.', 'facturflow-invoices-for-woocommerce' )
+			esc_html__( 'Facture régénérée avec succès. L\'ancien PDF reste archivé.', 'facturio-invoices-for-woocommerce' )
 		);
 	}
 }

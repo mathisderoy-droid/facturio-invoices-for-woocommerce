@@ -84,19 +84,19 @@ final class PdfRenderer {
 		// identification XMP block — all required by FNFE-MPE validation.
 		$pdf = new SilentTcpdf( 'P', 'mm', 'A4', true, 'UTF-8', false, 3 );
 
-		$pdf->SetCreator( 'FacturFlow Invoices for WooCommerce v' . MATHISFX_VERSION );
-		$pdf->SetAuthor( $seller['company_name'] ?: 'FacturFlow Invoices for WooCommerce' );
+		$pdf->SetCreator( 'Facturio Invoices for WooCommerce v' . MATHISFX_VERSION );
+		$pdf->SetAuthor( $seller['company_name'] ?: 'Facturio Invoices for WooCommerce' );
 		$pdf->SetTitle(
 			sprintf(
 			/* translators: %s = invoice number */
-				__( 'Facture %s', 'facturflow-invoices-for-woocommerce' ),
+				__( 'Facture %s', 'facturio-invoices-for-woocommerce' ),
 				$invoice_number
 			)
 		);
 		$pdf->SetSubject(
 			sprintf(
 			/* translators: %s = order number */
-				__( 'Facture WooCommerce commande #%s', 'facturflow-invoices-for-woocommerce' ),
+				__( 'Facture WooCommerce commande #%s', 'facturio-invoices-for-woocommerce' ),
 				$order->get_order_number()
 			)
 		);
@@ -327,7 +327,7 @@ final class PdfRenderer {
 			$vat_rate = self::line_rate( $shipping, $rate_map );
 
 			$out[] = array(
-				'name'       => $shipping->get_name() ?: __( 'Livraison', 'facturflow-invoices-for-woocommerce' ),
+				'name'       => $shipping->get_name() ?: __( 'Livraison', 'facturio-invoices-for-woocommerce' ),
 				'sku'        => '',
 				'quantity'   => 1,
 				'unit_price' => $line_total,

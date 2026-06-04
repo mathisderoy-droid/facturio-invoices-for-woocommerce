@@ -148,7 +148,7 @@ final class XmlBuilder {
 		if ( $category !== ZugferdVatCategoryCodes::EXEM_FROM_TAX ) {
 			return null;
 		}
-		$default = __( 'TVA non applicable, art. 293 B du CGI', 'facturflow-invoices-for-woocommerce' );
+		$default = __( 'TVA non applicable, art. 293 B du CGI', 'facturio-invoices-for-woocommerce' );
 		return (string) apply_filters( 'mathisfx_vat_exemption_reason', $default );
 	}
 
@@ -316,7 +316,7 @@ final class XmlBuilder {
 	private static function apply_payment_terms( ZugferdDocumentBuilder $document, \WC_Order $order ): void {
 		$description = (string) apply_filters(
 			'mathisfx_payment_terms',
-			__( 'Paiement à réception de la facture.', 'facturflow-invoices-for-woocommerce' ),
+			__( 'Paiement à réception de la facture.', 'facturio-invoices-for-woocommerce' ),
 			$order
 		);
 
@@ -391,7 +391,7 @@ final class XmlBuilder {
 
 			$document
 				->addNewPosition( (string) $position )
-				->setDocumentPositionProductDetails( $shipping_item->get_name() ?: __( 'Livraison', 'facturflow-invoices-for-woocommerce' ) )
+				->setDocumentPositionProductDetails( $shipping_item->get_name() ?: __( 'Livraison', 'facturio-invoices-for-woocommerce' ) )
 				->setDocumentPositionNetPrice( round( $line_subtotal, 4 ) )
 				->setDocumentPositionQuantity( 1.0, ZugferdUnitCodes::REC20_ONE )
 				->addDocumentPositionTax(

@@ -1,4 +1,4 @@
-=== FacturFlow Invoices for WooCommerce ===
+=== Facturio Invoices for WooCommerce ===
 Contributors: mathisdd
 Tags: factur-x, e-invoicing, woocommerce, invoice, france
 Requires at least: 6.0
@@ -12,7 +12,7 @@ Automatically generate compliant Factur-X invoices (PDF/A-3 + EN 16931 XML) from
 
 == Description ==
 
-**FacturFlow Invoices for WooCommerce** turns every WooCommerce order into a compliant **Factur-X** invoice: a human-readable PDF with a structured XML file (EN 16931 profile) embedded inside it, which accounting software and the tax administration can read automatically. Factur-X is the pivot format chosen by France for the 2026-2027 e-invoicing reform.
+**Facturio Invoices for WooCommerce** turns every WooCommerce order into a compliant **Factur-X** invoice: a human-readable PDF with a structured XML file (EN 16931 profile) embedded inside it, which accounting software and the tax administration can read automatically. Factur-X is the pivot format chosen by France for the 2026-2027 e-invoicing reform.
 
 The plugin is built for French WooCommerce stores that sell to businesses (B2B) and must issue compliant electronic invoices, without changing their accounting software.
 

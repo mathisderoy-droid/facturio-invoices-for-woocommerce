@@ -11,10 +11,13 @@ Mail plugins@wordpress.org (2 juin) : soumission **mise en pause** (PAS rejetée
 avec une liste de points. Traités :
 
 1. **NOM (point principal).** « Factur-X for WooCommerce » refusé : un nom ne doit
-   pas COMMENCER par une marque/projet non possédé (Factur-X, WooCommerce). Choisi
-   avec Mathis : **« FacturFlow Invoices for WooCommerce »** (terme unique
-   « FacturFlow » en tête, marque à la fin). Nouveau slug + text domain :
-   **`facturflow-invoices-for-woocommerce`**. Renommés : nom affiché, slug,
+   pas COMMENCER par une marque/projet non possédé (Factur-X, WooCommerce).
+   1er essai « FacturFlow » ÉCARTÉ après recherche web : trop proche de
+   **FaktoFlow** (logiciel de facturation Factur-X existant) → risque de
+   similarité (refus WP.org) + confusion de marque. Choisi avec Mathis :
+   **« Facturio Invoices for WooCommerce »** (terme unique « Facturio » en tête,
+   vérifié libre, marque à la fin). Slug + text domain :
+   **`facturio-invoices-for-woocommerce`**. Renommés : nom affiché, slug,
    text-domain (172 remplacements, script auditable bin/rename-plugin.py),
    fichier principal `*.php`, `languages/*.pot`, SLUG de build.sh (= nom du
    dossier dans le zip, critique), artefact CI. Préfixes code internes
