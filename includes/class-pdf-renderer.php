@@ -251,59 +251,16 @@ final class PdfRenderer {
 		);
 	}
 
-	/**
-	 * Map WC tax-rate IDs to their exact percentage (read from the order's
-	 * tax items). Same authoritative approach as XmlBuilder — the displayed
-	 * rate must match the embedded XML. (Duplicated here for V0.1; the V0.5
-	 * DTO refactor will share a single rate resolver — see DECISIONS.md.)
-	 *
-	 * @return array<int,float>
-	 */
-	private static function get_rate_map( \WC_Order $order ): array {
-		$map = array();
-		foreach ( $order->get_items( 'tax' ) as $tax_item ) {
-			/** @var \WC_Order_Item_Tax $tax_item */
-			$map[ (int) $tax_item->get_rate_id() ] = (float) $tax_item->get_rate_percent();
-		}
-		return $map;
-	}
-
-	/**
-	 * Exact VAT rate for one line, read from WC (not derived from amounts,
-	 * which rounds 5.5 % to 5.51 %). Falls back to derivation only if no
-	 * stored percent is usable.
-	 *
-	 * @param \WC_Order_Item_Product|\WC_Order_Item_Shipping $item
-	 * @param array<int,float>                               $rate_map
-	 */
-	private static function line_rate( $item, array $rate_map ): float {
-		$taxes  = $item->get_taxes();
-		$totals = ( isset( $taxes['total'] ) && is_array( $taxes['total'] ) ) ? $taxes['total'] : array();
-
-		foreach ( $totals as $rate_id => $amount ) {
-			if ( '' === $amount || null === $amount || 0.0 === (float) $amount ) {
-				continue;
-			}
-			if ( isset( $rate_map[ (int) $rate_id ] ) ) {
-				return $rate_map[ (int) $rate_id ];
-			}
-		}
-
-		$net = (float) $item->get_total();
-		$tax = (float) $item->get_total_tax();
-		return $tax > 0.0 && $net > 0.0 ? round( ( $tax / $net ) * 100, 2 ) : 0.0;
-	}
-
 	private static function get_lines( \WC_Order $order ): array {
 		$out      = array();
-		$rate_map = self::get_rate_map( $order );
+		$rate_map = TaxCalculator::get_rate_map( $order );
 
 		foreach ( $order->get_items() as $item ) {
 			/** @var \WC_Order_Item_Product $item */
 			$line_total = (float) $item->get_total();
 			$quantity   = (float) $item->get_quantity();
 			$unit_price = $quantity > 0 ? $line_total / $quantity : 0.0;
-			$vat_rate   = self::line_rate( $item, $rate_map );
+			$vat_rate   = TaxCalculator::line_rate( $item, $rate_map );
 
 			$product = $item->get_product();
 			$sku     = $product instanceof \WC_Product ? $product->get_sku() : '';
@@ -324,7 +281,7 @@ final class PdfRenderer {
 			if ( $line_total <= 0 ) {
 				continue;
 			}
-			$vat_rate = self::line_rate( $shipping, $rate_map );
+			$vat_rate = TaxCalculator::line_rate( $shipping, $rate_map );
 
 			$out[] = array(
 				'name'       => $shipping->get_name() ?: __( 'Livraison', 'facturio-invoices-for-woocommerce' ),
@@ -339,55 +296,25 @@ final class PdfRenderer {
 		return $out;
 	}
 
+	/**
+	 * Per-rate VAT rows for the PDF summary table. Delegates to the shared
+	 * TaxCalculator so the printed amounts always match the embedded XML.
+	 */
 	private static function get_tax_breakdown( \WC_Order $order ): array {
-		$buckets  = array();
-		$rate_map = self::get_rate_map( $order );
-
-		$accumulate = function ( float $net, float $tax, float $rate ) use ( &$buckets ) {
-			// Round per line before summing, to match the XML breakdown
-			// (and BR-CO-10) so the displayed per-rate amounts are consistent.
-			$net = round( $net, 2 );
-			$tax = round( $tax, 2 );
-			$key = (string) $rate;
-			if ( ! isset( $buckets[ $key ] ) ) {
-				$buckets[ $key ] = array(
-					'rate'  => $rate,
-					'basis' => 0.0,
-					'tax'   => 0.0,
-				);
-			}
-			$buckets[ $key ]['basis'] += $net;
-			$buckets[ $key ]['tax']   += $tax;
-		};
-
-		// Mirror XmlBuilder: product lines always count (so a 0 EUR order still
-		// shows its VAT summary row and matches the embedded XML), while a
-		// zero-cost shipping line is skipped just like it is omitted as a line.
-		foreach ( $order->get_items() as $item ) {
-			/** @var \WC_Order_Item_Product $item */
-			$accumulate( (float) $item->get_total(), (float) $item->get_total_tax(), self::line_rate( $item, $rate_map ) );
-		}
-		foreach ( $order->get_items( 'shipping' ) as $shipping ) {
-			/** @var \WC_Order_Item_Shipping $shipping */
-			if ( (float) $shipping->get_total() <= 0.0 ) {
-				continue;
-			}
-			$accumulate( (float) $shipping->get_total(), (float) $shipping->get_total_tax(), self::line_rate( $shipping, $rate_map ) );
-		}
-
-		return array_values( $buckets );
+		return TaxCalculator::compute_breakdown( $order )['buckets'];
 	}
 
 	private static function get_totals( \WC_Order $order ): array {
-		$line_total = (float) $order->get_total() - (float) $order->get_total_tax();
-		$tax_total  = (float) $order->get_total_tax();
-		$grand      = (float) $order->get_total();
+		// Use the shared breakdown for the ex-VAT/tax split so the PDF totals
+		// reconcile with the embedded XML (BR-CO-10) rather than re-deriving
+		// from $order->get_total(), which can round differently per line.
+		$breakdown = TaxCalculator::compute_breakdown( $order );
 
 		return array(
-			'line_total'           => round( $line_total, 2 ),
-			'tax_total'            => round( $tax_total, 2 ),
-			'grand_total'          => round( $grand, 2 ),
-			'due_payable'          => round( $grand, 2 ), // no prepay in V0.1
+			'line_total'           => $breakdown['line_total'],
+			'tax_total'            => $breakdown['tax_total'],
+			'grand_total'          => $breakdown['grand_total'],
+			'due_payable'          => $breakdown['grand_total'], // no prepay in V0.1
 			'payment_method_title' => $order->get_payment_method_title() ?: $order->get_payment_method(),
 		);
 	}

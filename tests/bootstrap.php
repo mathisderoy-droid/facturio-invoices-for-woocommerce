@@ -35,4 +35,13 @@ if ( ! function_exists( '__' ) ) {
 	}
 }
 
+// Minimal hook stub: with no filters registered, WordPress's apply_filters()
+// simply returns the unmodified value — which is exactly what these pure unit
+// tests need (e.g. TaxCalculator::exemption_reason_for()).
+if ( ! function_exists( 'apply_filters' ) ) {
+	function apply_filters( $hook_name, $value, ...$args ) { // phpcs:ignore
+		return $value;
+	}
+}
+
 require dirname( __DIR__ ) . '/vendor/autoload.php';

@@ -14,7 +14,6 @@ use horstoeko\zugferd\ZugferdDocumentBuilder;
 use horstoeko\zugferd\ZugferdProfiles;
 use horstoeko\zugferd\codelists\ZugferdInvoiceType;
 use horstoeko\zugferd\codelists\ZugferdUnitCodes;
-use horstoeko\zugferd\codelists\ZugferdVatCategoryCodes;
 use horstoeko\zugferd\codelists\ZugferdPaymentMeans;
 
 defined( 'ABSPATH' ) || exit;
@@ -97,59 +96,6 @@ final class XmlBuilder {
 		}
 		$php_date = new DateTime( $date->format( 'Y-m-d' ) );
 		$document->setDocumentSupplyChainEvent( $php_date );
-	}
-
-	/* ----------------------------------------------------------------- */
-	/* VAT category selection                                             */
-	/* ----------------------------------------------------------------- */
-
-	/**
-	 * Choose the UNTDID 5305 VAT category code for a given rate.
-	 *
-	 * BR-S-05 in EN 16931 mandates that category "S" (Standard rated) can
-	 * only be used when the rate is strictly greater than zero. Using "S"
-	 * with 0 % was the first FNFE-MPE validator failure we hit.
-	 *
-	 * V0.1 mapping:
-	 *   - rate > 0      -> 'S' (Standard rated)
-	 *   - rate == 0     -> 'E' (Exempt from tax)
-	 *
-	 * V0.5 will refine the 0 % branch:
-	 *   - Buyer in EU but outside FR + B2B with valid VAT -> 'AE' (Reverse charge)
-	 *   - Buyer outside EU                                -> 'G' (Export)
-	 *   - True French exemption (e.g. franchise en base)  -> 'E' (current default)
-	 *   - Intra-community supply of goods                 -> 'K'
-	 */
-	private static function vat_category_for_rate( float $rate ): string {
-		if ( $rate > 0 ) {
-			return ZugferdVatCategoryCodes::STAN_RATE;
-		}
-		return ZugferdVatCategoryCodes::EXEM_FROM_TAX;
-	}
-
-	/**
-	 * Exemption reason text required when emitting category 'E' (Exempt).
-	 *
-	 * BR-E-10 in EN 16931 mandates that a VAT category "Exempt from VAT"
-	 * MUST carry either an exemption reason text (BT-120) or an exemption
-	 * reason code (BT-121). Without one of the two, the document is
-	 * non-conformant — even if the rate is correctly 0 %.
-	 *
-	 * Default text covers the most common French case: franchise en base
-	 * de TVA (auto-entrepreneurs, micro-entreprises under the threshold).
-	 * Merchants in other exemption regimes (reverse charge intra-EU,
-	 * export, etc.) can override via the `mathisfx_vat_exemption_reason`
-	 * filter, or via a Settings field in a future release.
-	 *
-	 * Returns null for non-exempt categories — most invoices never need
-	 * this branch.
-	 */
-	private static function exemption_reason_for( string $category ): ?string {
-		if ( $category !== ZugferdVatCategoryCodes::EXEM_FROM_TAX ) {
-			return null;
-		}
-		$default = __( 'TVA non applicable, art. 293 B du CGI', 'facturio-invoices-for-woocommerce' );
-		return (string) apply_filters( 'mathisfx_vat_exemption_reason', $default );
 	}
 
 	/* ----------------------------------------------------------------- */
@@ -342,7 +288,7 @@ final class XmlBuilder {
 	 */
 	private static function apply_lines( ZugferdDocumentBuilder $document, \WC_Order $order ): void {
 		$position = 0;
-		$rate_map = self::get_rate_map( $order );
+		$rate_map = TaxCalculator::get_rate_map( $order );
 
 		// Product lines.
 		foreach ( $order->get_items() as $item ) {
@@ -351,7 +297,7 @@ final class XmlBuilder {
 			$line_subtotal = (float) $item->get_total();      // ex-VAT
 			$quantity      = (float) $item->get_quantity();
 			$unit_price    = $quantity > 0 ? round( $line_subtotal / $quantity, 4 ) : 0.0;
-			$rate          = self::line_rate( $item, $rate_map );
+			$rate          = TaxCalculator::line_rate( $item, $rate_map );
 
 			$product = $item->get_product();
 			$sku     = $product instanceof \WC_Product ? (string) $product->get_sku() : '';
@@ -372,7 +318,7 @@ final class XmlBuilder {
 					// EN 16931 explicitly forbids the ExemptionReason element at line
 					// level — it is only valid in the document-level VAT breakdown.
 					// We pass categoryCode + typeCode + rate only here.
-					self::vat_category_for_rate( $rate ),
+					TaxCalculator::category_for_rate( $rate ),
 					'VAT',
 					$rate
 				)
@@ -387,7 +333,7 @@ final class XmlBuilder {
 				continue;
 			}
 			++$position;
-			$rate = self::line_rate( $shipping_item, $rate_map );
+			$rate = TaxCalculator::line_rate( $shipping_item, $rate_map );
 
 			$document
 				->addNewPosition( (string) $position )
@@ -395,74 +341,12 @@ final class XmlBuilder {
 				->setDocumentPositionNetPrice( round( $line_subtotal, 4 ) )
 				->setDocumentPositionQuantity( 1.0, ZugferdUnitCodes::REC20_ONE )
 				->addDocumentPositionTax(
-					self::vat_category_for_rate( $rate ),
+					TaxCalculator::category_for_rate( $rate ),
 					'VAT',
 					$rate
 				)
 				->setDocumentPositionLineSummation( round( $line_subtotal, 2 ) );
 		}
-	}
-
-	/**
-	 * Effective VAT rate (percent) for a line, derived from totals.
-	 *
-	 * EN 16931 BT-152 wants a percentage like 20.00 or 5.50, NOT a decimal.
-	 */
-	private static function rate_for_line( float $net, float $tax ): float {
-		if ( $net <= 0.0 ) {
-			return 0.0;
-		}
-		return round( ( $tax / $net ) * 100, 2 );
-	}
-
-	/**
-	 * Map WooCommerce tax-rate IDs to their exact percentage.
-	 *
-	 * Read straight from the order's stored tax items (the rate as applied
-	 * at checkout). This is authoritative, unlike deriving the rate from
-	 * amounts — derivation rounds 5.5 % to 5.51 % because WC rounds each
-	 * line's net and tax to 2 decimals first.
-	 *
-	 * @return array<int,float> rate_id => percent (e.g. 20.0, 5.5)
-	 */
-	private static function get_rate_map( \WC_Order $order ): array {
-		$map = array();
-		foreach ( $order->get_items( 'tax' ) as $tax_item ) {
-			/** @var \WC_Order_Item_Tax $tax_item */
-			$map[ (int) $tax_item->get_rate_id() ] = (float) $tax_item->get_rate_percent();
-		}
-		return $map;
-	}
-
-	/**
-	 * Exact VAT rate (percent) for a single order line, read from WC.
-	 *
-	 * Looks at the line's own tax entries, finds the rate that actually
-	 * applied, and returns its exact stored percentage. Falls back to the
-	 * amount-derived rate only if WC stored no usable percent. A line with
-	 * no effective tax returns 0.0 (handled as exempt downstream).
-	 *
-	 * @param \WC_Order_Item_Product|\WC_Order_Item_Shipping $item
-	 * @param array<int,float>                               $rate_map
-	 */
-	private static function line_rate( $item, array $rate_map ): float {
-		$taxes  = $item->get_taxes();
-		$totals = ( isset( $taxes['total'] ) && is_array( $taxes['total'] ) ) ? $taxes['total'] : array();
-
-		foreach ( $totals as $rate_id => $amount ) {
-			if ( '' === $amount || null === $amount || 0.0 === (float) $amount ) {
-				continue; // not the effective rate on this line
-			}
-			if ( isset( $rate_map[ (int) $rate_id ] ) ) {
-				return $rate_map[ (int) $rate_id ];
-			}
-		}
-
-		// The line carries tax but no usable stored percent (rare): derive
-		// from amounts rather than mislabel it exempt. Otherwise: exempt (0 %).
-		$net = (float) $item->get_total();
-		$tax = (float) $item->get_total_tax();
-		return $tax > 0.0 ? self::rate_for_line( $net, $tax ) : 0.0;
 	}
 
 	/* ----------------------------------------------------------------- */
@@ -480,69 +364,25 @@ final class XmlBuilder {
 	 * cleaner and matches the line-level rate we already declared above.
 	 */
 	private static function apply_tax_breakdown_and_summation( ZugferdDocumentBuilder $document, \WC_Order $order ): void {
-		// Bucket: rate(%) => [ basis (ex-VAT total), tax_amount ]
-		$buckets  = array();
-		$rate_map = self::get_rate_map( $order );
+		// Single source of truth for the per-rate buckets + rounded totals
+		// (shared with PdfRenderer so the XML and the PDF can never disagree).
+		$breakdown = TaxCalculator::compute_breakdown( $order );
 
-		$accumulate = function ( float $net, float $tax, float $rate ) use ( &$buckets ): void {
-			// Round per line BEFORE summing. BR-CO-10 requires the document
-			// line-total (BT-106) to equal the sum of each line's already-
-			// rounded net amount (BT-131). Summing raw nets then rounding once
-			// drifts by a cent (e.g. 160.7267 -> 160.73 vs 160.72).
-			$net = round( $net, 2 );
-			$tax = round( $tax, 2 );
-			$key = (string) $rate;
-			if ( ! isset( $buckets[ $key ] ) ) {
-				$buckets[ $key ] = array(
-					'rate'  => $rate,
-					'basis' => 0.0,
-					'tax'   => 0.0,
-				);
-			}
-			$buckets[ $key ]['basis'] += $net;
-			$buckets[ $key ]['tax']   += $tax;
-		};
-
-		// Product lines always join the breakdown — even when a 100 % coupon
-		// brings every line to 0. EN 16931 (BR-CO-18) requires at least one VAT
-		// breakdown group, so a fully-discounted (0 EUR) order must still emit
-		// one. apply_lines() always renders product lines, so the breakdown must
-		// mirror them: a rendered line with category 'E' needs its 'E' group
-		// (BR-E-01), and dropping zero-net lines here would break that pairing.
-		foreach ( $order->get_items() as $item ) {
-			/** @var \WC_Order_Item_Product $item */
-			$accumulate( (float) $item->get_total(), (float) $item->get_total_tax(), self::line_rate( $item, $rate_map ) );
-		}
-		// Shipping mirrors apply_lines(): a zero-cost shipping line is not
-		// rendered, so it must not spawn a phantom VAT bucket either.
-		foreach ( $order->get_items( 'shipping' ) as $shipping ) {
-			/** @var \WC_Order_Item_Shipping $shipping */
-			if ( (float) $shipping->get_total() <= 0.0 ) {
-				continue;
-			}
-			$accumulate( (float) $shipping->get_total(), (float) $shipping->get_total_tax(), self::line_rate( $shipping, $rate_map ) );
-		}
-
-		$line_total = 0.0;
-		$tax_total  = 0.0;
-		foreach ( $buckets as $b ) {
-			$line_total += $b['basis'];
-			$tax_total  += $b['tax'];
-
-			$category = self::vat_category_for_rate( $b['rate'] );
+		// One <ApplicableTradeTax> per distinct rate.
+		foreach ( $breakdown['buckets'] as $b ) {
 			$document->addDocumentTax(
-				$category,
+				$b['category'],
 				'VAT',
 				round( $b['basis'], 2 ),
 				round( $b['tax'], 2 ),
 				$b['rate'],
-				self::exemption_reason_for( $category )
+				TaxCalculator::exemption_reason_for( $b['category'] )
 			);
 		}
 
-		$line_total = round( $line_total, 2 );
-		$tax_total  = round( $tax_total, 2 );
-		$grand      = round( $line_total + $tax_total, 2 );
+		$line_total = $breakdown['line_total'];
+		$tax_total  = $breakdown['tax_total'];
+		$grand      = $breakdown['grand_total'];
 
 		// BT-106..BT-115 — document-level monetary summation.
 		$document->setDocumentSummation(
