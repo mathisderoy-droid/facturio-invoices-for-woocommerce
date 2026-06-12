@@ -53,6 +53,8 @@ rsync -a --delete \
     --exclude 'phpcs.xml.dist' \
     --exclude 'CLAUDE.md' \
     --exclude 'DECISIONS.md' \
+    --exclude 'ROADMAP-V0.5.md' \
+    --exclude 'PROMPT-SITE-VENTE.md' \
     --exclude '*.log' \
     "${ROOT}/" "${BUILD_DIR}/"
 
