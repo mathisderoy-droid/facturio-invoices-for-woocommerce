@@ -112,6 +112,25 @@ comprendre concrètement le flux de transmission d'une facture (sans engagement)
   + explorer « Super PDP » (prix/doc le plus bas annoncé). Décider sur devis réels.
   Sources : comparateur-efacturation.fr, groupe-t2f.eu, iopole.com/tarifs.
 
+**Super PDP — vérification approfondie (3 juin) :**
+  ✅ VRAIE Plateforme Agréée DGFiP (immatriculée 22/12/2025, sur la liste officielle).
+  ✅ **0,0025 €/facture** confirmé + **compte GRATUIT < 1000 factures/mois** →
+     idéal pour démarrer sans coût. API-first, faite pour s'intégrer dans
+     logiciels/ERP. Infra cloud FR (réplication x4), Peppol (AP+SMP) + PPF.
+     Site : superpdp.tech (note indépendante 4,6/10).
+  ⚠️ Réserves : jeune startup (~1000 clients, équipe 1-10, immatriculée fin 2025)
+     → risque pérennité ; **AUCUNE mention de Factur-X/CII** (ils mettent Peppol
+     en avant) → VÉRIFIER qu'ils acceptent notre Factur-X sans conversion ;
+     sandbox non clairement annoncée (vs Iopole).
+  → Le moins cher de loin, mais le plus risqué (maturité + compat Factur-X).
+
+**Short-list finale à mettre en concurrence (décider sur réponses réelles) :**
+  1. Super PDP — prix imbattable + gratuit <1000/mois ; vérifier Factur-X + sandbox + pérennité.
+  2. Iopole — API orientée éditeurs, sandbox gratuite, Factur-X natif ; prix opaque, gros volumes.
+  3. B2Brouter — établie/international, multiformat, tests gratuits jq 31/08/2026 ; prix sur devis.
+  Critères de choix : support Factur-X direct · sandbox · prix éditeur réel ·
+  pérennité · qualité doc/API. NE PAS choisir sur le prix seul.
+
 ---
 
 ## 1er juin 2026 — Stratégie monétisation V0.5 (décision de principe)
