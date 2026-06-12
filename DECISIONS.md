@@ -131,6 +131,27 @@ comprendre concrètement le flux de transmission d'une facture (sans engagement)
   Critères de choix : support Factur-X direct · sandbox · prix éditeur réel ·
   pérennité · qualité doc/API. NE PAS choisir sur le prix seul.
 
+**Peppol vs PDP — clarification (3 juin), corrige une piste initiale :**
+  ERREUR de raisonnement écartée : « viser Peppol = 1 seul connecteur universel ».
+  En réalité Factur-X et Peppol ne sont PAS des alternatives :
+    - **Factur-X = FORMAT** du document (ce que Facturio produit déjà ✅).
+    - **Peppol = RÉSEAU de transport** (un « camion », pas une lettre).
+  Faits confirmés :
+    - La réforme FR accepte Factur-X / UBL / CII (tous EN 16931) → notre format OK.
+    - La plupart des PDP utilisent Peppol comme transport, MAIS Peppol véhicule
+      surtout de l'**UBL** → passer par Peppol pur impliquerait peut-être une
+      conversion Factur-X→UBL (faisable, EN 16931, mais travail en plus).
+    - SURTOUT : Peppol ne fait PAS l'**e-reporting** ni l'**annuaire (PPF)**
+      français → une **PDP reste OBLIGATOIRE** quoi qu'il arrive.
+  → DÉCISION technique : pour le 1er connecteur, viser l'**API directe d'UNE PDP**
+    (couvre transmission + e-reporting + annuaire), PAS Peppol seul. Peppol reste
+    un atout secondaire (faciliter le changement de PDP plus tard).
+  → Modèle commercial retenu : **le CLIENT apporte sa propre PDP** (il en a une
+    obligatoirement) → il fournit sa clé API, c'est lui qui paie le coût/facture.
+    Facturio Pro = vend le CONNECTEUR (prix fixe), pas la transmission. Le site
+    aiguillera les clients vers une PDP recommandée.
+  → Archi : adaptateur par PDP (1 seule au lancement, ex. Super PDP), extensible.
+
 ---
 
 ## 1er juin 2026 — Stratégie monétisation V0.5 (décision de principe)
