@@ -177,6 +177,24 @@ comprendre concrètement le flux de transmission d'une facture (sans engagement)
   Sources : go.sellsy.com/blog/meilleures-plateformes-agreees, appvizer.com,
   nathanibgui.com (comparatif PME 2026).
 
+**Ouverture API aux éditeurs tiers — VÉRIFIÉE (3 juin) : les 4 sont ouvertes.**
+   - **B2Brouter** ✅✅ le mieux outillé : mode « marque blanche / Solution
+     Compatible » explicitement pour éditeurs SaaS, **SDK + OpenAPI + sandbox +
+     webhooks**, doc publique, formats CII/UBL/Factur-X. → MEILLEUR candidat pour
+     le 1er connecteur (le plus simple à intégrer). b2brouter.net/fr/edocsync-pdp.
+   - **Super PDP** ✅ API-first faite pour s'intégrer aux logiciels (prix plancher,
+     gratuit <1000/mois). Vérifier sandbox + accept Factur-X (Peppol mis en avant).
+   - **Iopole** ✅ « API pensée pour éditeurs », sandbox gratuite, Factur-X natif.
+   - **Pennylane** ✅ API publique, **importe le Factur-X sans conversion**
+     (API Entreprise V2), grosse base PME. help.pennylane.com (API publiques).
+
+  **SHORT-LIST DE LANCEMENT FIGÉE (sous réserve de tester les sandboxes) :**
+   1. **B2Brouter** (1er connecteur — le mieux outillé pour éditeurs)
+   2. **Super PDP** (le moins cher + gratuit pour acquérir des clients)
+   3. **Pennylane** (capte la grosse base PME, Factur-X direct)
+   + **Iopole** en 4e (sandbox + Factur-X natif), à ajouter ensuite.
+  Toutes acceptent un connecteur tiers → aucune ne nous ferme la porte.
+
 ---
 
 ## 1er juin 2026 — Stratégie monétisation V0.5 (décision de principe)
