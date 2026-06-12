@@ -150,7 +150,32 @@ comprendre concrètement le flux de transmission d'une facture (sans engagement)
     obligatoirement) → il fournit sa clé API, c'est lui qui paie le coût/facture.
     Facturio Pro = vend le CONNECTEUR (prix fixe), pas la transmission. Le site
     aiguillera les clients vers une PDP recommandée.
-  → Archi : adaptateur par PDP (1 seule au lancement, ex. Super PDP), extensible.
+  → Archi : adaptateur par PDP, extensible (voir révision multi-PDP ci-dessous).
+
+**Multi-PDP : décision produit (3 juin).**
+  Mathis (à raison) : 1 seule PDP au lancement = on exclut les clients qui en ont
+  déjà une autre → manque à gagner. Conclusion : viser le **multi-PDP**.
+  Conciliation dev/commerce : **concevoir l'archi multi-PDP dès le départ**
+  (interface PDP commune + 1 adaptateur par PDP), mais ne **coder/tester que
+  2-3 adaptateurs au lancement**, puis ajouter à la demande réelle (ne jamais
+  coder 10 connecteurs « au cas où »).
+
+  IMPORTANT — DEUX familles de PDP (révèle la vraie cible) :
+   1. **PDP "tuyau" / API pure** (Super PDP, Iopole, B2Brouter) → CŒUR DE CIBLE :
+      le e-commerçant facture dans WooCommerce et veut juste transmettre. Pas de
+      logiciel de gestion concurrent.
+   2. **PDP "logiciel complet"** (Pennylane, Sellsy ~65k, Axonaut ~189k, Qonto,
+      Indy/Tiime/Abby/Shine = gratuites) → le client facture DÉJÀ dans cet outil,
+      donc moins susceptible d'utiliser Facturio… SAUF s'il veut connecter sa
+      boutique WooCommerce à son outil existant. Supporter le plus gros
+      (Pennylane, réf. PME) peut capter ceux-là.
+   ⚠️ Pas de vraies « parts de marché » publiées (marché neuf) → chiffres =
+      utilisateurs revendiqués, ordres de grandeur seulement.
+
+  Short-list de lancement proposée (à valider) : **Super PDP + Iopole**
+  (tuyaux, cible principale) **+ Pennylane** (la plus grosse "logiciel" PME).
+  Sources : go.sellsy.com/blog/meilleures-plateformes-agreees, appvizer.com,
+  nathanibgui.com (comparatif PME 2026).
 
 ---
 
