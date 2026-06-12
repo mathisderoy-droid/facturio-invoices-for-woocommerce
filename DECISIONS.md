@@ -94,6 +94,24 @@ comprendre concrètement le flux de transmission d'une facture (sans engagement)
   l'auth (OAuth2 ? token ?) + l'endpoint d'émission, faire un envoi test d'une
   Factur-X générée par Facturio dans la sandbox.
 
+**Comparatif PDP + repères de PRIX (recherche 3 juin) :**
+  Iopole NE PUBLIE PAS ses prix (sur devis). Seuls paliers de VOLUME connus :
+  Starter 4K docs/mois, Business 10K/mois, Enterprise >10K/mois → calibré GROS
+  volumes (≥48K/an), peut être surdimensionné pour un plugin qui démarre.
+  Repères de marché (prix PUBLICS d'autres PA, à titre indicatif) :
+    - Au document : ~0,10–0,50 €/facture courant ; « Super PDP » annoncé à
+      **0,0025 €/facture** (émission+réception) = plancher du marché.
+    - Abonnements TPE : INFast 7,50 €/mois, Qonto dès 9 €, Pennylane dès 14 €,
+      Evoliz 16 €, Tiime Start 17,99 €, Cegid 20 €, Sellsy 29 €, Axonaut 70 €.
+    - Gratuits (sous conditions/abonnement logiciel) : Tiime Free, Cegid, INFast (5 docs).
+    - ETI/grandes : Sage, Yooz dès 500 €/an.
+    - Fourchette TPE/PME globale : ~15–80 €/mois, ou 0–300 €/an pour micro/TPE.
+  ⚠️ Aucune source ne publie de tarif « API éditeur » → IL FAUT DES DEVIS.
+  Candidates API/éditeurs à mettre en concurrence : **Iopole** (sandbox gratuite,
+  Factur-X natif), **B2Brouter** (tests gratuits jq 31/08/2026, multiformat),
+  + explorer « Super PDP » (prix/doc le plus bas annoncé). Décider sur devis réels.
+  Sources : comparateur-efacturation.fr, groupe-t2f.eu, iopole.com/tarifs.
+
 ---
 
 ## 1er juin 2026 — Stratégie monétisation V0.5 (décision de principe)
