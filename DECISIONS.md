@@ -42,6 +42,60 @@ le faux positif du `<style>`). Reste en review tant que non approuvé.
 
 ---
 
+## 3 juin 2026 — Cadrage PDP (fonctionnalité phare de la V0.5 Pro)
+
+Décision la plus structurante de la V0.5 : comment transmettre les factures au
+réseau officiel. Recherche web faite (la liste/offres bougent → revérifier
+avant de coder).
+
+**Clarification clé — pas besoin de devenir PDP.** Trois statuts existent :
+  - **PDP / Plateforme Agréée** : acteur certifié DGFiP qui transmet (dossier +
+    audit + interopérabilité). HORS de portée, inutile pour nous.
+  - **Solution Compatible (SC)** (ex-« Opérateur de Dématérialisation ») : un
+    logiciel qui CRÉE les factures et se branche sur l'API d'une PDP pour la
+    transmission. **← C'est exactement le rôle de Facturio.** Aucun agrément à
+    passer ; on signe avec une PDP et on consomme son API.
+  - Au 1er juin 2026 : ~137 PDP immatriculées (liste officielle sur impots.gouv.fr
+    / data.gouv.fr).
+
+**Cible n°1 : Iopole** — API explicitement « pensée pour les éditeurs de
+logiciels », **sandbox gratuite en 1 clic** (dev/test SANS contrat ni coût),
+supporte nativement **Factur-X** + e-reporting + Peppol. Tarif sur devis (setup
++ coût au volume) → à négocier seulement quand il y a des clients payants.
+Doc : iopole.com/developpeurs, iopole.com/solution.
+**Alternative : B2Brouter** (API multiformat, tests gratuits jusqu'au 31/08/2026,
+connecté Peppol/Chorus). Pennylane immatriculée mais = concurrent comptable,
+moins adapté comme simple « tuyau ».
+
+**Points de vigilance (avis critique) :**
+  - Le coût PDP au volume rogne la marge → Facturio Pro doit se vendre plus cher
+    que le coût PDP par facture. À modéliser avant de fixer le prix.
+  - Dépendance à un tiers → **isoler la PDP derrière un adaptateur** (lien direct
+    avec le refactor Core/Adapter) pour pouvoir changer/multi-supporter les PDP.
+  - Calendrier (revérifier) : réception obligatoire ~sept. 2026 (toutes
+    entreprises), émission ~sept. 2027 (PME/TPE). Marge OK, mais la PDP est le
+    plus long à mettre en place → cadrer tôt.
+
+**Prochaine étape retenue (3 juin) :** explorer la sandbox + doc API Iopole pour
+comprendre concrètement le flux de transmission d'une facture (sans engagement).
+
+**Exploration API Iopole (3 juin) — liens à rouvrir dans un navigateur :**
+  - Doc API : https://docs.ppd.iopole.fr
+  - Swagger/OpenAPI : https://api.ppd.iopole.fr/v1/api (UI JS → à ouvrir dans un navigateur)
+  - Sandbox gratuite « Iopole Labs » : https://labs.iopole.io (compte à créer, sans engagement)
+  - Pages éditeurs : iopole.com/developpeurs, iopole.com/solution
+  - Support : customer.support.iopole.com — Release notes : release.iopole.com
+  Confirmé : formats acceptés **CII / Factur-X / ZUGFeRD / JSON** (notre Factur-X
+  passe directement) ; cas d'usage API = gestion d'identifiants, envoi en masse,
+  administration multi-clients ; statuts de cycle de vie simulables en sandbox
+  (acceptée / refusée / en litige / paiement envoyé) → couvre la future
+  fonctionnalité « suivi du cycle de vie ».
+  À FAIRE (manuel, quand on code) : créer un compte Labs, lire le Swagger pour
+  l'auth (OAuth2 ? token ?) + l'endpoint d'émission, faire un envoi test d'une
+  Factur-X générée par Facturio dans la sandbox.
+
+---
+
 ## 1er juin 2026 — Stratégie monétisation V0.5 (décision de principe)
 
 Discussion business (pas de code décidé). À prendre en compte DÈS la conception
