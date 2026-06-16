@@ -5,6 +5,47 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
 
 ---
 
+## 12-16 juin 2026 — ✅ PLUGIN APPROUVÉ + clarification du slug
+
+Mail plugins@wordpress.org (12 juin) : **hosting request APPROVED**. 🎉
+Nom affiché : « Facturio Invoices for WooCommerce ».
+
+⚠️ PIÈGE — deux mails contradictoires le 12 juin :
+  - Mail « approved! » → slug `facturio-invoices-for-woocommerce`.
+  - Mail « Congratulations » → « I changed the plugin slug to
+    mathisdd-compliant-invoices ».
+J'ai d'abord cru le 2e et renommé tout le code vers `mathisdd-compliant-invoices`
+(commit 4bfa696). ERREUR : vérification SVN le 16 juin →
+  - `svn info https://plugins.svn.wordpress.org/mathisdd-compliant-invoices` →
+    n'existe PAS.
+  - `svn info https://plugins.svn.wordpress.org/facturio-invoices-for-woocommerce`
+    → EXISTE (structure trunk/ tags/ assets/ créée par plugin-master le 12/06).
+→ Le VRAI slug officiel est **`facturio-invoices-for-woocommerce`** (celui qu'on
+  avait demandé !). Le mail « mathisdd » était erroné. Renommage annulé par
+  `git revert 4bfa696` (commit 472f29c). Code de nouveau sur le bon slug.
+LEÇON : toujours vérifier le slug réel via `svn info` sur l'URL, pas se fier au
+texte du mail.
+
+**Coordonnées de publication (confirmées par svn) :**
+  - SVN URL : https://plugins.svn.wordpress.org/facturio-invoices-for-woocommerce
+  - Public URL (après 1er push) : https://wordpress.org/plugins/facturio-invoices-for-woocommerce
+  - SVN user : `mathisdd` (sensible casse) ; mot de passe SVN distinct (à générer
+    sur profil WP.org « Account & Security »). Client SVN installé : SlikSVN 1.14.2
+    (`C:\Program Files\SlikSvn\bin\svn.exe`).
+  - Repo SVN déjà en place : `trunk/ tags/ assets/` (vides). Page publique vide
+    tant que rien n'est poussé.
+
+PUBLICATION (à faire, via SVN ≠ Git) :
+  1. Générer mot de passe SVN (profil WP.org).
+  2. `svn checkout` du repo → copier le contenu du zip dans `trunk/`.
+  3. `svn copy trunk tags/0.1.0`.
+  4. `svn add` les nouveaux + `svn ci` (auth mathisdd + mot de passe SVN).
+  5. (Ensuite) déposer assets/ : icône 256², bannière 772×250, screenshots.
+Zip release prêt : Downloads/fx-release (slug facturio). NB : si déjà buildé sous
+mathisdd, REBUILDER après le revert pour avoir le bon slug.
+
+---
+
 ## 2-3 juin 2026 — Revue WP.org « Review in Progress » → renommage + corrections
 
 Mail plugins@wordpress.org (2 juin) : soumission **mise en pause** (PAS rejetée)
