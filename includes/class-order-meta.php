@@ -56,7 +56,7 @@ final class OrderMeta {
 
 		add_meta_box(
 			'mathisfx_order_b2b_meta',
-			__( 'Informations B2B', 'facturio-invoices-for-woocommerce' ),
+			__( 'Informations B2B', 'mathisdd-compliant-invoices' ),
 			array( $this, 'render_metabox' ),
 			wc_get_page_screen_id( 'shop-order' ),
 			'side',
@@ -82,15 +82,15 @@ final class OrderMeta {
 		}
 
 		if ( 'yes' !== $order->get_meta( '_mathisfx_is_b2b' ) ) {
-			echo '<p>' . esc_html__( 'Commande B2C (particulier). Pas de Factur-X applicable.', 'facturio-invoices-for-woocommerce' ) . '</p>';
+			echo '<p>' . esc_html__( 'Commande B2C (particulier). Pas de Factur-X applicable.', 'mathisdd-compliant-invoices' ) . '</p>';
 			return;
 		}
 
 		$rows = array(
-			__( 'Raison sociale', 'facturio-invoices-for-woocommerce' ) => $order->get_meta( '_mathisfx_company_name' ),
-			__( 'SIRET', 'facturio-invoices-for-woocommerce' )     => $order->get_meta( '_mathisfx_siret' ),
-			__( 'TVA intra', 'facturio-invoices-for-woocommerce' ) => $order->get_meta( '_mathisfx_vat' ),
-			__( 'Code APE', 'facturio-invoices-for-woocommerce' )  => $order->get_meta( '_mathisfx_ape_code' ),
+			__( 'Raison sociale', 'mathisdd-compliant-invoices' ) => $order->get_meta( '_mathisfx_company_name' ),
+			__( 'SIRET', 'mathisdd-compliant-invoices' )     => $order->get_meta( '_mathisfx_siret' ),
+			__( 'TVA intra', 'mathisdd-compliant-invoices' ) => $order->get_meta( '_mathisfx_vat' ),
+			__( 'Code APE', 'mathisdd-compliant-invoices' )  => $order->get_meta( '_mathisfx_ape_code' ),
 		);
 
 		echo '<table class="widefat striped" style="margin-top:0;"><tbody>';

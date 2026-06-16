@@ -112,7 +112,7 @@ final class SiretValidator {
 		if ( ! self::is_valid_format( $siret ) ) {
 			return array(
 				'valid' => false,
-				'error' => __( 'Format SIRET invalide (échec du contrôle Luhn local).', 'facturio-invoices-for-woocommerce' ),
+				'error' => __( 'Format SIRET invalide (échec du contrôle Luhn local).', 'mathisdd-compliant-invoices' ),
 			);
 		}
 
@@ -127,7 +127,7 @@ final class SiretValidator {
 		if ( $api_key === '' ) {
 			return array(
 				'valid' => false,
-				'error' => __( 'Clé API INSEE absente. Renseignez-la dans Réglages → Factur-X → Intégrations.', 'facturio-invoices-for-woocommerce' ),
+				'error' => __( 'Clé API INSEE absente. Renseignez-la dans Réglages → Factur-X → Intégrations.', 'mathisdd-compliant-invoices' ),
 			);
 		}
 
@@ -177,7 +177,7 @@ final class SiretValidator {
 			return array(
 				'valid'     => false,
 				/* translators: %s = network error message. */
-				'error'     => sprintf( __( 'Erreur réseau INSEE : %s', 'facturio-invoices-for-woocommerce' ), $response->get_error_message() ),
+				'error'     => sprintf( __( 'Erreur réseau INSEE : %s', 'mathisdd-compliant-invoices' ), $response->get_error_message() ),
 				'cacheable' => false,
 			);
 		}
@@ -201,7 +201,7 @@ final class SiretValidator {
 				return array(
 					'valid'     => false,
 					/* translators: %s = network error message. */
-					'error'     => sprintf( __( 'Erreur réseau INSEE : %s', 'facturio-invoices-for-woocommerce' ), $response->get_error_message() ),
+					'error'     => sprintf( __( 'Erreur réseau INSEE : %s', 'mathisdd-compliant-invoices' ), $response->get_error_message() ),
 					'cacheable' => false,
 				);
 			}
@@ -211,7 +211,7 @@ final class SiretValidator {
 		if ( $code === 401 || $code === 403 ) {
 			return array(
 				'valid'     => false,
-				'error'     => __( 'Clé API INSEE refusée. Vérifiez son exactitude dans les Réglages.', 'facturio-invoices-for-woocommerce' ),
+				'error'     => __( 'Clé API INSEE refusée. Vérifiez son exactitude dans les Réglages.', 'mathisdd-compliant-invoices' ),
 				'cacheable' => false, // user might fix the key and retry
 			);
 		}
@@ -219,7 +219,7 @@ final class SiretValidator {
 		if ( $code === 404 ) {
 			return array(
 				'valid'     => false,
-				'error'     => __( 'SIRET introuvable dans la base Sirene INSEE.', 'facturio-invoices-for-woocommerce' ),
+				'error'     => __( 'SIRET introuvable dans la base Sirene INSEE.', 'mathisdd-compliant-invoices' ),
 				'cacheable' => true,
 			);
 		}
@@ -228,7 +228,7 @@ final class SiretValidator {
 			return array(
 				'valid'     => false,
 				/* translators: %d = HTTP status code. */
-				'error'     => sprintf( __( 'Erreur API INSEE (HTTP %d).', 'facturio-invoices-for-woocommerce' ), $code ),
+				'error'     => sprintf( __( 'Erreur API INSEE (HTTP %d).', 'mathisdd-compliant-invoices' ), $code ),
 				'cacheable' => false,
 			);
 		}
@@ -237,7 +237,7 @@ final class SiretValidator {
 		if ( ! is_array( $body ) || empty( $body['etablissement'] ) ) {
 			return array(
 				'valid'     => false,
-				'error'     => __( 'Réponse INSEE inattendue.', 'facturio-invoices-for-woocommerce' ),
+				'error'     => __( 'Réponse INSEE inattendue.', 'mathisdd-compliant-invoices' ),
 				'cacheable' => false,
 			);
 		}

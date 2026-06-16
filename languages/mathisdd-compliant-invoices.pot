@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Facturio Invoices for WooCommerce 0.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/facturio-invoices-for-woocommerce\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mathisdd-compliant-invoices\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,34 +12,34 @@ msgstr ""
 "POT-Creation-Date: 2026-05-30T08:25:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: facturio-invoices-for-woocommerce\n"
+"X-Domain: mathisdd-compliant-invoices\n"
 
 #. Plugin Name of the plugin
-#: facturio-invoices-for-woocommerce.php
+#: mathisdd-compliant-invoices.php
 msgid "Facturio Invoices for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: facturio-invoices-for-woocommerce.php
-msgid "https://github.com/mathisderoy-droid/facturio-invoices-for-woocommerce"
+#: mathisdd-compliant-invoices.php
+msgid "https://github.com/mathisderoy-droid/mathisdd-compliant-invoices"
 msgstr ""
 
 #. Description of the plugin
-#: facturio-invoices-for-woocommerce.php
+#: mathisdd-compliant-invoices.php
 msgid "Génère des factures Factur-X conformes à la réforme française 2026 depuis WooCommerce (PDF/A-3 + XML CII embarqué, profil EN 16931)."
 msgstr ""
 
 #. Author of the plugin
-#: facturio-invoices-for-woocommerce.php
+#: mathisdd-compliant-invoices.php
 msgid "Mathis Deroy"
 msgstr ""
 
 #. Author URI of the plugin
-#: facturio-invoices-for-woocommerce.php
+#: mathisdd-compliant-invoices.php
 msgid "https://github.com/mathisderoy-droid"
 msgstr ""
 
-#: facturio-invoices-for-woocommerce.php:93
+#: mathisdd-compliant-invoices.php:93
 msgid "Facturio Invoices for WooCommerce : dépendances Composer manquantes. Exécutez \"composer install\" dans le dossier du plugin."
 msgstr ""
 

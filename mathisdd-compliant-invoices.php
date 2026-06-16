@@ -11,7 +11,7 @@
  * Author URI:           https://github.com/mathisderoy-droid
  * License:              GPL v2 or later
  * License URI:          https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:          facturio-invoices-for-woocommerce
+ * Text Domain:          mathisdd-compliant-invoices
  * Domain Path:          /languages
  * WC requires at least: 9.0
  * WC tested up to:      10.8
@@ -93,7 +93,7 @@ add_action(
 					echo '<div class="notice notice-error"><p>';
 					echo esc_html__(
 						'Facturio Invoices for WooCommerce : dépendances Composer manquantes. Exécutez "composer install" dans le dossier du plugin.',
-						'facturio-invoices-for-woocommerce'
+						'mathisdd-compliant-invoices'
 					);
 					echo '</p></div>';
 				}
