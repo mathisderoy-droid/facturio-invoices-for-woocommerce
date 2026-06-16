@@ -89,14 +89,14 @@ final class PdfRenderer {
 		$pdf->SetTitle(
 			sprintf(
 			/* translators: %s = invoice number */
-				__( 'Facture %s', 'mathisdd-compliant-invoices' ),
+				__( 'Facture %s', 'facturio-invoices-for-woocommerce' ),
 				$invoice_number
 			)
 		);
 		$pdf->SetSubject(
 			sprintf(
 			/* translators: %s = order number */
-				__( 'Facture WooCommerce commande #%s', 'mathisdd-compliant-invoices' ),
+				__( 'Facture WooCommerce commande #%s', 'facturio-invoices-for-woocommerce' ),
 				$order->get_order_number()
 			)
 		);
@@ -327,7 +327,7 @@ final class PdfRenderer {
 			$vat_rate = self::line_rate( $shipping, $rate_map );
 
 			$out[] = array(
-				'name'       => $shipping->get_name() ?: __( 'Livraison', 'mathisdd-compliant-invoices' ),
+				'name'       => $shipping->get_name() ?: __( 'Livraison', 'facturio-invoices-for-woocommerce' ),
 				'sku'        => '',
 				'quantity'   => 1,
 				'unit_price' => $line_total,

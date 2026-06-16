@@ -51,8 +51,8 @@ final class InvoicePostType {
 			self::POST_TYPE,
 			array(
 				'labels'              => array(
-					'name'          => __( 'Factures Factur-X', 'mathisdd-compliant-invoices' ),
-					'singular_name' => __( 'Facture Factur-X', 'mathisdd-compliant-invoices' ),
+					'name'          => __( 'Factures Factur-X', 'facturio-invoices-for-woocommerce' ),
+					'singular_name' => __( 'Facture Factur-X', 'facturio-invoices-for-woocommerce' ),
 				),
 				'public'              => false,
 				'publicly_queryable'  => false,

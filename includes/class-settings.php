@@ -34,7 +34,7 @@ final class Settings extends WC_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id    = 'facturx';
-		$this->label = __( 'Factur-X', 'mathisdd-compliant-invoices' );
+		$this->label = __( 'Factur-X', 'facturio-invoices-for-woocommerce' );
 		parent::__construct();
 
 		// Custom server-side sanitizers for fields that need more than wc_clean().
@@ -86,10 +86,10 @@ final class Settings extends WC_Settings_Page {
 	 */
 	public function get_sections(): array {
 		$sections = array(
-			''             => __( 'Coordonnées vendeur', 'mathisdd-compliant-invoices' ),
-			'invoicing'    => __( 'Facturation', 'mathisdd-compliant-invoices' ),
-			'appearance'   => __( 'Apparence', 'mathisdd-compliant-invoices' ),
-			'integrations' => __( 'Intégrations', 'mathisdd-compliant-invoices' ),
+			''             => __( 'Coordonnées vendeur', 'facturio-invoices-for-woocommerce' ),
+			'invoicing'    => __( 'Facturation', 'facturio-invoices-for-woocommerce' ),
+			'appearance'   => __( 'Apparence', 'facturio-invoices-for-woocommerce' ),
+			'integrations' => __( 'Intégrations', 'facturio-invoices-for-woocommerce' ),
 		);
 
 		return apply_filters( 'mathisfx_settings_sections', $sections );
@@ -140,21 +140,21 @@ final class Settings extends WC_Settings_Page {
 	private function get_appearance_settings(): array {
 		return array(
 			array(
-				'title' => __( 'Apparence de la facture', 'mathisdd-compliant-invoices' ),
+				'title' => __( 'Apparence de la facture', 'facturio-invoices-for-woocommerce' ),
 				'type'  => 'title',
-				'desc'  => __( 'Personnalisez l\'identité visuelle de vos factures Factur-X. Ces réglages s\'appliquent immédiatement aux prochaines factures générées.', 'mathisdd-compliant-invoices' ),
+				'desc'  => __( 'Personnalisez l\'identité visuelle de vos factures Factur-X. Ces réglages s\'appliquent immédiatement aux prochaines factures générées.', 'facturio-invoices-for-woocommerce' ),
 				'id'    => 'mathisfx_appearance_section',
 			),
 			array(
-				'title'   => __( 'Logo', 'mathisdd-compliant-invoices' ),
-				'desc'    => __( 'Choisissez une image depuis votre Médiathèque. Format recommandé : JPG ou PNG opaque (sans transparence), ratio paysage, hauteur ≤ 80 px à l\'impression.', 'mathisdd-compliant-invoices' ),
+				'title'   => __( 'Logo', 'facturio-invoices-for-woocommerce' ),
+				'desc'    => __( 'Choisissez une image depuis votre Médiathèque. Format recommandé : JPG ou PNG opaque (sans transparence), ratio paysage, hauteur ≤ 80 px à l\'impression.', 'facturio-invoices-for-woocommerce' ),
 				'id'      => 'mathisfx_logo_attachment_id',
 				'type'    => 'mathisfx_media_image',
 				'default' => 0,
 			),
 			array(
-				'title'    => __( 'Couleur principale', 'mathisdd-compliant-invoices' ),
-				'desc'     => __( 'Couleur des titres, du bandeau de tableau et du total TTC. Choisissez une couleur foncée — le texte par-dessus est blanc.', 'mathisdd-compliant-invoices' ),
+				'title'    => __( 'Couleur principale', 'facturio-invoices-for-woocommerce' ),
+				'desc'     => __( 'Couleur des titres, du bandeau de tableau et du total TTC. Choisissez une couleur foncée — le texte par-dessus est blanc.', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip' => true,
 				'id'       => 'mathisfx_primary_color',
 				'type'     => 'color',
@@ -174,28 +174,28 @@ final class Settings extends WC_Settings_Page {
 	private function get_seller_settings(): array {
 		return array(
 			array(
-				'title' => __( 'Coordonnées légales du vendeur', 'mathisdd-compliant-invoices' ),
+				'title' => __( 'Coordonnées légales du vendeur', 'facturio-invoices-for-woocommerce' ),
 				'type'  => 'title',
 				'desc'  => __(
 					'Ces informations apparaissent sur chaque facture Factur-X générée. La raison sociale, le SIRET et l\'adresse sont obligatoires pour une facture conforme à la réforme française 2026.',
-					'mathisdd-compliant-invoices'
+					'facturio-invoices-for-woocommerce'
 				),
 				'id'    => 'mathisfx_seller_section',
 			),
 			array(
-				'title'    => __( 'Raison sociale', 'mathisdd-compliant-invoices' ),
+				'title'    => __( 'Raison sociale', 'facturio-invoices-for-woocommerce' ),
 				'id'       => 'mathisfx_seller_company_name',
 				'type'     => 'text',
-				'desc'     => __( 'Nom légal complet de l\'entité émettrice.', 'mathisdd-compliant-invoices' ),
+				'desc'     => __( 'Nom légal complet de l\'entité émettrice.', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip' => true,
 				'default'  => '',
 				'css'      => 'min-width:350px;',
 			),
 			array(
-				'title'             => __( 'SIRET', 'mathisdd-compliant-invoices' ),
+				'title'             => __( 'SIRET', 'facturio-invoices-for-woocommerce' ),
 				'id'                => 'mathisfx_seller_siret',
 				'type'              => 'text',
-				'desc'              => __( '14 chiffres, sans espace (les espaces saisis seront supprimés à la sauvegarde).', 'mathisdd-compliant-invoices' ),
+				'desc'              => __( '14 chiffres, sans espace (les espaces saisis seront supprimés à la sauvegarde).', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip'          => true,
 				'default'           => '',
 				'css'               => 'width:200px;',
@@ -206,10 +206,10 @@ final class Settings extends WC_Settings_Page {
 				),
 			),
 			array(
-				'title'             => __( 'Numéro de TVA intracommunautaire', 'mathisdd-compliant-invoices' ),
+				'title'             => __( 'Numéro de TVA intracommunautaire', 'facturio-invoices-for-woocommerce' ),
 				'id'                => 'mathisfx_seller_vat',
 				'type'              => 'text',
-				'desc'              => __( 'Format français : FR suivi de 11 caractères.', 'mathisdd-compliant-invoices' ),
+				'desc'              => __( 'Format français : FR suivi de 11 caractères.', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip'          => true,
 				'default'           => '',
 				'css'               => 'width:200px;',
@@ -218,39 +218,39 @@ final class Settings extends WC_Settings_Page {
 				),
 			),
 			array(
-				'title'    => __( 'Code APE / NAF', 'mathisdd-compliant-invoices' ),
+				'title'    => __( 'Code APE / NAF', 'facturio-invoices-for-woocommerce' ),
 				'id'       => 'mathisfx_seller_ape_code',
 				'type'     => 'text',
-				'desc'     => __( 'Format INSEE : 4 chiffres + 1 lettre (ex. 6202A).', 'mathisdd-compliant-invoices' ),
+				'desc'     => __( 'Format INSEE : 4 chiffres + 1 lettre (ex. 6202A).', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip' => true,
 				'default'  => '',
 				'css'      => 'width:120px;',
 			),
 			array(
-				'title'    => __( 'Adresse', 'mathisdd-compliant-invoices' ),
+				'title'    => __( 'Adresse', 'facturio-invoices-for-woocommerce' ),
 				'id'       => 'mathisfx_seller_address',
 				'type'     => 'textarea',
-				'desc'     => __( 'Numéro, rue, complément éventuel.', 'mathisdd-compliant-invoices' ),
+				'desc'     => __( 'Numéro, rue, complément éventuel.', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip' => true,
 				'default'  => '',
 				'css'      => 'min-width:350px; min-height:60px;',
 			),
 			array(
-				'title'   => __( 'Code postal', 'mathisdd-compliant-invoices' ),
+				'title'   => __( 'Code postal', 'facturio-invoices-for-woocommerce' ),
 				'id'      => 'mathisfx_seller_postal_code',
 				'type'    => 'text',
 				'default' => '',
 				'css'     => 'width:100px;',
 			),
 			array(
-				'title'   => __( 'Ville', 'mathisdd-compliant-invoices' ),
+				'title'   => __( 'Ville', 'facturio-invoices-for-woocommerce' ),
 				'id'      => 'mathisfx_seller_city',
 				'type'    => 'text',
 				'default' => '',
 				'css'     => 'min-width:220px;',
 			),
 			array(
-				'title'   => __( 'Pays', 'mathisdd-compliant-invoices' ),
+				'title'   => __( 'Pays', 'facturio-invoices-for-woocommerce' ),
 				'id'      => 'mathisfx_seller_country',
 				'type'    => 'select',
 				'options' => WC()->countries->get_countries(),
@@ -271,25 +271,25 @@ final class Settings extends WC_Settings_Page {
 	private function get_invoicing_settings(): array {
 		return array(
 			array(
-				'title' => __( 'Numérotation et génération', 'mathisdd-compliant-invoices' ),
+				'title' => __( 'Numérotation et génération', 'facturio-invoices-for-woocommerce' ),
 				'type'  => 'title',
-				'desc'  => __( 'La numérotation séquentielle est inviolable et ne doit jamais comporter de trou (obligation légale française).', 'mathisdd-compliant-invoices' ),
+				'desc'  => __( 'La numérotation séquentielle est inviolable et ne doit jamais comporter de trou (obligation légale française).', 'facturio-invoices-for-woocommerce' ),
 				'id'    => 'mathisfx_invoicing_section',
 			),
 			array(
-				'title'    => __( 'Préfixe de numérotation', 'mathisdd-compliant-invoices' ),
+				'title'    => __( 'Préfixe de numérotation', 'facturio-invoices-for-woocommerce' ),
 				'id'       => 'mathisfx_invoice_prefix',
 				'type'     => 'text',
-				'desc'     => __( 'Lettres au début du numéro. Ex. « F » donne « F2026-000001 ».', 'mathisdd-compliant-invoices' ),
+				'desc'     => __( 'Lettres au début du numéro. Ex. « F » donne « F2026-000001 ».', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip' => true,
 				'default'  => 'F',
 				'css'      => 'width:80px;',
 			),
 			array(
-				'title'             => __( 'Padding du compteur', 'mathisdd-compliant-invoices' ),
+				'title'             => __( 'Padding du compteur', 'facturio-invoices-for-woocommerce' ),
 				'id'                => 'mathisfx_invoice_number_padding',
 				'type'              => 'number',
-				'desc'              => __( 'Nombre de chiffres du compteur, complété par des zéros à gauche (6 = "000001").', 'mathisdd-compliant-invoices' ),
+				'desc'              => __( 'Nombre de chiffres du compteur, complété par des zéros à gauche (6 = "000001").', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip'          => true,
 				'default'           => '6',
 				'custom_attributes' => array(
@@ -299,17 +299,17 @@ final class Settings extends WC_Settings_Page {
 				'css'               => 'width:80px;',
 			),
 			array(
-				'title'   => __( 'Réinitialisation annuelle du compteur', 'mathisdd-compliant-invoices' ),
-				'desc'    => __( 'Le compteur repart à 1 le 1er janvier (recommandé en France).', 'mathisdd-compliant-invoices' ),
+				'title'   => __( 'Réinitialisation annuelle du compteur', 'facturio-invoices-for-woocommerce' ),
+				'desc'    => __( 'Le compteur repart à 1 le 1er janvier (recommandé en France).', 'facturio-invoices-for-woocommerce' ),
 				'id'      => 'mathisfx_invoice_reset_yearly',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 			),
 			array(
-				'title'             => __( 'Prochain numéro de facture', 'mathisdd-compliant-invoices' ),
+				'title'             => __( 'Prochain numéro de facture', 'facturio-invoices-for-woocommerce' ),
 				'id'                => 'mathisfx_invoice_next_number',
 				'type'              => 'number',
-				'desc'              => __( 'Numéro de la prochaine facture (saisissez seulement le chiffre : le préfixe et l\'année sont ajoutés automatiquement, ex. « F2026-000248 »). À ne modifier que pour reprendre une numérotation existante, par exemple lors d\'une migration depuis un autre outil. ⚠ N\'indiquez jamais un numéro inférieur ou égal au dernier déjà émis : cela créerait des doublons interdits.', 'mathisdd-compliant-invoices' ),
+				'desc'              => __( 'Numéro de la prochaine facture (saisissez seulement le chiffre : le préfixe et l\'année sont ajoutés automatiquement, ex. « F2026-000248 »). À ne modifier que pour reprendre une numérotation existante, par exemple lors d\'une migration depuis un autre outil. ⚠ N\'indiquez jamais un numéro inférieur ou égal au dernier déjà émis : cela créerait des doublons interdits.', 'facturio-invoices-for-woocommerce' ),
 				'default'           => (string) ( InvoiceNumbering::get_current_counter_value() + 1 ),
 				'custom_attributes' => array(
 					'min'  => '1',
@@ -318,31 +318,31 @@ final class Settings extends WC_Settings_Page {
 				'css'               => 'width:120px;',
 			),
 			array(
-				'title'   => __( 'Génération automatique', 'mathisdd-compliant-invoices' ),
-				'desc'    => __( 'Générer la facture Factur-X automatiquement lors d\'un changement de statut de la commande.', 'mathisdd-compliant-invoices' ),
+				'title'   => __( 'Génération automatique', 'facturio-invoices-for-woocommerce' ),
+				'desc'    => __( 'Générer la facture Factur-X automatiquement lors d\'un changement de statut de la commande.', 'facturio-invoices-for-woocommerce' ),
 				'id'      => 'mathisfx_auto_generate',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 			),
 			array(
-				'title'    => __( 'Statut déclencheur', 'mathisdd-compliant-invoices' ),
-				'desc'     => __( 'Statut WooCommerce qui déclenche la génération.', 'mathisdd-compliant-invoices' ),
+				'title'    => __( 'Statut déclencheur', 'facturio-invoices-for-woocommerce' ),
+				'desc'     => __( 'Statut WooCommerce qui déclenche la génération.', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip' => true,
 				'id'       => 'mathisfx_auto_generate_status',
 				'type'     => 'select',
 				'options'  => array(
-					'processing' => __( 'En cours (dès paiement reçu) — recommandé pour services et produits numériques', 'mathisdd-compliant-invoices' ),
-					'completed'  => __( 'Terminée (après livraison ou expédition) — recommandé pour produits physiques', 'mathisdd-compliant-invoices' ),
+					'processing' => __( 'En cours (dès paiement reçu) — recommandé pour services et produits numériques', 'facturio-invoices-for-woocommerce' ),
+					'completed'  => __( 'Terminée (après livraison ou expédition) — recommandé pour produits physiques', 'facturio-invoices-for-woocommerce' ),
 				),
 				'default'  => 'completed',
 				'class'    => 'wc-enhanced-select',
 				'css'      => 'min-width:420px;',
 			),
 			array(
-				'title'    => __( 'Mentions légales', 'mathisdd-compliant-invoices' ),
+				'title'    => __( 'Mentions légales', 'facturio-invoices-for-woocommerce' ),
 				'id'       => 'mathisfx_legal_mentions',
 				'type'     => 'textarea',
-				'desc'     => __( 'Mentions ajoutées en pied de chaque facture (capital social, RCS, TVA non applicable art. 293 B, etc.).', 'mathisdd-compliant-invoices' ),
+				'desc'     => __( 'Mentions ajoutées en pied de chaque facture (capital social, RCS, TVA non applicable art. 293 B, etc.).', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip' => true,
 				'default'  => '',
 				'css'      => 'min-width:500px; min-height:120px;',
@@ -360,20 +360,20 @@ final class Settings extends WC_Settings_Page {
 	private function get_integrations_settings(): array {
 		return array(
 			array(
-				'title' => __( 'API INSEE Sirene', 'mathisdd-compliant-invoices' ),
+				'title' => __( 'API INSEE Sirene', 'facturio-invoices-for-woocommerce' ),
 				'type'  => 'title',
 				'desc'  => sprintf(
 					/* translators: %s = URL INSEE */
-					__( 'Demandez une clé API gratuite sur %s. Utilisée pour la validation SIRET au checkout et la récupération automatique de la raison sociale.', 'mathisdd-compliant-invoices' ),
+					__( 'Demandez une clé API gratuite sur %s. Utilisée pour la validation SIRET au checkout et la récupération automatique de la raison sociale.', 'facturio-invoices-for-woocommerce' ),
 					'<a href="https://api.insee.fr/" target="_blank" rel="noopener noreferrer">api.insee.fr</a>'
 				),
 				'id'    => 'mathisfx_integrations_insee_section',
 			),
 			array(
-				'title'    => __( 'Clé API INSEE', 'mathisdd-compliant-invoices' ),
+				'title'    => __( 'Clé API INSEE', 'facturio-invoices-for-woocommerce' ),
 				'id'       => 'mathisfx_insee_api_key',
 				'type'     => 'password',
-				'desc'     => __( 'Laissez vide pour désactiver la validation SIRET en ligne (validation locale du format uniquement).', 'mathisdd-compliant-invoices' ),
+				'desc'     => __( 'Laissez vide pour désactiver la validation SIRET en ligne (validation locale du format uniquement).', 'facturio-invoices-for-woocommerce' ),
 				'desc_tip' => true,
 				'default'  => '',
 				'css'      => 'min-width:400px;',
@@ -466,7 +466,7 @@ final class Settings extends WC_Settings_Page {
 			\WC_Admin_Settings::add_error(
 				sprintf(
 					/* translators: 1: requested next number, 2: last issued number. */
-					__( 'Numéro de facture inchangé : le prochain numéro (%1$d) doit être strictement supérieur au dernier numéro déjà émis (%2$d), sinon des factures porteraient le même numéro (interdit).', 'mathisdd-compliant-invoices' ),
+					__( 'Numéro de facture inchangé : le prochain numéro (%1$d) doit être strictement supérieur au dernier numéro déjà émis (%2$d), sinon des factures porteraient le même numéro (interdit).', 'facturio-invoices-for-woocommerce' ),
 					$requested_next,
 					$last_issued
 				)
@@ -479,7 +479,7 @@ final class Settings extends WC_Settings_Page {
 		\WC_Admin_Settings::add_message(
 			sprintf(
 				/* translators: %d = the next invoice number now configured. */
-				__( 'Prochain numéro de facture réglé sur %d.', 'mathisdd-compliant-invoices' ),
+				__( 'Prochain numéro de facture réglé sur %d.', 'facturio-invoices-for-woocommerce' ),
 				$requested_next
 			)
 		);
@@ -523,8 +523,8 @@ final class Settings extends WC_Settings_Page {
 					<button type="button" class="button mathisfx-media-choose">
 						<?php
 						echo $current_id > 0
-							? esc_html__( 'Changer le logo', 'mathisdd-compliant-invoices' )
-							: esc_html__( 'Choisir un logo', 'mathisdd-compliant-invoices' );
+							? esc_html__( 'Changer le logo', 'facturio-invoices-for-woocommerce' )
+							: esc_html__( 'Choisir un logo', 'facturio-invoices-for-woocommerce' );
 						?>
 					</button>
 					<button
@@ -532,7 +532,7 @@ final class Settings extends WC_Settings_Page {
 						class="button mathisfx-media-remove"
 						style="<?php echo $current_id > 0 ? '' : 'display:none;'; ?>"
 					>
-						<?php esc_html_e( 'Retirer', 'mathisdd-compliant-invoices' ); ?>
+						<?php esc_html_e( 'Retirer', 'facturio-invoices-for-woocommerce' ); ?>
 					</button>
 					<?php if ( $description !== '' ) : ?>
 						<p class="description"><?php echo wp_kses_post( $description ); ?></p>
@@ -573,8 +573,8 @@ final class Settings extends WC_Settings_Page {
 			'mathisfx-admin-settings',
 			'mathisfxAdminSettings',
 			array(
-				'mediaTitle'  => __( 'Choisir un logo', 'mathisdd-compliant-invoices' ),
-				'mediaButton' => __( 'Utiliser cette image', 'mathisdd-compliant-invoices' ),
+				'mediaTitle'  => __( 'Choisir un logo', 'facturio-invoices-for-woocommerce' ),
+				'mediaButton' => __( 'Utiliser cette image', 'facturio-invoices-for-woocommerce' ),
 			)
 		);
 	}

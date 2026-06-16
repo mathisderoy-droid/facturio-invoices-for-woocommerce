@@ -5,39 +5,6 @@ de route. Chaque entrée précise le contexte, la décision prise, et le statut.
 
 ---
 
-## 12 juin 2026 — ✅ PLUGIN APPROUVÉ par WordPress.org
-
-Mail plugins@wordpress.org (12 juin) : **hosting request APPROVED**. 🎉
-- **Nom affiché** : « Facturio Invoices for WooCommerce » (conservé). ✅
-- **Slug officiel** : ⚠️ le reviewer a réservé **`mathisdd-compliant-invoices`**
-  (l'ancienne suggestion de leur IA), PAS le `facturio-invoices-for-woocommerce`
-  qu'on avait demandé. Décision (avec Mathis) : **ACCEPTER ce slug** pour publier
-  tout de suite (le slug est DÉFINITIF après 1er push SVN ; le nom affiché compte
-  plus que l'URL ; la marque « Facturio » vivra sur le site de vente).
-- **URLs officielles** :
-  - SVN : https://plugins.svn.wordpress.org/mathisdd-compliant-invoices
-  - Public : https://wordpress.org/plugins/mathisdd-compliant-invoices
-  - SVN user = `mathisdd` (sensible à la casse) ; mot de passe SVN distinct du
-    mot de passe WP.org → à générer dans profil WP.org « Account & Security ».
-
-Conséquence technique appliquée sur `main` : le **text-domain DOIT être le slug**
-(règle WP.org pour les language packs). Donc renommé partout
-`facturio-invoices-for-woocommerce` → `mathisdd-compliant-invoices` (160 occ.),
-fichier principal `mathisdd-compliant-invoices.php` + `.pot` renommés, SLUG de
-build, artefact CI. Le **nom affiché reste « Facturio »** (Plugin Name + readme
-titre inchangés). Dépôt GitHub gardé `facturio-invoices-for-woocommerce`
-(indépendant du slug WP) ; Plugin URI pointe dessus.
-
-PROCHAINES ÉTAPES = publication via SVN (pas Git !) :
-  1. Générer le mot de passe SVN (profil WP.org).
-  2. Builder le zip final (slug mathisdd-compliant-invoices).
-  3. Checkout SVN, copier le contenu dans trunk/, copier trunk→tags/0.1.0.
-  4. Ajouter assets/ (icône, bannière, screenshots) — voir plus bas.
-  5. `svn ci` → en ligne sous ~quelques heures.
-NB : SVN = système de RELEASE (≠ Git) : ne pousser que du prêt-à-l'emploi.
-
----
-
 ## 2-3 juin 2026 — Revue WP.org « Review in Progress » → renommage + corrections
 
 Mail plugins@wordpress.org (2 juin) : soumission **mise en pause** (PAS rejetée)
